@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+		<groupId>com.moredian.bee</groupId>
+		<artifactId>bee-pom-parent</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	
+	<groupId>com.moredian.skynet</groupId>
+
+	<artifactId>skynet-api</artifactId>
+	<packaging>jar</packaging>
+	<version>${project.version}</version>
+
+	<name>skynet-api</name>
+	<description></description>
+
+	<properties>
+		<project.version>0.0.1-SNAPSHOT</project.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.7</java.version>
+		<moredian.bee.dependencies.version>0.0.1-SNAPSHOT</moredian.bee.dependencies.version>
+	</properties>
+	<dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.moredian.bee</groupId>
+        <artifactId>bee-pom-dependencies</artifactId>
+        <version>${moredian.bee.dependencies.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+   <dependencies>
+    <dependency>
+	  <groupId>com.moredian.bee</groupId>
+	  <artifactId>bee-common</artifactId>
+	</dependency>
+  </dependencies>
+	<build>
+	  <plugins>
+	    <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-source-plugin</artifactId>
+	        <executions>
+	          <execution>
+	            <id>attach-sources</id>
+	            <goals>
+	              <goal>jar</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
+	  </plugins>
+	</build>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+            <properties>
+                <package.environment>dev</package.environment>
+            </properties>
+		</profile>
+		<profile>
+			<id>test</id>
+            <properties>
+                <package.environment>test</package.environment>
+            </properties>
+		</profile>
+		<profile>
+			<id>show</id>
+            <properties>
+                <package.environment>show</package.environment>
+				<project.version>0.0.1</project.version>
+				<moredian.bee.dependencies.version>0.0.1</moredian.bee.dependencies.version>
+            </properties>
+		</profile>
+	</profiles>
+
+
+</project>

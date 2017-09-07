@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.org.mapper.PositionMapper" >
+
+    <resultMap id="positionResultMap" type="position">
+		<result column="sub_org_id" property="positionId" />
+		<result column="org_id" property="orgId" />
+		<result column="sub_org_type" property="positionType" />
+		<result column="sub_org_code" property="positionCode" />
+		<result column="sub_org_name" property="positionName" />
+		<result column="position_model" property="positionModel" />
+		<result column="level" property="level" />
+		<result column="parent_id" property="parentId" />
+		<result column="remark" property="fullName" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="position">
+	    insert into hive_sub_org(
+	        sub_org_id,
+	        org_id,
+	        sub_org_type,
+	        sub_org_code,
+	        sub_org_name,
+	        position_model,
+	        level,
+	        parent_id,
+	        remark,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{positionId},
+	        #{orgId},
+	        #{positionType},
+	        #{positionCode},
+	        #{positionName},
+	        #{positionModel},
+	        #{level},
+	        #{parentId},
+	        #{fullName},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+	
+	<select id="getRoot" parameterType="map" resultMap="positionResultMap">
+		<include refid="sql_select"/>
+		from hive_sub_org
+		where 
+		    org_id = #{orgId}
+			and parent_id = #{orgId}
+			and position_model = #{positionModel}
+	</select>
+	
+	<select id="load" parameterType="map" resultMap="positionResultMap">
+		<include refid="sql_select"/>
+		from hive_sub_org
+		where 
+			sub_org_id = #{positionId}
+			and org_id=#{orgId}
+	</select>
+	
+	<update id="updatePositionName" parameterType="map">
+	    update hive_sub_org set sub_org_name = #{positionName}, remark = #{fullName} where org_id = #{orgId} and sub_org_id = #{positionId}
+	</update>
+	
+	<select id="findChildren" parameterType="map" resultMap="positionResultMap">
+	    <include refid="sql_select"/>
+	    from hive_sub_org 
+	    where org_id = #{orgId} and position_model = #{positionModel} and level > #{level} and sub_org_code like CONCAT(#{positionCodePrefix},'%')
+	</select>
+	
+	<update id="updateFullName" parameterType="map">
+	    update hive_sub_org set remark = #{fullName} where org_id = #{orgId} and sub_org_id = #{positionId}
+	</update>
+	
+	<delete id="delete" parameterType="map">
+	    delete from hive_sub_org where org_id = #{orgId} and sub_org_id = #{positionId}
+	</delete>
+	
+	<select id="findPlatPositions" parameterType="map" resultMap="positionResultMap">
+	    <include refid="sql_select"/>
+	    from hive_sub_org 
+	    where org_id = #{orgId} and sub_org_type = #{positionType} and position_model = #{positionModel}
+	    order by gmt_create
+	</select>
+	
+	
+	<select id="findDirectChildrens" parameterType="map" resultMap="positionResultMap">
+	    <include refid="sql_select"/>
+	    from hive_sub_org 
+	    where org_id = #{orgId} and position_model = #{positionModel}
+	    <if test="parentId != null">
+	    and parent_id = #{parentId}
+	    </if>
+	    <if test="parentId == null">
+	    and parent_id = 0
+	    </if>
+	    order by gmt_create
+	</select>
+	
+	<select id="findDirectChildrenIds" parameterType="map" resultType="long">
+	    select sub_org_id
+	    from hive_sub_org 
+	    where org_id = #{orgId} and position_model = #{positionModel}
+	    <if test="parentId != null">
+	    and parent_id = #{parentId}
+	    </if>
+	    <if test="parentId == null">
+	    and parent_id = 0
+	    </if>
+	    order by gmt_create
+	</select>
+	
+	<select id="findAllChildrenIds" parameterType="map" resultType="long">
+	    select sub_org_id
+	    from hive_sub_org 
+	    where org_id = #{orgId} and position_model = #{positionModel} and level > #{level} and sub_org_code like CONCAT(#{positionCodePrefix},'%')
+	    order by gmt_create
+	</select>
+	
+	<select id="findByNameAndType" parameterType="map" resultMap="positionResultMap">
+	    select * from hive_sub_org where org_id = #{orgId} and position_type = #{positionType} and position_name = #{positionName}
+	</select>
+	
+	
+	<sql id="sql_select">
+		select
+			sub_org_id,
+			org_id,
+			sub_org_type,
+			sub_org_code,
+			sub_org_name,
+			position_model,
+			level,
+			parent_id,
+			remark,
+			gmt_create,
+			gmt_modify	
+	</sql>
+	
+</mapper>

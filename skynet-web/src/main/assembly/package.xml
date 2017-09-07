@@ -1,0 +1,63 @@
+
+<assembly>
+	<id>bin</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+
+	<!-- Adds dependencies to zip package under lib directory -->
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<outputDirectory>/webapp/WEB-INF/lib</outputDirectory>
+			<unpack>false</unpack>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+
+		<!-- 把项目的配置文件，打包进zip文件的config目录 -->
+		<fileSet>
+			<directory>${project.basedir}/src/${package.environment}/config</directory>
+			<outputDirectory>config</outputDirectory>
+			<includes>
+				<include>**/*.xml</include>
+				<include>**/*.properties</include>
+			</includes>
+		</fileSet>
+		
+		<fileSet>
+			<directory>${project.basedir}/src/main/config</directory>
+			<outputDirectory>config</outputDirectory>
+			<includes>
+				<include>**/*.xml</include>
+				<include>**/*.properties</include>
+			</includes>
+		</fileSet>
+
+		<!-- 把项目的脚本文件目录（ src/main/bin ）中的启动脚本文件，打包进zip文件的跟目录 -->
+		<fileSet>
+			<directory>${project.basedir}/src/main/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<fileMode>0744</fileMode>
+			<includes>
+				<include>*.sh</include>
+			</includes>
+
+		</fileSet>
+		
+		<fileSet>
+			<directory>src/main/webapp</directory>
+			<outputDirectory>/webapp</outputDirectory>
+		</fileSet>
+
+		<!-- 把项目自己编译出来的jar文件，打包进zip文件的根目录 -->
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory>/webapp/WEB-INF/lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>  

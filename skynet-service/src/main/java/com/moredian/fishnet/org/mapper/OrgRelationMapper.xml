@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.org.mapper.OrgRelationMapper" >
+
+    <resultMap id="orgRelationResultMap" type="orgRelation">
+        <result column="org_relation_id" property="orgRelationId" />
+		<result column="org_id" property="orgId" />
+		<result column="relation_org_id" property="relationOrgId" />
+		<result column="relation_type" property="relationType" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="orgRelation">
+	    insert into hive_org_relation (
+	        org_relation_id,
+	        org_id,
+	        relation_org_id,
+	        relation_type,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{orgRelationId},
+	        #{orgId},
+	        #{relationOrgId},
+	        #{relationType},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+	
+	<select id="findChildrenIds" parameterType="map" resultType="long">
+	    select relation_org_id from hive_org_relation where org_id= #{orgId} and relation_type = #{relationType}
+	</select>
+	
+	<delete id="delete" parameterType="map">
+	    delete from hive_org_relation where org_id = #{orgId} and relation_org_id = #{relationOrgId} and relation_type = #{relationType}
+	</delete>
+	
+	<select id="getParentId" parameterType="map" resultType="long">
+	    select org_id from hive_org_relation where relation_org_id = #{relationOrgId} and relation_type = #{relationType}
+	</select>
+	
+</mapper>

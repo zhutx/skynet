@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.member.mapper.DeptRelationMapper" >
+
+    <resultMap id="deptRelationResultMap" type="deptRelation">
+		<result column="dept_relation_id" property="deptRelationId" />
+		<result column="org_id" property="orgId" />
+		<result column="dept_id" property="deptId" />
+		<result column="tp_dept_id" property="tpDeptId" />
+		<result column="member_id" property="memberId" />
+		<result column="leader_flag" property="leaderFlag" />
+		<result column="status" property="status" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+
+    <insert id="insertOrUpdate" parameterType="deptRelation">
+        insert into hive_dept_relation (
+            dept_relation_id,
+            org_id,
+            dept_id,
+            tp_dept_id,
+            member_id,
+            leader_flag,
+            status,
+            gmt_create,
+            gmt_modify
+        ) values (
+            #{deptRelationId},
+            #{orgId},
+            #{deptId},
+            #{tpDeptId},
+            #{memberId},
+            #{leaderFlag},
+            #{status},
+            now(3),
+            now(3)
+        ) ON DUPLICATE KEY UPDATE status = #{status}, leader_flag = #{leaderFlag}, gmt_modify = now(3)
+    </insert>
+
+	<select id="findMemberIdByDepts" parameterType="map" resultType="long">
+	    select member_id from hive_dept_relation where org_id = #{orgId} and status = #{status} and dept_id in 
+	    <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
+	</select>
+	
+	<select id="findMemberIdsByDeptId" parameterType="map" resultType="long">
+	    select member_id from hive_dept_relation where org_id = #{orgId} and dept_id = #{deptId} and status = #{status}
+	</select>
+	
+	<select id="findDeptIdByMemberId" parameterType="map" resultType="long">
+	    select dept_id from hive_dept_relation where org_id = #{orgId} and member_id = #{memberId} and status = #{status}
+	</select>
+	
+	<select id="findLeaderIds" parameterType="map" resultType="long">
+	    select member_id from hive_dept_relation where org_id = #{orgId} and dept_id = #{deptId} and leader_flag = #{leaderFlag} and status = #{status}
+	</select>
+	
+	<update id="updateLeaderFlag" parameterType="map">
+	    update hive_dept_relation set leader_flag = #{leaderFlag} where org_id = #{orgId} and dept_id = #{deptId} and member_id = #{memberId}
+	</update>
+	
+	<update id="updateStatusByMember" parameterType="map">
+	    update hive_dept_relation set status = #{status} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<select id="findRelationCount" parameterType="map" resultType="int">
+	    select count(*) from hive_dept_relation where org_id = #{orgId} and member_id = #{memberId} and dept_id = #{deptId}
+	</select>
+	
+	<update id="updateOneStatus" parameterType="map">
+	    update hive_dept_relation set status = #{status} where org_id = #{orgId} and member_id = #{memberId} and dept_id = #{deptId}
+	</update>
+	
+	<select id="getTotalCountByCondition" parameterType="deptRelationQueryCondition" resultType="int">
+	    select count(*) from hive_dept_relation where org_id = #{orgId} and dept_id = #{deptId} and status = #{status}
+	</select>
+	
+	<select id="findPaginationByCondition" parameterType="deptRelationQueryCondition" resultMap="deptRelationResultMap">
+	    <include refid="sql_select"/>			
+		<include refid="condition_sql_where"/>
+		limit #{startRow}, #{pageSize}
+	</select>
+	
+	<update id="fillDeptIdByTpDeptId" parameterType="map">
+	    update hive_dept_relation set dept_id = #{deptId} where org_id = #{orgId} and tp_dept_id = #{tpDeptId} and dept_id = 0
+	</update>
+	
+	<sql id="sql_select">
+		select
+			dept_relation_id,
+			org_id,
+			dept_id,
+			tp_dept_id,
+			member_id,
+			leader_flag,
+			status,
+			gmt_create,
+			gmt_modify	
+	</sql>
+	
+	<sql id="condition_sql_where">
+	    from hive_dept_relation
+	    <where>
+	    org_id = #{orgId}
+		<if test="deptId != null">
+	        and dept_id = #{deptId}
+		</if>
+	        and status = 1
+		</where>
+	</sql>
+	
+</mapper>

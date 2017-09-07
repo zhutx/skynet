@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.org.mapper.OrgMapper" >
+
+    <resultMap id="orgResultMap" type="org">
+		<result column="org_id" property="orgId" />
+		<result column="org_code" property="orgCode" />
+		<result column="tp_type" property="tpType" />
+		<result column="org_name" property="orgName" />
+		<result column="eng_name" property="engName" />
+		<result column="province_id" property="provinceId" />
+		<result column="city_id" property="cityId" />
+		<result column="district_id" property="districtId" />
+		<result column="town_id" property="townId" />
+		<result column="org_type" property="orgType" />
+		<result column="org_level" property="orgLevel" />
+		<result column="contact" property="contact" />
+		<result column="phone" property="phone" />
+		<result column="detailed_address" property="address" />
+		<result column="remark" property="memo" />
+		<result column="lon" property="lon" />
+		<result column="lat" property="lat" />
+		<result column="geo_bit_29" property="geoBit29" />
+		<result column="geo_bit_27" property="geoBit27" />
+		<result column="status" property="status" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<select id="load" parameterType="long" resultMap="orgResultMap">
+		<include refid="sql_select"/>
+		from hive_org
+		where 
+			org_id=#{orgId}
+	</select>
+	
+	<select id="loadByName" parameterType="string" resultMap="orgResultMap">
+		<include refid="sql_select"/>
+		from hive_org
+		where 
+			org_name=#{orgName}
+	</select>
+	
+	<select id="findAllId" resultType="long">
+	    select org_id from hive_org order by gmt_create
+	</select>
+	
+	<select id="loadExist" parameterType="map" resultMap="orgResultMap">
+		<include refid="sql_select"/>
+		from hive_org
+		where 
+			org_type=#{orgType} and org_name=#{orgName}
+	</select>
+	
+	<insert id="insert" parameterType="org">
+	    insert into hive_org (
+	        org_id,
+	        tp_type,
+	        tp_id,
+	        parent_org_id,
+			org_code,
+			org_name,
+			eng_name,
+			province_id,
+			city_id,
+			district_id,
+			town_id,
+			org_type,
+			org_level,
+			contact,
+			phone,
+			detailed_address,
+			remark,
+			lon,
+			lat,
+			geo_bit_29,
+			geo_bit_27,
+			status,
+			gmt_create,
+			gmt_modify
+	    ) values (
+	        #{orgId},
+	        #{tpType},
+	        #{tpId},
+	        #{parentOrgId},
+	        #{orgCode},
+	        #{orgName},
+	        #{engName},
+	        #{provinceId},
+	        #{cityId},
+	        #{districtId},
+	        #{townId},
+	        #{orgType},
+	        #{orgLevel},
+	        #{contact},
+	        #{phone},
+	        #{address},
+	        #{memo},
+	        #{lon},
+	        #{lat},
+	        #{geoBit29},
+	        #{geoBit27},
+	        #{status},
+	        now(3),
+	        now(3)
+	    )
+	</insert>
+	
+	<update id="update" parameterType="org">
+	    update hive_org
+	    <set>
+		<if test="orgName != null">
+			org_name=#{orgName},
+		</if>
+		<if test="engName != null">
+			eng_name=#{engName},
+		</if>
+		<if test="provinceId != null">
+			province_id=#{provinceId},
+		</if>
+		<if test="cityId != null">
+			city_id=#{cityId},
+		</if>
+		<if test="districtId != null">
+			district_id=#{districtId},
+		</if>
+		<if test="townId != null">
+			town_id=#{townId},
+		</if>
+		<if test="contact != null">
+			contact=#{contact},
+		</if>
+		<if test="phone != null">
+			phone=#{phone},
+		</if>
+		<if test="address != null">
+			detailed_address=#{address},
+		</if>
+		<if test="memo != null">
+			remark=#{memo},
+		</if>
+		<if test="lon != null">
+			lon=#{lon},
+		</if>
+		<if test="lat != null">
+			lat=#{lat},
+		</if>
+		<if test="geoBit29 != null">
+			geo_bit_29=#{geoBit29},
+		</if>
+		<if test="geoBit27 != null">
+			geo_bit_27=#{geoBit27},
+		</if>
+		<if test="status != null">
+			status=#{status},
+		</if>
+			gmt_modify = now(3)
+		</set>
+	    where org_id = #{orgId}
+	</update>
+	
+	<update id="updateStatus" parameterType="map">
+	    update hive_org set status = #{status}, gmt_modify = now(3) where org_id = #{orgId}
+	</update>
+	
+	<select id="getTotalCountByCondition" parameterType="orgQueryCondition" resultType="int">
+		select 
+			count(*)		
+		<include refid="condition_sql_where"/>
+	</select>
+	
+	<select id="findPaginationByCondition" parameterType="orgQueryCondition" resultMap="orgResultMap">
+		<include refid="sql_select"/>			
+		<include refid="condition_sql_where"/>
+		order by gmt_create desc
+		limit #{startRow}, #{pageSize}
+	</select>
+	
+	<select id="findChildren" parameterType="map" resultMap="orgResultMap">
+	    <include refid="sql_select"/>
+	        from hive_org where org_id in 
+	        <foreach collection="orgIdList" index="index" item="orgId" open="(" separator="," close=")">#{orgId}</foreach>
+	</select>
+	
+	<select id="getOneOrg" parameterType="map" resultMap="orgResultMap">
+	    <include refid="sql_select"/>
+	        from hive_org where org_type = #{orgType} and org_level = #{orgLevel}
+	        <if test="orgLevel == 2">
+	        and province_id = #{areaCode}
+	        </if>
+	        <if test="orgLevel == 3">
+	        and city_id = #{areaCode}
+	        </if>
+	        <if test="orgLevel == 4">
+	        and district_id = #{areaCode}
+	        </if>
+	        <if test="orgLevel == 5">
+	        and town_id = #{areaCode}
+	        </if>
+	</select>
+	
+	<sql id="sql_select">
+		select
+			org_id,
+			org_code,
+			tp_type,
+			org_name,
+			eng_name,
+			province_id,
+			city_id,
+			district_id,
+			town_id,
+			org_type,
+			org_level,
+			contact,
+			phone,
+			detailed_address,
+			remark,
+			lon,
+			lat,
+			geo_bit_29,
+			geo_bit_27,
+			status,
+			gmt_create,
+			gmt_modify
+	</sql>
+	
+	<sql id="condition_sql_where">
+	    from hive_org
+	    <where>
+	    <if test="orgType != null">
+		      and org_type = #{orgType}
+		</if>
+		<if test="orgName != null">
+		      and org_name like CONCAT('%',#{orgName},'%')
+		</if>
+		<if test="provinceId != null">
+		      and province_id = #{provinceId}
+		</if>
+		<if test="cityId != null">
+		      and city_id = #{cityId}
+		</if>
+		<if test="districtId != null">
+		      and district_id = #{districtId}
+		</if>
+		<if test="townId != null">
+		      and town_id = #{townId}
+		</if>
+		<if test="status != null">
+		      and status = #{status}
+		</if>
+		</where>
+	</sql>
+	
+</mapper>

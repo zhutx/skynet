@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.moredian.fishnet.member.mapper.UserRelationMapper">
+
+	<resultMap id="userRelationMap" type="userRelation">
+	<result column="user_relation_id" property="userRelationId" />
+	<result column="user_id" property="userId" />
+	<result column="relation" property="relation" />
+	<result column="org_id" property="orgId" />
+	<result column="relation_status" property="relationStatus" />
+	<result column="sub_org_id" property="subOrgId" />
+	<result column="gmt_create" property="gmtCreate" />
+	<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+
+	<sql id="sql_select">
+		select
+		user_relation_id,
+		user_id,
+		org_id,
+		relation,
+		relation_status,
+		sub_org_id,
+		gmt_create,
+		gmt_modify
+	</sql>
+
+	<select id="loadOne" parameterType="map" resultMap="userRelationMap">
+		<include refid="sql_select"/>
+		from
+		hive_user_relation
+		where
+		org_id= #{orgId}
+		AND
+		user_id=#{userId}
+		AND
+		sub_org_id=#{positionId}
+	</select>
+	
+	<select id="findUserId" parameterType="map" resultType="long">
+	    select user_id from hive_user_relation where org_id = #{orgId} and sub_org_id = #{positionId} and relation = #{userRelationType} and relation_status = 0
+	</select>
+	
+	<update id="updateRelation" parameterType="map">
+	    update hive_user_relation set relation = #{userRelationType}, relation_status = 0 where org_id = #{orgId} and user_relation_id = #{userRelationId}
+	</update>
+	
+	<update id="disableStatus" parameterType="map">
+	    update hive_user_relation set relation_status = 1 where org_id = #{orgId} and user_relation_id = #{userRelationId}
+	</update>
+	
+	<select id="findVisibleRelation" parameterType="map" resultMap="userRelationMap">
+	    select * from hive_user_relation where org_id = #{orgId} and sub_org_id = #{positionId} and relation = #{userRelationType} and relation_status = 0 order by gmt_create desc
+	</select>
+	
+	<select id="findReceptionist" parameterType="map" resultType="long">
+	    select user_id from hive_user_relation where org_id = #{orgId} and relation = #{userRelationType} and relation_status = 0 order by gmt_create desc
+	</select>
+	
+	<update id="deleteReceptionist" parameterType="map">
+	    update hive_user_relation set relation_status = 1 where org_id = #{orgId} and user_id = #{userId}
+	</update>
+	
+	<insert id="insertOrUpdate" parameterType="userRelation">
+	    insert into hive_user_relation (
+	        user_relation_id,
+	        org_id,
+			user_id,
+			sub_org_id,
+			relation,
+			relation_status,
+			gmt_create,
+			gmt_modify
+	    ) values (
+	        #{userRelationId},
+	        #{orgId},
+	        #{userId},
+	        #{subOrgId},
+	        #{relation},
+	        #{relationStatus},
+	        now(3),
+	        now(3)
+	    ) ON DUPLICATE KEY UPDATE relation = #{relation}, relation_status = #{relationStatus}, gmt_modify = now(3)
+	</insert>
+	
+</mapper>

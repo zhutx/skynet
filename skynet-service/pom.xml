@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.moredian.bee</groupId>
+		<artifactId>bee-pom-parent</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<groupId>com.moredian.skynet</groupId>
+	<artifactId>skynet-service</artifactId>
+	<packaging>jar</packaging>
+	<version>${project.version}</version>
+
+	<name>skynet-service</name>
+	<description></description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.7</java.version>
+		<project.version>0.0.1-SNAPSHOT</project.version>
+		<moredian.bee.dependencies.version>0.0.1-SNAPSHOT</moredian.bee.dependencies.version>
+		<skynet.api.version>0.0.1-SNAPSHOT</skynet.api.version>
+		<moredian.fishnet.cloudeye.api.version>0.0.3-SNAPSHOT</moredian.fishnet.cloudeye.api.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.moredian.bee</groupId>
+				<artifactId>bee-pom-dependencies</artifactId>
+				<version>${moredian.bee.dependencies.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>com.moredian.skynet</groupId>
+			<artifactId>skynet-api</artifactId>
+			<version>${skynet.api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.cloudeye.core</groupId>
+			<artifactId>cloudeye-core-api</artifactId>
+			<version>${moredian.fishnet.cloudeye.api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.bee</groupId>
+			<artifactId>bee-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.bee</groupId>
+			<artifactId>bee-mybatisboot</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.bee</groupId>
+			<artifactId>bee-filemanager</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.bee</groupId>
+			<artifactId>bee-rmq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.clinkz</groupId>
+			<artifactId>idgen</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.moredian.clinkz</groupId>
+			<artifactId>idgen-unify</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.24</version>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/src/test/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<filtering>false</filtering>
+			</testResource>
+		</testResources>
+		<plugins>
+			<!-- The configuration of maven-jar-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<!-- The configuration of the plugin -->
+				<configuration>
+					<!-- Configuration of the archiver -->
+					<archive>
+
+						<!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
+						<addMavenDescriptor>false</addMavenDescriptor>
+
+						<!-- Manifest specific configuration -->
+						<manifest>
+							<!-- 是否要把第三方jar放到manifest的classpath中 -->
+							<addClasspath>true</addClasspath>
+							<!-- 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/ -->
+							<classpathPrefix>lib/</classpathPrefix>
+							<!-- 应用的main class -->
+							<mainClass>com.moredian.sesame.idgenerator.Start</mainClass>
+						</manifest>
+					</archive>
+					<!-- 过滤掉不希望包含在jar中的文件 -->
+					<excludes>
+						<exclude>${project.basedir}\src\main\bin\*</exclude>
+						<exclude>${project.basedir}\src\main\resources\*.properties</exclude>
+						<exclude>${project.basedir}\src\main\assembly\*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- The configuration of maven-assembly-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<!-- The configuration of the plugin -->
+				<configuration>
+					<finalName>${project.artifactId}</finalName>
+					<!-- Specifies the configuration file of the assembly plugin -->
+					<descriptors>
+						<descriptor>src/main/assembly/package.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<package.environment>dev</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<package.environment>test</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>show</id>
+			<properties>
+				<package.environment>show</package.environment>
+				<project.version>0.0.1</project.version>
+				<moredian.bee.dependencies.version>0.0.1</moredian.bee.dependencies.version>
+				<skynet.api.version>0.0.1</skynet.api.version>
+				<moredian.fishnet.cloudeye.api.version>0.0.3</moredian.fishnet.cloudeye.api.version>
+			</properties>
+		</profile>
+	</profiles>
+
+
+</project>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.member.mapper.GroupPersonMapper" >
+
+    <resultMap id="groupPersonResultMap" type="groupPerson">
+        <result column="group_person_id" property="groupPersonId" />
+		<result column="org_id" property="orgId" />
+		<result column="group_id" property="groupId" />
+		<result column="person_type" property="personType" />
+		<result column="person_id" property="personId" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="groupPerson">
+	    insert into hive_group_person (
+	        group_person_id,
+			org_id,
+			group_id,
+			person_type,
+			person_id,
+			gmt_create,
+			gmt_modify
+	    ) values (
+	        #{groupPersonId},
+	        #{orgId},
+	        #{groupId},
+	        #{personType},
+	        #{personId},
+	        now(6),
+	        now(6)
+	    ) ON DUPLICATE KEY UPDATE gmt_modify = now(6)
+	</insert>
+	
+	<select id="findPersonId" parameterType="map" resultType="long">
+	    select person_id from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
+	</select>
+	
+	<select id="findPerson" parameterType="map" resultType="groupPerson">
+	    <include refid="sql_select"></include>
+	    from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
+	</select>
+	
+	<delete id="delete" parameterType="groupPerson">
+	    delete from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_id = #{personId}
+	</delete>
+	
+	<delete id="deleteByGroupId" parameterType="map">
+	    delete from hive_group_person where org_id = #{orgId} and group_id = #{groupId}
+	</delete>
+	
+	<delete id="deleteByPerson" parameterType="map">
+	    delete from hive_group_person where org_id = #{orgId} and person_type = #{personType} and person_id = #{personId}
+	</delete>
+	
+	<select id="findGroupIdByMember" parameterType="map" resultType="long">
+	    select group_id from hive_group_person where org_id = #{orgId} and person_type = #{personType} and person_id = #{personId}
+	</select>
+	
+	<select id="getPersonSize" parameterType="map" resultType="int">
+	    select count(*) from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
+	</select>
+	
+	<sql id="sql_select">
+		select
+			group_person_id,
+			org_id,
+			group_id,
+			person_type,
+			person_id,
+			gmt_create,
+			gmt_modify
+	</sql>
+	
+</mapper>
