@@ -1,11 +1,8 @@
 package com.moredian.fishnet.web.controller.member.request;
 
-import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
 
-@Data
 public class UpdateMemberModel {
 	
 	//机构id
@@ -48,7 +45,126 @@ public class UpdateMemberModel {
 	private List<Long> groupIds;
 	//部门
 	private List<Long> relationDepts;
+	public Long getOrgId() {
+		return orgId;
+	}
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+	public Long getMemberId() {
+		return memberId;
+	}
+	public void setMemberId(Long memberId) {
+		this.memberId = memberId;
+	}
+	public String getShowFaceUrl() {
+		return showFaceUrl;
+	}
+	public void setShowFaceUrl(String showFaceUrl) {
+		this.showFaceUrl = showFaceUrl;
+	}
+	public String getVerifyFaceUrl() {
+		return verifyFaceUrl;
+	}
+	public void setVerifyFaceUrl(String verifyFaceUrl) {
+		this.verifyFaceUrl = verifyFaceUrl;
+	}
+	public String getMemberName() {
+		return memberName;
+	}
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	public Date getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+	public Integer getSex() {
+		return sex;
+	}
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Integer getCertType() {
+		return certType;
+	}
+	public void setCertType(Integer certType) {
+		this.certType = certType;
+	}
+	public String getCertNo() {
+		return certNo;
+	}
+	public void setCertNo(String certNo) {
+		this.certNo = certNo;
+	}
+	public String getJobNum() {
+		return jobNum;
+	}
+	public void setJobNum(String jobNum) {
+		this.jobNum = jobNum;
+	}
+	public Date getEnterTime() {
+		return enterTime;
+	}
+	public void setEnterTime(Date enterTime) {
+		this.enterTime = enterTime;
+	}
+	public String getPost() {
+		return post;
+	}
+	public void setPost(String post) {
+		this.post = post;
+	}
+	public String getSignature() {
+		return signature;
+	}
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+	public List<Long> getGroupIds() {
+		return groupIds;
+	}
+	public void setGroupIds(List<Long> groupIds) {
+		this.groupIds = groupIds;
+	}
+	public List<Long> getRelationDepts() {
+		return relationDepts;
+	}
+	public void setRelationDepts(List<Long> relationDepts) {
+		this.relationDepts = relationDepts;
+	}
 
 	
-
 }

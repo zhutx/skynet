@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.device.mapper.CertificationDeviceMapper" >
+
+    <resultMap id="deviceResultMap" type="certificationDevice">
+		<result column="org_id" property="orgId" />
+		<result column="org_name" property="orgName" />
+		<result column="contact" property="contact" />
+		<result column="phone" property="phone" />
+		<result column="detailed_address" property="address" />
+		<result column="district_id" property="districtCode" />
+		<result column="orgi_equipment_id" property="deviceId" />
+		<result column="unique_number" property="deviceSn" />
+		<result column="auth_times" property="authTimes" />
+		<result column="fail_times" property="failTimes" />
+		<result column="online_flag" property="onlineFlag" />
+	</resultMap>	
+	
+ 	<select id="getTotalCountByCondition" resultType="int" parameterType="certificationDeviceQueryCondition" >
+		select 
+			count(*)		
+		<include refid="condition_sql_where"/>
+	</select>
+	
+	<select id="findPaginationByCondition" resultMap="deviceResultMap" parameterType="certificationDeviceQueryCondition" >
+		<include refid="condition_sql_select"/>			
+		<include refid="condition_sql_where"/>
+			order by oe.gmt_create desc
+		limit #{startRow}, #{pageSize}
+	</select>
+	
+	<sql id="condition_sql_select">
+		select
+		    o.org_id,
+		    o.org_name,
+		    o.contact,
+		    o.phone,
+		    o.detailed_address,
+		    o.district_id,
+		    oe.orgi_equipment_id,
+		    oe.unique_number,
+		    oe.online_flag,
+		    oe.auth_times,
+		    oe.fail_times
+	</sql>
+
+	<sql id="condition_sql_where">
+	    from hive_orgi_equipment oe left join hive_org o on oe.org_id = o.org_id
+	    <where>
+	    oe.equipment_type = #{deviceType}
+	    <if test="onlineFlag != null">
+		      and oe.online_flag = #{onlineFlag}
+		</if>
+		<if test="provCode != null">
+		      and o.province_id = #{provCode}
+		</if>
+		<if test="cityCode != null">
+		      and o.city_id = #{cityCode}
+		</if>
+		<if test="districtCode != null">
+		      and o.district_id = #{districtCode}
+		</if>
+		<if test="townCode != null">
+		      and o.town_id = #{townCode}
+		</if>
+		<if test="orgName != null">
+		      and o.org_name = #{orgName}
+		</if>
+		</where>
+	</sql>
+	
+</mapper>

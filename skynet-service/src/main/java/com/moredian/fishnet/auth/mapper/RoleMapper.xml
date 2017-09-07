@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.auth.mapper.RoleMapper" >
+
+    <resultMap id="roleResultMap" type="role">
+		<result column="role_id" property="roleId" />
+		<result column="org_id" property="orgId" />
+		<result column="role_name" property="roleName" />
+		<result column="role_desc" property="roleDesc" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="role">
+	    insert into auth_role (
+	        role_id,
+	        org_id,
+	        role_name,
+	        role_desc,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{roleId},
+	        #{orgId},
+	        #{roleName},
+	        #{roleDesc},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+	
+	<select id="loadByRoleName" parameterType="map" resultMap="roleResultMap">
+	    <include refid="sql_select"/>
+	    from auth_role where org_id = #{orgId} and role_name = #{roleName}
+	</select>
+	
+	<select id="load" parameterType="map" resultMap="roleResultMap">
+	    <include refid="sql_select"/>
+	    from auth_role where org_id = #{orgId} and role_id = #{roleId}
+	</select>
+	
+	<update id="update" parameterType="role">
+	    update auth_role set role_name = #{roleName}, role_desc = #{roleDesc}, gmt_modify = now(6) where org_id = #{orgId} and role_id = #{roleId}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+	    delete from auth_role where role_id = #{roleId}
+	</delete>
+	
+	<select id="findAll" parameterType="long" resultMap="roleResultMap">
+	    <include refid="sql_select"/>
+	    from auth_role where org_id = #{orgId} order by gmt_create desc
+	</select>
+	
+	<select id="findByCondition" parameterType="roleQueryCondition" resultMap="roleResultMap">
+	    <include refid="sql_select"/>
+	    from auth_role where org_id = #{orgId}
+	    <if test="roleName != null">
+			AND role_name like concat('%',#{roleName},'%')
+		</if>
+	    order by gmt_create desc
+	</select>
+	
+	<select id="findByOper" parameterType="map" resultMap="roleResultMap">
+	    <include refid="sql_select"/>
+	    from auth_role where role_id in (select role_id from auth_oper_role where oper_id = #{operId})
+	</select>
+	
+	<sql id="sql_select">
+		select
+			role_id,
+	        org_id,
+	        role_name,
+	        role_desc,
+	        gmt_create,
+	        gmt_modify
+	</sql>
+	
+</mapper>

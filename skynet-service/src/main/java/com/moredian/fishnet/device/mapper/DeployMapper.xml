@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.device.mapper.DeployMapper" >
+
+	<resultMap id="deployResultMap" type="deploy">
+		<result column="deploy_id" property="deployId" />
+		<result column="org_id" property="orgId" />
+		<result column="device_id" property="deviceId" />
+		<result column="camera_flag" property="cameraFlag" />
+		<result column="threshold" property="threshold" />
+		<result column="deploy_begin_time" property="deployBeginTime" />
+		<result column="deploy_end_time" property="deployEndTime" />
+		<result column="notice_roles" property="noticeRoles" />
+		<result column="status" property="status" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+
+	
+	<insert id="insert" parameterType="deploy">
+		insert into hive_deploy(
+			deploy_id,
+			org_id,
+			device_id,
+			camera_flag,
+			threshold,
+			deploy_begin_time,
+			deploy_end_time,
+			notice_roles,
+			status,
+			gmt_create,
+			gmt_modify	
+		)
+		values (
+		 	#{deployId},
+			#{orgId},
+			#{deviceId},
+			#{cameraFlag},
+			#{threshold},
+			#{deployBeginTime},
+			#{deployEndTime},
+			#{noticeRoles},
+			#{status},
+			now(3),
+			now(3)
+		)
+	</insert>
+	
+	<update id="update" parameterType="deploy">
+		update hive_deploy
+		<set>
+		<if test="deviceId != null">
+			device_id=#{deviceId},
+		</if>
+		<if test="cameraFlag != null">
+			camera_flag=#{cameraFlag},
+		</if>
+		<if test="threshold != null">
+			threshold=#{threshold},
+		</if>
+		<if test="deployBeginTime != null">
+			deploy_begin_time=#{deployBeginTime},
+		</if>
+		<if test="deployEndTime != null">
+			deploy_end_time=#{deployEndTime},
+		</if>
+		<if test="noticeRoles != null">
+			notice_roles=#{noticeRoles},
+		</if>
+		<if test="status != null">
+			status=#{status},
+		</if>
+			gmt_modify = now(3)
+		</set>
+		where
+			deploy_id = #{deployId}
+			and org_id=#{orgId}
+	</update>
+	
+	<update id="updateStatus" parameterType="map">
+	    update hive_deploy set status = #{status} where org_id = #{orgId} and deploy_id = #{deployId}
+	</update>
+	
+	<select id="load" parameterType="map" resultMap="deployResultMap">
+	    <include refid="sql_select"/> 
+	    from hive_deploy where org_id = #{orgId} and deploy_id = #{deployId}
+	</select>
+	
+	<select id="loadByDevice" parameterType="map" resultMap="deployResultMap">
+	    <include refid="sql_select"/> 
+	    from hive_deploy where org_id = #{orgId} and device_id = #{deviceId}
+	</select>
+	
+	<select id="getTotalCountByCondition" resultType="int" parameterType="deployQueryCondition" >
+		select 
+			count(*)		
+		<include refid="condition_sql_where"/>
+	</select>
+	
+	<select id="findPaginationByCondition" resultMap="deployResultMap" parameterType="deployQueryCondition" >
+		<include refid="sql_select"/>			
+		<include refid="condition_sql_where"/>
+		order by gmt_create desc
+		limit #{startRow}, #{pageSize}
+	</select>
+	
+	<select id="findForStop" parameterType="int" resultMap="deployResultMap">
+		<include refid="sql_select"/>
+        <![CDATA[ from hive_deploy where status = #{status} and deploy_end_time < now()]]>
+	</select>
+	
+	<select id="findForStart" parameterType="int" resultMap="deployResultMap">
+		<include refid="sql_select"/>
+        <![CDATA[ from hive_deploy where status = #{status} and deploy_begin_time < now()]]>
+	</select>
+	
+	<update id="updateStatusByDeviceId" parameterType="map">
+	    update hive_deploy set status = #{status} where org_id = #{orgId} and device_id = #{deviceId}
+	</update>
+	
+	<sql id="sql_select">
+		select
+			deploy_id,
+			org_id,
+			device_id,
+			camera_flag,
+			threshold,
+			deploy_begin_time,
+			deploy_end_time,
+			notice_roles,
+			status,
+			gmt_create,
+			gmt_modify	
+	</sql> 
+	
+	<sql id="condition_sql_where">
+	    from hive_deploy
+	    <where>
+		<if test="orgId != null">
+		      and org_id = #{orgId}
+		</if>
+		<if test="deviceId != null">
+		      and device_id = #{deviceId}
+		</if>
+		<if test="cameraFlag != null">
+		      and camera_flag = #{cameraFlag}
+		</if>
+		<if test="status != null">
+		      and status = #{status}
+		</if>
+		</where>
+	</sql>
+	
+</mapper>

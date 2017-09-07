@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.fishnet.auth.mapper.AccountMapper" >
+
+    <resultMap id="accountResultMap" type="account">
+		<result column="account_id" property="accountId" />
+		<result column="account_type" property="accountType" />
+		<result column="account_name" property="accountName" />
+		<result column="password" property="password" />
+		<result column="status" property="status" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="account">
+	    insert into auth_account (
+	        account_id,
+	        account_type,
+	        account_name,
+	        password,
+	        status,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{accountId},
+	        #{accountType},
+	        #{accountName},
+	        #{password},
+	        #{status},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+	
+	<select id="loadByAccountName" parameterType="string" resultMap="accountResultMap">
+	    <include refid="sql_select"/>
+	    from auth_account where account_name = #{accountName}
+	</select>
+	
+	<select id="load" parameterType="long" resultMap="accountResultMap">
+	    <include refid="sql_select"/>
+	    from auth_account where account_id = #{accountId}
+	</select>
+	
+	<select id="loadForLogin" parameterType="map" resultMap="accountResultMap">
+	    <include refid="sql_select"/>
+	    from auth_account where account_name = #{accountName} and password = #{password}
+	</select>
+	
+	<update id="updatePassword" parameterType="map">
+	    update auth_account set password = #{password} where account_id = #{accountId}
+	</update>
+
+	<sql id="sql_select">
+		select
+			account_id,
+	        account_type,
+	        account_name,
+	        password,
+	        status,
+	        gmt_create,
+	        gmt_modify
+	</sql>
+
+	
+</mapper>
