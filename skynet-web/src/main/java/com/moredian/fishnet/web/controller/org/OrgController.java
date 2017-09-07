@@ -1,6 +1,5 @@
 package com.moredian.fishnet.web.controller.org;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +35,52 @@ public class OrgController extends BaseController {
 	@SI
 	private AreaService areaService;
 	
+	private OrgAddRequest buildRequest(AddOrgModel model) {
+		OrgAddRequest request = BeanUtils.copyProperties(OrgAddRequest.class, model);
+		return request;
+	}
+	
+	@ApiOperation(value="创建机构", notes="创建机构")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/add", method=RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse add(@RequestBody AddOrgModel model) {
+		
+		orgService.addOrg(this.buildRequest(model)).pickDataThrowException();
+		
+		return new BaseResponse();
+    }
+	
+	private OrgUpdateRequest buildRequest(UpdateOrgModel model) {
+		return BeanUtils.copyProperties(OrgUpdateRequest.class, model);
+	}
+	
+	@ApiOperation(value="修改机构信息", notes="修改机构信息")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/edit", method=RequestMethod.PUT)
+    @ResponseBody
+    public BaseResponse editOrg(@RequestBody UpdateOrgModel model) {
+    	
+		orgService.updateOrg(this.buildRequest(model)).pickDataThrowException();
+		
+		return new BaseResponse();
+    }
+	
+	private ModuleBindRequest buildRequest(BindModuleModel model) {
+		return BeanUtils.copyProperties(ModuleBindRequest.class, model);
+	}
+	
+	@ApiOperation(value="绑定系统模块", notes="绑定系统模块,初始化管理员账号")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/bindModule", method=RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse bindModule(@RequestBody BindModuleModel model) {
+		
+		orgService.bindModule(this.buildRequest(model)).pickDataThrowException();
+		
+		return new BaseResponse();
+    }
+	
 	private OrgData orgInfoToOrgData(OrgInfo orgInfo) {
 		
 		OrgData orgData = BeanUtils.copyProperties(OrgData.class, orgInfo);
@@ -66,52 +111,6 @@ public class OrgController extends BaseController {
 		return br;
     }
 	
-	private OrgUpdateRequest buildRequest(UpdateOrgModel model) {
-		return BeanUtils.copyProperties(OrgUpdateRequest.class, model);
-	}
-	
-	private OrgAddRequest buildRequest(AddOrgModel model) {
-		OrgAddRequest request = BeanUtils.copyProperties(OrgAddRequest.class, model);
-		return request;
-	}
-	
-	@ApiOperation(value="创建机构", notes="创建机构")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/add", method=RequestMethod.POST)
-    @ResponseBody
-    public BaseResponse add(@RequestBody AddOrgModel model) {
-		
-		orgService.addOrg(this.buildRequest(model)).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
-	
-	private ModuleBindRequest buildRequest(BindModuleModel model) {
-		return BeanUtils.copyProperties(ModuleBindRequest.class, model);
-	}
-	
-	@ApiOperation(value="绑定系统模块", notes="绑定系统模块")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/bindModule", method=RequestMethod.POST)
-    @ResponseBody
-    public BaseResponse bindModule(@RequestBody BindModuleModel model) {
-		
-		orgService.bindModule(this.buildRequest(model)).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
-	
-	@ApiOperation(value="修改机构信息", notes="修改机构信息")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/edit", method=RequestMethod.PUT)
-    @ResponseBody
-    public BaseResponse editOrg(@RequestBody UpdateOrgModel model) {
-    	
-		orgService.updateOrg(this.buildRequest(model)).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
-	
 	@SuppressWarnings("rawtypes")
 	@ApiOperation(value="是否已开通业务", notes="是否已开通业务")
 	@RequestMapping(value="/isBusiOpen", method=RequestMethod.GET)
@@ -119,23 +118,6 @@ public class OrgController extends BaseController {
     public BaseResponse isBusiOpen(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "bizType") int bizType) {
 		BaseResponse<Boolean> br = new BaseResponse<>();
 		br.setData(orgService.isBizEnable(orgId, bizType));
-		return br;
-    }
-	
-	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="判断机构信息是否已完善", notes="判断机构信息是否已完善")
-	@RequestMapping(value="/isComplete", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse isComplete(@RequestParam(value = "orgId") Long orgId) {
-		BaseResponse<Boolean> br = new BaseResponse<>();
-		
-		OrgInfo org = orgService.getOrgInfo(orgId);
-		if(org.getProvinceId() == null || org.getCityId() == null || org.getDistrictId() == null || StringUtils.isBlank(org.getAddress())) {
-			br.setData(false);
-		} else {
-			br.setData(true);
-		}
-		
 		return br;
     }
 	
