@@ -4,24 +4,24 @@ public class DeptMemberData {
 	
 	//成员id 
 	private Long memberId;
+	//成员名 
+	private String memberName;
 	//显示头像 
 	private String showFaceUrl;
 	//识别照片
 	private String verifyFaceUrl;
-	//成员名 
-	private String memberName;
+	//手机
+	private String mobile;
 	//昵称
 	private String nickName;
 	//职位
 	private String post;
+	//工号
+	private String jobNumber;
 	//负责人标识
 	private Integer chargeFlag;
 	//管理员标识
 	private Integer adminFlag;
-	// 应前端要求而追加的多余参数
-	private String commonName;
-	private Integer dataFlag = 2;
-	private String commonId;
 	
 	public Long getMemberId() {
 		return memberId;
@@ -71,23 +71,17 @@ public class DeptMemberData {
 	public void setAdminFlag(Integer adminFlag) {
 		this.adminFlag = adminFlag;
 	}
-	public String getCommonName() {
-		return commonName;
+	public String getMobile() {
+		return mobile;
 	}
-	public void setCommonName(String commonName) {
-		this.commonName = commonName;
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
-	public Integer getDataFlag() {
-		return dataFlag;
+	public String getJobNumber() {
+		return jobNumber;
 	}
-	public void setDataFlag(Integer dataFlag) {
-		this.dataFlag = dataFlag;
-	}
-	public String getCommonId() {
-		return commonId;
-	}
-	public void setCommonId(String commonId) {
-		this.commonId = commonId;
+	public void setJobNumber(String jobNumber) {
+		this.jobNumber = jobNumber;
 	}
 
 }

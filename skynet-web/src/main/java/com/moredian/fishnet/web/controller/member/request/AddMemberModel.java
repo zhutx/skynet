@@ -1,9 +1,5 @@
 package com.moredian.fishnet.web.controller.member.request;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 public class AddMemberModel {
 	
 	//机构id
@@ -22,10 +18,16 @@ public class AddMemberModel {
 	private String jobNum;
 	//性别 
 	private Integer sex;
+	//年龄
+	private Integer age;
+	//证件类型
+	private Integer certType;
+	//证件号
+	private String certNo;
 	//生日
-	private Date birthday;
+	private String birthday;
 	//入职时间
-	private Date enterTime;
+	private String enterTime;
 	//邮箱
 	private String email;
 	//职务
@@ -34,10 +36,6 @@ public class AddMemberModel {
 	private String signature;
 	//备注
 	private String memo;
-	// 关联部门
-	private List<Long> relationDepts = new ArrayList<>();
-	// 关联群组
-	private List<Long> relationGroupIds = new ArrayList<>();
 	
 	public Long getOrgId() {
 		return orgId;
@@ -87,16 +85,34 @@ public class AddMemberModel {
 	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
-	public Date getBirthday() {
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	public Integer getCertType() {
+		return certType;
+	}
+	public void setCertType(Integer certType) {
+		this.certType = certType;
+	}
+	public String getCertNo() {
+		return certNo;
+	}
+	public void setCertNo(String certNo) {
+		this.certNo = certNo;
+	}
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
-	public Date getEnterTime() {
+	public String getEnterTime() {
 		return enterTime;
 	}
-	public void setEnterTime(Date enterTime) {
+	public void setEnterTime(String enterTime) {
 		this.enterTime = enterTime;
 	}
 	public String getEmail() {
@@ -123,17 +139,6 @@ public class AddMemberModel {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	public List<Long> getRelationDepts() {
-		return relationDepts;
-	}
-	public void setRelationDepts(List<Long> relationDepts) {
-		this.relationDepts = relationDepts;
-	}
-	public List<Long> getRelationGroupIds() {
-		return relationGroupIds;
-	}
-	public void setRelationGroupIds(List<Long> relationGroupIds) {
-		this.relationGroupIds = relationGroupIds;
-	}
+	
 
 }

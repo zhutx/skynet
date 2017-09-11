@@ -5,10 +5,6 @@ public class DeptData {
 	private Long deptId;
 	private String deptName;
 	private Integer memberSize;
-	// 应前端要求而追加的多余参数
-	private String commonName;
-	private Integer dataFlag = 1;
-	private String commonId;
 	
 	public Long getDeptId() {
 		return deptId;
@@ -27,24 +23,6 @@ public class DeptData {
 	}
 	public void setMemberSize(Integer memberSize) {
 		this.memberSize = memberSize;
-	}
-	public String getCommonName() {
-		return commonName;
-	}
-	public void setCommonName(String commonName) {
-		this.commonName = commonName;
-	}
-	public Integer getDataFlag() {
-		return dataFlag;
-	}
-	public void setDataFlag(Integer dataFlag) {
-		this.dataFlag = dataFlag;
-	}
-	public String getCommonId() {
-		return commonId;
-	}
-	public void setCommonId(String commonId) {
-		this.commonId = commonId;
 	}
 
 }

@@ -9,7 +9,7 @@ public class ConfigDeptModel {
 	//成员id 
 	private Long memberId;
 	//部门
-	private List<Long> relationDepts;
+	private List<Long> depts;
 	
 	public Long getOrgId() {
 		return orgId;
@@ -23,11 +23,11 @@ public class ConfigDeptModel {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
-	public List<Long> getRelationDepts() {
-		return relationDepts;
+	public List<Long> getDepts() {
+		return depts;
 	}
-	public void setRelationDepts(List<Long> relationDepts) {
-		this.relationDepts = relationDepts;
+	public void setDepts(List<Long> depts) {
+		this.depts = depts;
 	}
 
 

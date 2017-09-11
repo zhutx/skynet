@@ -164,6 +164,18 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public ServiceResponse<Boolean> toggleAdminFlag(Long orgId, Long memberId, Integer adminFlag) {
+		boolean result = memberManager.toggleAdminFlag(orgId, memberId, adminFlag);
+		return new ServiceResponse<Boolean>(true, null, result);
+	}
+
+	@Override
+	public ServiceResponse<Boolean> toggleChargeFlag(Long orgId, Long memberId, Integer chargeFlag) {
+		boolean result = memberManager.toggleChargeFlag(orgId, memberId, chargeFlag);
+		return new ServiceResponse<Boolean>(true, null, result);
+	}
+
+	@Override
 	public Pagination<MemberInfo> findPaginationMember(Pagination<MemberInfo> pagination, MemberQueryRequest request) {
 		
 		if(request.getKeywords() != null) { // 搜索关键字可能会是部门
@@ -248,6 +260,12 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public ServiceResponse<Boolean> removeMember(Long orgId, Long memberId) {
 		memberManager.removeMember(orgId, memberId);
+		return new ServiceResponse<Boolean>(true, null, true);
+	}
+
+	@Override
+	public ServiceResponse<Boolean> updateStatus(Long orgId, Long memberId, Integer status) {
+		memberManager.updateStatus(orgId, memberId, status);
 		return new ServiceResponse<Boolean>(true, null, true);
 	}
 

@@ -1,11 +1,14 @@
 package com.moredian.fishnet.web.controller.group.request;
 
-public class GroupMemberConfigModel {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GroupRangeConfigModel {
 	
 	private Long orgId;
 	private Long groupId;
-	private String deptIds;
-	private String memberIds;
+	private List<Long> deptIds = new ArrayList<>();
+	private List<Long> memberIds = new ArrayList<>();
 	private Integer allMemberFlag = 0;
 	
 	public Long getOrgId() {
@@ -20,16 +23,16 @@ public class GroupMemberConfigModel {
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
 	}
-	public String getDeptIds() {
+	public List<Long> getDeptIds() {
 		return deptIds;
 	}
-	public void setDeptIds(String deptIds) {
+	public void setDeptIds(List<Long> deptIds) {
 		this.deptIds = deptIds;
 	}
-	public String getMemberIds() {
+	public List<Long> getMemberIds() {
 		return memberIds;
 	}
-	public void setMemberIds(String memberIds) {
+	public void setMemberIds(List<Long> memberIds) {
 		this.memberIds = memberIds;
 	}
 	public Integer getAllMemberFlag() {

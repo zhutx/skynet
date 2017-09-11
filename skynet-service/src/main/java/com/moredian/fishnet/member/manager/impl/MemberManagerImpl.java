@@ -1030,6 +1030,15 @@ public class MemberManagerImpl implements MemberManager {
 	}
 
 	@Override
+	public boolean updateStatus(Long orgId, Long memberId, Integer status) {
+		BizAssert.notNull(orgId);
+		BizAssert.notNull(memberId);
+		BizAssert.notNull(status);
+		// TODO 删除禁用启用，分别操纵云眼
+		return false;
+	}
+
+	@Override
 	public boolean judgeProscenium(SelectUserRelationRequest request) {
 		Member member = memberMapper.load(request.getOrgId(), request.getUserId());
 		if(member == null || MemberStatus.USABLE.getValue() != member.getStatus()) ExceptionUtils.throwException(MemberErrorCode.MEMBER_NOT_EXIST, MemberErrorCode.MEMBER_NOT_EXIST.getMessage());
@@ -1205,6 +1214,24 @@ public class MemberManagerImpl implements MemberManager {
 	@Override
 	public List<String> findAdminTpIds(Long orgId) {
 		return memberMapper.findAdminTpIds(orgId, YesNoFlag.YES.getValue(), MemberStatus.USABLE.getValue());
+	}
+
+	@Override
+	public boolean toggleAdminFlag(Long orgId, Long memberId, Integer adminFlag) {
+		BizAssert.notNull(orgId);
+		BizAssert.notNull(memberId);
+		BizAssert.notNull(adminFlag);
+		memberMapper.updateAdminFlag(orgId, memberId, adminFlag);
+		return true;
+	}
+
+	@Override
+	public boolean toggleChargeFlag(Long orgId, Long memberId, Integer chargeFlag) {
+		BizAssert.notNull(orgId);
+		BizAssert.notNull(memberId);
+		BizAssert.notNull(chargeFlag);
+		memberMapper.updateChargeFlag(orgId, memberId, chargeFlag);
+		return true;
 	}
 
 }

@@ -64,9 +64,15 @@ public interface MemberService {
 
 	ServiceResponse<Boolean>  removeMember(Long orgId,Long memberId);
 	
+	ServiceResponse<Boolean>  updateStatus(Long orgId,Long memberId,Integer status);
+	
 	MemberInfo getMemberByNameAndMobile(Long orgId, String memberName, String mobile);
 	
 	ServiceResponse<Boolean> importMemberInfo(Long orgId, List<ImportMemberModel> importList);
+	
+	ServiceResponse<Boolean> toggleAdminFlag(Long orgId,Long memberId, Integer adminFlag);
+	
+	ServiceResponse<Boolean> toggleChargeFlag(Long orgId,Long memberId, Integer adminFlag);
     
     /**
 	 * 查询前台人员id

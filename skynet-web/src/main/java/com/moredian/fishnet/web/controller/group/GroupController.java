@@ -31,10 +31,11 @@ import com.moredian.fishnet.org.model.GroupInfo;
 import com.moredian.fishnet.org.service.DeptService;
 import com.moredian.fishnet.org.service.GroupService;
 import com.moredian.fishnet.web.controller.BaseController;
-import com.moredian.fishnet.web.controller.group.request.EditNameModel;
-import com.moredian.fishnet.web.controller.group.request.GroupMemberConfigModel;
+import com.moredian.fishnet.web.controller.group.request.CreateGroupModel;
+import com.moredian.fishnet.web.controller.group.request.UpdateGroupNameModel;
+import com.moredian.fishnet.web.controller.group.request.GroupRangeConfigModel;
 import com.moredian.fishnet.web.controller.group.request.SearchGroupMemberModel;
-import com.moredian.fishnet.web.controller.group.request.ToggleAllMemberUseFlagModel;
+import com.moredian.fishnet.web.controller.group.request.AllMemberFlagModel;
 import com.moredian.fishnet.web.controller.group.response.GroupData;
 import com.moredian.fishnet.web.controller.group.response.GroupMemberData;
 import com.moredian.fishnet.web.controller.group.response.GroupScopeData;
@@ -92,10 +93,21 @@ public class GroupController extends BaseController {
     }
 	
 	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="修改群组名", notes="修改群组名")
-	@RequestMapping(value="/editName", method=RequestMethod.PUT)
+	@ApiOperation(value="创建群组", notes="创建群组")
+	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse editName(@RequestBody EditNameModel model) {
+    public BaseResponse create(@RequestBody CreateGroupModel model) {
+		BaseResponse br = new BaseResponse();
+		boolean allMember = model.getAllMemberFlag() == YesNoFlag.YES.getValue() ? true : false;
+		groupService.addSimpleGroup(model.getOrgId(), model.getGroupName(), allMember).pickDataThrowException();
+		return br;
+    }
+	
+	@SuppressWarnings("rawtypes")
+	@ApiOperation(value="修改群组名", notes="修改群组名")
+	@RequestMapping(value="/updateName", method=RequestMethod.PUT)
+	@ResponseBody
+    public BaseResponse updateName(@RequestBody UpdateGroupNameModel model) {
 		BaseResponse br = new BaseResponse();
 		groupService.editGroup(model.getOrgId(), model.getGroupId(), model.getGroupName()).pickDataThrowException();
 		return br;
@@ -103,9 +115,9 @@ public class GroupController extends BaseController {
 	
 	@SuppressWarnings("rawtypes")
 	@ApiOperation(value="切换全员使用标识", notes="切换全员使用标识")
-	@RequestMapping(value="/toggleAllMemberUseFlag", method=RequestMethod.PUT)
+	@RequestMapping(value="/allMemberFlag", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse toggleAllMemberUseFlag(@RequestBody ToggleAllMemberUseFlagModel model) {
+    public BaseResponse allMemberFlag(@RequestBody AllMemberFlagModel model) {
 		BaseResponse br = new BaseResponse();
 		if(model.getAllMemberFlag() == YesNoFlag.NO.getValue()) return br;
 		groupService.updateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
@@ -116,29 +128,12 @@ public class GroupController extends BaseController {
 	@ApiOperation(value="修改群组范围配置", notes="修改群组范围配置")
 	@RequestMapping(value="/range", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse configRange(@RequestBody GroupMemberConfigModel model) {
+    public BaseResponse configRange(@RequestBody GroupRangeConfigModel model) {
 		
-		logger.info("修改群组范围: "+ JsonUtils.toJson(model));
 		BaseResponse br = new BaseResponse();
 		
-		List<Long> deptIdList = new ArrayList<>();
-		if(StringUtils.isNotBlank(model.getDeptIds())) {
-			String[] deptIdArr = model.getDeptIds().split(",");
-			for(String deptIdStr : deptIdArr) {
-				deptIdList.add(Long.parseLong(deptIdStr));
-			}
-		}
-		
-		List<Long> memberIdList = new ArrayList<>();
-		if(StringUtils.isNotBlank(model.getMemberIds())) {
-			String[] memberIdArr = model.getMemberIds().split(",");
-			for(String memberIdStr : memberIdArr) {
-				memberIdList.add(Long.parseLong(memberIdStr));
-			}
-		}
-		
 		groupService.justUpdateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
-		groupRangeService.resetGroupRange(model.getOrgId(), model.getGroupId(), deptIdList, memberIdList).pickDataThrowException();
+		groupRangeService.resetGroupRange(model.getOrgId(), model.getGroupId(), model.getDeptIds(), model.getMemberIds()).pickDataThrowException();
 		return br;
     }
 	

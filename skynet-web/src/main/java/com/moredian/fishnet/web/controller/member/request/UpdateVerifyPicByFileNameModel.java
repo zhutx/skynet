@@ -1,6 +1,6 @@
 package com.moredian.fishnet.web.controller.member.request;
 
-public class UploadVerifyImgModel {
+public class UpdateVerifyPicByFileNameModel {
 	
 	private Long orgId;
 	private String base64Image;

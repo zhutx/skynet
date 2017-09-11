@@ -1,8 +1,5 @@
 package com.moredian.fishnet.web.controller.member.request;
 
-import java.util.Date;
-import java.util.List;
-
 public class UpdateMemberModel {
 	
 	//机构id
@@ -18,7 +15,7 @@ public class UpdateMemberModel {
 	//昵称
 	private String nickName;
 	//生日
-	private Date birthday;
+	private String birthday;
 	//性别 
 	private Integer sex;
 	//年龄
@@ -34,17 +31,17 @@ public class UpdateMemberModel {
 	//工号
 	private String jobNum;
 	//入职时间
-	private Date enterTime;
+	private String enterTime;
 	//职务
 	private String post;
 	//个性签名
 	private String signature;
+	//负责人标识
+	private Integer chargeFlag;
+	//管理员标识
+	private Integer adminFlag;
 	//备注
 	private String memo;
-	//群组
-	private List<Long> groupIds;
-	//部门
-	private List<Long> relationDepts;
 	public Long getOrgId() {
 		return orgId;
 	}
@@ -81,10 +78,10 @@ public class UpdateMemberModel {
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 	public Integer getSex() {
@@ -129,10 +126,10 @@ public class UpdateMemberModel {
 	public void setJobNum(String jobNum) {
 		this.jobNum = jobNum;
 	}
-	public Date getEnterTime() {
+	public String getEnterTime() {
 		return enterTime;
 	}
-	public void setEnterTime(Date enterTime) {
+	public void setEnterTime(String enterTime) {
 		this.enterTime = enterTime;
 	}
 	public String getPost() {
@@ -147,24 +144,23 @@ public class UpdateMemberModel {
 	public void setSignature(String signature) {
 		this.signature = signature;
 	}
+	public Integer getChargeFlag() {
+		return chargeFlag;
+	}
+	public void setChargeFlag(Integer chargeFlag) {
+		this.chargeFlag = chargeFlag;
+	}
+	public Integer getAdminFlag() {
+		return adminFlag;
+	}
+	public void setAdminFlag(Integer adminFlag) {
+		this.adminFlag = adminFlag;
+	}
 	public String getMemo() {
 		return memo;
 	}
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	public List<Long> getGroupIds() {
-		return groupIds;
-	}
-	public void setGroupIds(List<Long> groupIds) {
-		this.groupIds = groupIds;
-	}
-	public List<Long> getRelationDepts() {
-		return relationDepts;
-	}
-	public void setRelationDepts(List<Long> relationDepts) {
-		this.relationDepts = relationDepts;
-	}
-
 	
 }

@@ -75,6 +75,8 @@ public interface MemberManager {
 
 	boolean removeMember(Long orgId,Long memberId);
 	
+	boolean updateStatus(Long orgId, Long memberId, Integer status);
+	
 	boolean judgeProscenium(SelectUserRelationRequest request);
 	
 	List<ProsceniumUserResponse> selectProscenium(SelectUserRelationRequest request);
@@ -98,5 +100,9 @@ public interface MemberManager {
 	boolean importMemberInfo(Long orgId, List<ImportMemberModel> importList);
 	
 	List<String> findAdminTpIds(Long orgId);
+	
+	boolean toggleAdminFlag(Long orgId, Long memberId, Integer adminFlag);
+	
+	boolean toggleChargeFlag(Long orgId, Long memberId, Integer chargeFlag);
 
 }

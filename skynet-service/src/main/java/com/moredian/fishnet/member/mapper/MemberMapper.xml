@@ -231,6 +231,10 @@
 	    update hive_member set admin_flag = #{adminFlag} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
+	<update id="updateChargeFlag" parameterType="map">
+	    update hive_member set charge_flag = #{chargeFlag} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
 	<select id="findAllTpId" parameterType="map" resultType="string">
 	    select tp_id from hive_member where org_id = #{orgId} and status = #{status} limit 20000
 	</select>

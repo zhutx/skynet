@@ -1,17 +1,19 @@
-package com.moredian.fishnet.web.controller.org.request;
+package com.moredian.fishnet.web.controller.partner.request;
 
-public class UpdateOrgModel {
+import com.moredian.fishnet.org.enums.OrgType;
+
+public class CreateOrgModel {
 	
-	/** 机构id　*/
-	private Long orgId; // required
 	/** 机构名　*/
-	private String orgName; // optional
-	/** 省行政编码　*/
-	private Integer provinceId; // optional
-	/** 市行政编码　*/
-	private Integer cityId; // optional
-	/** 区县行政编码　*/
-	private Integer districtId; // optional
+	private String orgName; // required
+	/** 机构类型  [参考{@link OrgType}]　*/
+	private Integer orgType; // required
+	/** 省id　*/
+	private Integer provinceId; //optional
+	/** 市id　*/
+	private Integer cityId; //optional
+	/** 区县id　*/
+	private Integer districtId; //optional
 	/** 联系人　*/
 	private String contact; // optional
 	/** 联系电话　*/
@@ -21,17 +23,17 @@ public class UpdateOrgModel {
 	/** 说明　*/
 	private String memo; // optional
 	
-	public Long getOrgId() {
-		return orgId;
-	}
-	public void setOrgId(Long orgId) {
-		this.orgId = orgId;
-	}
 	public String getOrgName() {
 		return orgName;
 	}
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+	public Integer getOrgType() {
+		return orgType;
+	}
+	public void setOrgType(Integer orgType) {
+		this.orgType = orgType;
 	}
 	public Integer getProvinceId() {
 		return provinceId;

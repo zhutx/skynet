@@ -57,9 +57,9 @@ public class OrgController extends BaseController {
 	
 	@ApiOperation(value="修改机构信息", notes="修改机构信息")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/edit", method=RequestMethod.PUT)
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
     @ResponseBody
-    public BaseResponse editOrg(@RequestBody UpdateOrgModel model) {
+    public BaseResponse update(@RequestBody UpdateOrgModel model) {
     	
 		orgService.updateOrg(this.buildRequest(model)).pickDataThrowException();
 		

@@ -1,11 +1,10 @@
 package com.moredian.fishnet.web.controller.member.request;
 
-public class UpdateHeadModel {
+public class UpdateStatusModel {
 	
 	private Long orgId;
 	private Long memberId;
-	private String headUrl;
-	private boolean transform = true;
+	private Integer status;
 	
 	public Long getOrgId() {
 		return orgId;
@@ -19,17 +18,11 @@ public class UpdateHeadModel {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
-	public String getHeadUrl() {
-		return headUrl;
+	public Integer getStatus() {
+		return status;
 	}
-	public void setHeadUrl(String headUrl) {
-		this.headUrl = headUrl;
-	}
-	public boolean isTransform() {
-		return transform;
-	}
-	public void setTransform(boolean transform) {
-		this.transform = transform;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

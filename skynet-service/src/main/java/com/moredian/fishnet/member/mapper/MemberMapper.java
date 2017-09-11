@@ -62,6 +62,8 @@ public interface MemberMapper {
 	
 	int updateAdminFlag(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("adminFlag")Integer adminFlag);
 	
+	int updateChargeFlag(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("chargeFlag")Integer chargeFlag);
+	
 	List<String> findAllTpId(@Param("orgId")Long orgId, @Param("status")Integer status);
 	
 	int updateTpExtend(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("tpExtend")String tpExtend);

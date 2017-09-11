@@ -4,11 +4,10 @@ public class GroupData {
 	
 	private Long groupId;
 	private Integer groupType;
-	private String groupCode;
 	private String groupName;
 	private Integer systemDefault;
 	private Integer allMemberFlag;
-	private Integer memberSize;
+	private Integer personSize;
 	
 	public Long getGroupId() {
 		return groupId;
@@ -22,23 +21,11 @@ public class GroupData {
 	public void setGroupType(Integer groupType) {
 		this.groupType = groupType;
 	}
-	public String getGroupCode() {
-		return groupCode;
-	}
-	public void setGroupCode(String groupCode) {
-		this.groupCode = groupCode;
-	}
 	public String getGroupName() {
 		return groupName;
 	}
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
-	}
-	public Integer getSystemDefault() {
-		return systemDefault;
-	}
-	public void setSystemDefault(Integer systemDefault) {
-		this.systemDefault = systemDefault;
 	}
 	public Integer getAllMemberFlag() {
 		return allMemberFlag;
@@ -46,11 +33,17 @@ public class GroupData {
 	public void setAllMemberFlag(Integer allMemberFlag) {
 		this.allMemberFlag = allMemberFlag;
 	}
-	public Integer getMemberSize() {
-		return memberSize;
+	public Integer getSystemDefault() {
+		return systemDefault;
 	}
-	public void setMemberSize(Integer memberSize) {
-		this.memberSize = memberSize;
+	public void setSystemDefault(Integer systemDefault) {
+		this.systemDefault = systemDefault;
+	}
+	public Integer getPersonSize() {
+		return personSize;
+	}
+	public void setPersonSize(Integer personSize) {
+		this.personSize = personSize;
 	}
 
 }

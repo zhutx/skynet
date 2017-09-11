@@ -4,20 +4,18 @@ public class GroupMemberData {
 	
 	//成员id 
 	private Long memberId;
+	//成员名 
+	private String memberName;
 	//用于显示的人脸图片 
 	private String showFaceUrl;
+	//用于识别的人脸图片 
+	private String verifyFaceUrl;
 	//负责人标识
 	private Integer chargeFlag;
 	//管理员标识
 	private Integer adminFlag;
-	//成员名 
-	private String memberName;
 	//昵称
 	private String nickName;
-	//性别 
-	private Integer sex;
-	//年龄
-	private Integer age;
 	//手机号 
 	private String mobile;
 	//职务
@@ -34,6 +32,12 @@ public class GroupMemberData {
 	}
 	public void setShowFaceUrl(String showFaceUrl) {
 		this.showFaceUrl = showFaceUrl;
+	}
+	public String getVerifyFaceUrl() {
+		return verifyFaceUrl;
+	}
+	public void setVerifyFaceUrl(String verifyFaceUrl) {
+		this.verifyFaceUrl = verifyFaceUrl;
 	}
 	public Integer getChargeFlag() {
 		return chargeFlag;
@@ -58,18 +62,6 @@ public class GroupMemberData {
 	}
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
-	}
-	public Integer getSex() {
-		return sex;
-	}
-	public void setSex(Integer sex) {
-		this.sex = sex;
-	}
-	public Integer getAge() {
-		return age;
-	}
-	public void setAge(Integer age) {
-		this.age = age;
 	}
 	public String getMobile() {
 		return mobile;

@@ -1,10 +1,10 @@
 package com.moredian.fishnet.web.controller.member.request;
 
-public class UpdateVerifyPicModel {
+public class ChargeFlagModel {
 	
 	private Long orgId;
 	private Long memberId;
-	private String verifyFaceUrl;
+	private Integer chargeFlag;
 	
 	public Long getOrgId() {
 		return orgId;
@@ -18,11 +18,11 @@ public class UpdateVerifyPicModel {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
-	public String getVerifyFaceUrl() {
-		return verifyFaceUrl;
+	public Integer getChargeFlag() {
+		return chargeFlag;
 	}
-	public void setVerifyFaceUrl(String verifyFaceUrl) {
-		this.verifyFaceUrl = verifyFaceUrl;
+	public void setChargeFlag(Integer chargeFlag) {
+		this.chargeFlag = chargeFlag;
 	}
 
 }

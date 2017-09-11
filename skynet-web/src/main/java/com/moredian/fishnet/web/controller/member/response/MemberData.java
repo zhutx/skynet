@@ -1,6 +1,5 @@
 package com.moredian.fishnet.web.controller.member.response;
 
-import java.util.Date;
 import java.util.List;
 
 public class MemberData {
@@ -31,12 +30,21 @@ public class MemberData {
 	private String jobNum;
 	//个性签名
 	private String signature;
+	//生日
+	private String birthday;
+	//邮箱
+	private String email;
+	//证件类型
+	private Integer certType;
+	//证件号
+	private String certNo;
 	//默认显示识别头像
 	private Integer showVerifyFlag;
 	//部门
 	private List<String> depts;
 	//入职时间
-	private Date enterTime;
+	private String enterTime;
+	private String memo;
 	//状态
 	private Integer status;
 	
@@ -118,6 +126,30 @@ public class MemberData {
 	public void setSignature(String signature) {
 		this.signature = signature;
 	}
+	public String getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Integer getCertType() {
+		return certType;
+	}
+	public void setCertType(Integer certType) {
+		this.certType = certType;
+	}
+	public String getCertNo() {
+		return certNo;
+	}
+	public void setCertNo(String certNo) {
+		this.certNo = certNo;
+	}
 	public Integer getShowVerifyFlag() {
 		return showVerifyFlag;
 	}
@@ -130,11 +162,17 @@ public class MemberData {
 	public void setDepts(List<String> depts) {
 		this.depts = depts;
 	}
-	public Date getEnterTime() {
+	public String getEnterTime() {
 		return enterTime;
 	}
-	public void setEnterTime(Date enterTime) {
+	public void setEnterTime(String enterTime) {
 		this.enterTime = enterTime;
+	}
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 	public Integer getStatus() {
 		return status;
@@ -142,5 +180,5 @@ public class MemberData {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-
+	
 }

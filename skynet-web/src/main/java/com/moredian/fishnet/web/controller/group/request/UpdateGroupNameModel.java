@@ -1,10 +1,10 @@
 package com.moredian.fishnet.web.controller.group.request;
 
-public class ToggleAllMemberUseFlagModel {
+public class UpdateGroupNameModel {
 	
 	private Long orgId;
 	private Long groupId;
-	private Integer allMemberFlag;
+	private String groupName;
 	
 	public Long getOrgId() {
 		return orgId;
@@ -18,11 +18,11 @@ public class ToggleAllMemberUseFlagModel {
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
 	}
-	public Integer getAllMemberFlag() {
-		return allMemberFlag;
+	public String getGroupName() {
+		return groupName;
 	}
-	public void setAllMemberFlag(Integer allMemberFlag) {
-		this.allMemberFlag = allMemberFlag;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 }

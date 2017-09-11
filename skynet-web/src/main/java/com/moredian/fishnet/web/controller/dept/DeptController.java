@@ -1,6 +1,18 @@
 package com.moredian.fishnet.web.controller.dept;
 
-import com.moredian.bee.common.exception.BizAssert;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.web.BaseResponse;
@@ -12,19 +24,13 @@ import com.moredian.fishnet.org.model.DeptInfo;
 import com.moredian.fishnet.org.request.UpdateDeptRequest;
 import com.moredian.fishnet.org.service.DeptService;
 import com.moredian.fishnet.web.controller.BaseController;
-import com.moredian.fishnet.web.controller.dept.request.AddDeptModel;
+import com.moredian.fishnet.web.controller.dept.request.CreateDeptModel;
+import com.moredian.fishnet.web.controller.dept.request.UpdateDeptModel;
 import com.moredian.fishnet.web.controller.dept.response.DeptData;
 import com.moredian.fishnet.web.controller.dept.response.DeptMemberData;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @Api(value="Dept API", description = "部门接口")
@@ -39,10 +45,7 @@ public class DeptController extends BaseController {
 	private ImageFileManager imageFileManager;
 	
 	private DeptData deptInfoToDept(DeptInfo deptInfo) {
-		DeptData deptData = BeanUtils.copyProperties(DeptData.class, deptInfo);
-		deptData.setCommonName(deptInfo.getDeptName());
-		deptData.setCommonId(deptData.getDeptId()+""+deptData.getDataFlag());
-		return deptData;
+		return BeanUtils.copyProperties(DeptData.class, deptInfo);
 	}
 	
 	private List<DeptData> deptInfoListToDeptDataList(List<DeptInfo> deptInfoList) {
@@ -68,15 +71,9 @@ public class DeptController extends BaseController {
 	
 	@ApiOperation(value="查询部门", notes="查询部门")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/depts", method=RequestMethod.GET)
+	@RequestMapping(value="/children", method=RequestMethod.GET)
 	@ResponseBody
     public BaseResponse depts(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "parentDeptId", required = false) Long parentDeptId) {
-		
-		if(parentDeptId == 1L) { // 临时适配
-			DeptInfo deptInfo = deptService.getRootDept(orgId);
-			parentDeptId = deptInfo.getDeptId();
-		}
-		
 		BaseResponse<List<DeptData>> br = new BaseResponse<>();
 		List<DeptInfo> deptInfoList = deptService.findDepts(orgId, parentDeptId);
 		br.setData(deptInfoListToDeptDataList(deptInfoList));
@@ -86,17 +83,8 @@ public class DeptController extends BaseController {
 	private DeptMemberData deptMemberInfoToDeptMemberData(DeptMemberInfo deptMemberInfo) {
 		DeptMemberData data = BeanUtils.copyProperties(DeptMemberData.class, deptMemberInfo);
 		
-		if(StringUtils.isBlank(deptMemberInfo.getShowFaceUrl())) {
-			data.setShowFaceUrl(deptMemberInfo.getDingAvatar());
-		} else {
-			data.setShowFaceUrl(imageFileManager.getImageUrl(deptMemberInfo.getShowFaceUrl()));
-		}
-		
+		data.setShowFaceUrl(imageFileManager.getImageUrl(deptMemberInfo.getShowFaceUrl()));
 		data.setVerifyFaceUrl(imageFileManager.getImageUrl(deptMemberInfo.getVerifyFaceUrl()));
-		
-		data.setCommonName(deptMemberInfo.getMemberName());
-		
-		data.setCommonId(data.getMemberId()+""+data.getDataFlag());
 		
 		return data;
 	}
@@ -139,47 +127,44 @@ public class DeptController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
 	@ResponseBody
-	public BaseResponse deleteDept(@RequestParam(value = "orgId") Long orgId,
-									   @RequestParam(value = "deptId") Long deptId
-	) {
-
-		BaseResponse  br = new BaseResponse();
-		br.setData(deptService.removeByDeptId(orgId,deptId).pickDataThrowException());
-		return br;
+	public BaseResponse delete(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "deptId") Long deptId) {
+		deptService.removeByDeptId(orgId,deptId).pickDataThrowException();
+		return new BaseResponse();
 	}
-
-
-
-
 
 	@ApiOperation(value="查询部门成员", notes="查询部门成员")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/members", method=RequestMethod.GET)
 	@ResponseBody
     public BaseResponse deptMembers(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "deptId") Long deptId) {
-		
-		if(deptId == 1L) { // 临时适配
-			DeptInfo deptInfo = deptService.getRootDept(orgId);
-			deptId = deptInfo.getDeptId();
-		}
-		
 		BaseResponse<List<DeptMemberData>> br = new BaseResponse<>();
-		
 		List<DeptMemberInfo> deptMemberInfoList = memberService.findMemberInDept(orgId, deptId);
-		
 		br.setData(this.deptMemberInfoListToDeptMemberDataList(deptMemberInfoList));
 		return br;
     }
 	
 	@ApiOperation(value="添加部门", notes="添加部门")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse add(@RequestBody AddDeptModel model) {
+    public BaseResponse create(@RequestBody CreateDeptModel model) {
 
-		BizAssert.isTrue(model.getParentId()!=0);
-		
 		deptService.addDept(model.getOrgId(), model.getDeptName(), model.getParentId()).pickDataThrowException();
+		
+		return new BaseResponse();
+    }
+	
+	private UpdateDeptRequest buildRequest(UpdateDeptModel model) {
+		return BeanUtils.copyProperties(UpdateDeptRequest.class, model);
+	}
+	
+	@ApiOperation(value="修改部门", notes="修改部门")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
+	@ResponseBody
+    public BaseResponse update(@RequestBody UpdateDeptModel model) {
+
+		deptService.updateDept(this.buildRequest(model)).pickDataThrowException();
 		
 		return new BaseResponse();
     }

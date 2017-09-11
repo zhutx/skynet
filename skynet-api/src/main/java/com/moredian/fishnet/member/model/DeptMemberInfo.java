@@ -8,8 +8,8 @@ public class DeptMemberInfo implements Serializable {
 	
 	//成员id 
 	private Long memberId;
-	//钉钉头像
-	private String dingAvatar;
+	//手机
+	private String mobile;
 	//显示头像
 	private String showFaceUrl;
 	//识别头像
@@ -20,6 +20,8 @@ public class DeptMemberInfo implements Serializable {
 	private String nickName;
 	//职位
 	private String post;
+	//工号
+	private String jobNumber;
 	//负责人标识
 	private Integer chargeFlag;
 	//管理员标识
@@ -31,11 +33,17 @@ public class DeptMemberInfo implements Serializable {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
-	public String getDingAvatar() {
-		return dingAvatar;
+	public String getMobile() {
+		return mobile;
 	}
-	public void setDingAvatar(String dingAvatar) {
-		this.dingAvatar = dingAvatar;
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getJobNumber() {
+		return jobNumber;
+	}
+	public void setJobNumber(String jobNumber) {
+		this.jobNumber = jobNumber;
 	}
 	public String getShowFaceUrl() {
 		return showFaceUrl;

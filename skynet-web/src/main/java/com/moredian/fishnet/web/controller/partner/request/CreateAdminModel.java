@@ -1,9 +1,9 @@
-package com.moredian.fishnet.web.controller.org.request;
+package com.moredian.fishnet.web.controller.partner.request;
 
-public class BindModuleModel {
+public class CreateAdminModel {
 	
 	private Long orgId;
-	private Integer bizType;
+	private Integer moduleType;
 	private String accountName;
 	private String password;
 	
@@ -19,11 +19,11 @@ public class BindModuleModel {
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
-	public Integer getBizType() {
-		return bizType;
+	public Integer getModuleType() {
+		return moduleType;
 	}
-	public void setBizType(Integer bizType) {
-		this.bizType = bizType;
+	public void setModuleType(Integer moduleType) {
+		this.moduleType = moduleType;
 	}
 	public String getPassword() {
 		return password;

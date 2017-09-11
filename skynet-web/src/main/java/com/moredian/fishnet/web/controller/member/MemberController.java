@@ -53,20 +53,22 @@ import com.moredian.fishnet.org.model.GroupInfo;
 import com.moredian.fishnet.org.service.DeptService;
 import com.moredian.fishnet.org.service.GroupService;
 import com.moredian.fishnet.web.controller.BaseController;
-import com.moredian.fishnet.web.controller.dept.response.DeptData;
 import com.moredian.fishnet.web.controller.member.request.AddMemberModel;
 import com.moredian.fishnet.web.controller.member.request.AddSimpleMemberModel;
+import com.moredian.fishnet.web.controller.member.request.AdminFlagModel;
+import com.moredian.fishnet.web.controller.member.request.ChargeFlagModel;
 import com.moredian.fishnet.web.controller.member.request.ConfigDeptModel;
 import com.moredian.fishnet.web.controller.member.request.ConfigGroupsModel;
 import com.moredian.fishnet.web.controller.member.request.GetUserInfoModel;
 import com.moredian.fishnet.web.controller.member.request.SearchMemberModel;
 import com.moredian.fishnet.web.controller.member.request.SimpleUpdateMemberModel;
 import com.moredian.fishnet.web.controller.member.request.ToggleShowImgModel;
-import com.moredian.fishnet.web.controller.member.request.UpdateHeadModel;
+import com.moredian.fishnet.web.controller.member.request.UpdateShowPicModel;
 import com.moredian.fishnet.web.controller.member.request.UpdateMemberModel;
 import com.moredian.fishnet.web.controller.member.request.UpdateSignatureModel;
+import com.moredian.fishnet.web.controller.member.request.UpdateStatusModel;
 import com.moredian.fishnet.web.controller.member.request.UpdateVerifyPicModel;
-import com.moredian.fishnet.web.controller.member.request.UploadVerifyImgModel;
+import com.moredian.fishnet.web.controller.member.request.UpdateVerifyPicByFileNameModel;
 import com.moredian.fishnet.web.controller.member.response.GroupData;
 import com.moredian.fishnet.web.controller.member.response.MemberData;
 import com.moredian.fishnet.web.controller.member.response.MemberDetailData;
@@ -102,14 +104,12 @@ public class MemberController extends BaseController {
 	
 	@ApiOperation(value="修改个性头像", notes="修改个性头像")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/updatePersonalityHead", method=RequestMethod.PUT)
+	@RequestMapping(value="/updateShowPic", method=RequestMethod.PUT)
     @ResponseBody
-    public BaseResponse updatePersonalityHead(@RequestBody UpdateHeadModel model) throws Exception {
+    public BaseResponse updateShowPic(@RequestBody UpdateShowPicModel model) throws Exception {
 		
-		if(model.isTransform()) {
-			model.setHeadUrl(this.changeStoreImg(model.getHeadUrl(), FilePathType.TYPE_MEMBERHEADIMAGE));
-		}
-    	memberService.modifyShowImage(model.getOrgId(), model.getMemberId(), model.getHeadUrl()).pickDataThrowException();
+		model.setShowFaceUrl(this.changeStoreImg(model.getShowFaceUrl(), FilePathType.TYPE_MEMBERHEADIMAGE));
+    	memberService.modifyShowImage(model.getOrgId(), model.getMemberId(), model.getShowFaceUrl()).pickDataThrowException();
 		return new BaseResponse();
     	
     }
@@ -122,6 +122,24 @@ public class MemberController extends BaseController {
     	memberService.updateSignature(model.getOrgId(), model.getMemberId(), model.getSignature()).pickDataThrowException();
 		return new BaseResponse();
     	
+    }
+	
+	@ApiOperation(value="切换管理员标识", notes="切换管理员标识")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/adminFlag", method=RequestMethod.PUT)
+    @ResponseBody
+    public BaseResponse adminFlag(@RequestBody AdminFlagModel model) {
+    	memberService.toggleAdminFlag(model.getOrgId(), model.getMemberId(), model.getAdminFlag()).pickDataThrowException();
+		return new BaseResponse();
+    }
+	
+	@ApiOperation(value="切换负责人标识", notes="切换负责人标识")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/chargeFlag", method=RequestMethod.PUT)
+    @ResponseBody
+    public BaseResponse chargeFlag(@RequestBody ChargeFlagModel model) {
+    	memberService.toggleChargeFlag(model.getOrgId(), model.getMemberId(), model.getChargeFlag()).pickDataThrowException();
+		return new BaseResponse();
     }
 	
 	@SuppressWarnings("rawtypes")
@@ -259,7 +277,6 @@ public class MemberController extends BaseController {
 			}
 		}
 		data.setVerifyFaceUrl(imageFileManager.getImageUrl(memberInfo.getVerifyFaceUrl()));
-		data.setDepts(BeanUtils.copyListProperties(DeptData.class, deptInfoList));
 		return data;
 	}
 	
@@ -338,11 +355,11 @@ public class MemberController extends BaseController {
 		return BeanUtils.copyProperties(MemberAddRequest.class, model);
 	}
 	
-	@ApiOperation(value="添加成员", notes="添加成员")
+	@ApiOperation(value="创建人员", notes="创建人员")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/create", method=RequestMethod.POST)
     @ResponseBody
-    public BaseResponse addMember(@RequestBody AddMemberModel model) {
+    public BaseResponse create(@RequestBody AddMemberModel model) {
     	
 		memberService.addMember(this.buildRequest(model)).pickDataThrowException();
 		
@@ -505,11 +522,11 @@ public class MemberController extends BaseController {
         return in2b;  
     }
 	
-	@ApiOperation(value="上传识别照片", notes="上传识别照片")
+	@ApiOperation(value="修改识别照片", notes="修改识别照片（按上传图片的文件名修改指定人员）")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/uploadVerifyImg", method=RequestMethod.PUT)
+	@RequestMapping(value="/updateVerifyPicByFileName", method=RequestMethod.PUT)
     @ResponseBody
-    public BaseResponse uploadVerifyImg(@RequestBody UploadVerifyImgModel model) throws Exception {
+    public BaseResponse updateVerifyPicByFileName(@RequestBody UpdateVerifyPicByFileNameModel model) throws Exception {
 		
 		if(StringUtils.isBlank(model.getFilename()) || StringUtils.isBlank(model.getBase64Image())) return new BaseResponse("1", "缺少必要参数");
 		
@@ -542,15 +559,11 @@ public class MemberController extends BaseController {
 	
 	@ApiOperation(value="修改成员信息", notes="修改成员信息")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/edit", method=RequestMethod.PUT)
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
     @ResponseBody
-    public BaseResponse editMember(@RequestBody UpdateMemberModel model) {
+    public BaseResponse update(@RequestBody UpdateMemberModel model) {
     	
 		memberService.updateMember(this.buildRequest(model)).pickDataThrowException();
-		
-		if(CollectionUtils.isNotEmpty(model.getGroupIds())) {
-			groupMemberRelationService.resetGroupRelation(model.getOrgId(), model.getMemberId(), model.getGroupIds()).pickDataThrowException();
-		}
 		
 		return new BaseResponse();
     }
@@ -596,7 +609,7 @@ public class MemberController extends BaseController {
     @ResponseBody
     public BaseResponse configDepts(@RequestBody ConfigDeptModel model) {
     	
-		memberService.updateDeptRelation(model.getOrgId(), model.getMemberId(), model.getRelationDepts()).pickDataThrowException();
+		memberService.updateDeptRelation(model.getOrgId(), model.getMemberId(), model.getDepts()).pickDataThrowException();
 		
 		return new BaseResponse();
     }
@@ -642,14 +655,11 @@ public class MemberController extends BaseController {
 	
 	@ApiOperation(value="修改识别头像", notes="修改识别头像")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/modifyVerifyPic", method=RequestMethod.PUT)
+	@RequestMapping(value="/updateVerifyPic", method=RequestMethod.PUT)
     @ResponseBody
-    public BaseResponse modifyVerifyPic(@RequestBody UpdateVerifyPicModel model) {
+    public BaseResponse updateVerifyPic(@RequestBody UpdateVerifyPicModel model) {
 		
-		//model.setVerifyFaceUrl(memberService.cutFaceAndReturnUrl(model.getVerifyFaceUrl()));
-		if(model.isTransform()) {
-			model.setVerifyFaceUrl(this.changeStoreImg(model.getVerifyFaceUrl(), FilePathType.TYPE_MEMBERFACEIMAGE));
-		}
+		model.setVerifyFaceUrl(this.changeStoreImg(model.getVerifyFaceUrl(), FilePathType.TYPE_MEMBERFACEIMAGE));
     	
 		memberService.modifyVerifyImage(model.getOrgId(), model.getMemberId(), model.getVerifyFaceUrl()).pickDataThrowException();
 		
@@ -671,14 +681,13 @@ public class MemberController extends BaseController {
     }
 
 
-	@ApiOperation(value="删除用户", notes="删除用户")
+	@ApiOperation(value="停用/启用/删除人员", notes="停用/启用/删除人员")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
+	@RequestMapping(value="/status", method=RequestMethod.PUT)
 	@ResponseBody
-	public BaseResponse deleteMemberById(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "memberId") Long memberId) {
-
+	public BaseResponse status(@RequestBody UpdateStatusModel model) {
 		BaseResponse<Boolean> br = new BaseResponse<>();
-		ServiceResponse<Boolean> removeResult= memberService.removeMember(orgId, memberId);
+		ServiceResponse<Boolean> removeResult= memberService.updateStatus(model.getOrgId(), model.getMemberId(), model.getStatus());
 		br.setData(removeResult.getData());
 		return br;
 	}
