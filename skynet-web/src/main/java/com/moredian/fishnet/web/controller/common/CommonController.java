@@ -1,6 +1,5 @@
 package com.moredian.fishnet.web.controller.common;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -35,15 +33,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.moredian.bee.common.exception.BizException;
 import com.moredian.bee.common.exception.CommonErrorCode;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.FacePicture;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.common.utils.NetworkFacePicture;
-import com.moredian.bee.common.utils.NetworkImage;
-import com.moredian.bee.common.utils.Picture;
 import com.moredian.bee.common.utils.RandomUtil;
 import com.moredian.bee.common.utils.Validator;
 import com.moredian.bee.common.web.BaseResponse;
@@ -67,23 +62,19 @@ import com.moredian.fishnet.org.service.AreaService;
 import com.moredian.fishnet.org.service.OrgService;
 import com.moredian.fishnet.web.controller.BaseController;
 import com.moredian.fishnet.web.controller.common.request.ImageFileType;
-import com.moredian.fishnet.web.controller.common.request.LoginLogModel;
 import com.moredian.fishnet.web.controller.common.request.LoginModel;
 import com.moredian.fishnet.web.controller.common.request.PersonFaceImageRule;
 import com.moredian.fishnet.web.controller.common.request.PersonHeadImageRule;
 import com.moredian.fishnet.web.controller.common.request.ResetPasswdModel;
 import com.moredian.fishnet.web.controller.common.request.SubjectBgImageRule;
 import com.moredian.fishnet.web.controller.common.request.SubjectLogoImageRule;
-import com.moredian.fishnet.web.controller.common.request.TempImgUpdateModel;
 import com.moredian.fishnet.web.controller.common.request.UpdatePasswdModel;
 import com.moredian.fishnet.web.controller.common.response.Constant;
 import com.moredian.fishnet.web.controller.common.response.LoginOperInfo;
-import com.moredian.fishnet.web.controller.common.response.TransFaceData;
 import com.moredian.fishnet.web.controller.model.ParentPoliceOrg;
 import com.moredian.fishnet.web.controller.model.SessionUser;
 import com.moredian.fishnet.web.controller.org.response.AreaData;
 import com.moredian.fishnet.web.controller.utils.ImageRule;
-import com.moredian.fishnet.web.controller.utils.ImageUtil;
 import com.moredian.fishnet.web.controller.utils.RotateImage;
 import com.moredian.fishnet.web.controller.utils.SmsUtil;
 import com.xier.sesame.pigeon.enums.SMSType;
@@ -450,8 +441,8 @@ public class CommonController extends BaseController {
 		return BeanUtils.copyListProperties(AreaData.class, areaInfoList);
 	}
 	
-	@ApiOperation(value="查询下级行区", notes="查询下级行区")
-	@RequestMapping(value = "/area/children", method = RequestMethod.GET)
+	@ApiOperation(value="查询行区", notes="查询行区")
+	@RequestMapping(value = "/area", method = RequestMethod.GET)
     @ResponseBody
     public BaseResponse<List<AreaData>> findChildArea(@RequestParam(value = "parentCode") Integer parentCode) {
         BaseResponse<List<AreaData>> br = new BaseResponse<>();
@@ -539,46 +530,6 @@ public class CommonController extends BaseController {
 		return null;
 	}
 	
-	@ApiOperation(value="上传临时图片", notes="上传临时图片")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/uploadTempPicByBinary", method=RequestMethod.POST)
-    @ResponseBody
-    public BaseResponse uploadTempPicByBinary(@RequestBody TempImgUpdateModel model) throws Exception {
-		BaseResponse<String> bdr = new BaseResponse<>();
-		
-		BufferedImage sourceImage = ImageUtil.getBufferedImage(model.getImage());
-		
-		ImageRule imageRule = null;
-		if(model.getImageType() != null) {
-			imageRule = fetchImageRule(model.getImageType());
-		}
-		ImageUtil.imageValidate(sourceImage, imageRule);
-    	
-		byte[] image = null;
-		if(ImageUtil.shouldBeCompress(sourceImage, imageRule)) { // 需要压缩
-			image = ImageUtil.scaleImage(sourceImage, imageRule); // 执行压缩
-		} else {
-			image = Base64.decodeBase64(model.getImage());
-		}
-		
-    	String url = this.storeImage(image, FilePathType.TYPE_TEMPORARY);
-    	
-    	bdr.setData(imageFileManager.getImageUrl(url));
-    	
-		return bdr;
-    	
-    }
-	
-	@ApiOperation(value="获取一个Base64串", notes="获取一个Base64串")
-	@RequestMapping(value = "/getBase64String", method = RequestMethod.GET)
-    @ResponseBody
-    public BaseResponse<String> getBase64String(@RequestParam(value = "relativeUrl") String relativeUrl) {
-        BaseResponse<String> br = new BaseResponse<>();
-        byte[] binaryData = imageFileManager.imageToByteArray(relativeUrl);
-		br.setData(Base64.encodeBase64String(binaryData));
-        return br;
-    }
-	
 	@ApiOperation(value="是否人脸照片", notes="是否人脸照片")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/isFacePic", method=RequestMethod.GET)
@@ -606,90 +557,6 @@ public class CommonController extends BaseController {
 		br.setData(memberService.isFacePic(imageFileManager.getImageUrl(path)));
 		
 		return br;
-    }
-	
-	/**
-	 * 临时图片转存目标图片目录
-	 * @param sourceUrl
-	 * @param filePathType
-	 * @return
-	 */
-	private String changeStoreImg(String sourceUrl, FilePathType filePathType) {
-		Picture picture = new NetworkImage(sourceUrl);
-		byte[] imageData = picture.getImageData();
-		return imageFileManager.getImageUrl(this.storeImage(imageData, filePathType));
-	}
-	
-	@ApiOperation(value="转存识别照片", notes="转存识别照片")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/transVerifyFaceUrl", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse transVerifyFaceUrl(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "verifyFaceUrl") String verifyFaceUrl) {
-		
-		BaseResponse<TransFaceData> br = new BaseResponse<>();
-		TransFaceData data = new TransFaceData();
-		FacePicture picture = new NetworkFacePicture(verifyFaceUrl);
-		String fileName = UUID.randomUUID()+"."+FilenameUtils.getExtension(verifyFaceUrl);
-		
-		Map<String, Object> map = null;
-        try {
-            map = imageFileManager.saveImage(picture.getImageData(), FilePathType.TYPE_MEMBERFACEIMAGE, fileName);
-        }catch (Exception e) {
-            br.setMessage("图片保存失败!");
-            br.setResult("1");
-            e.printStackTrace();
-        }
-        
-        String path = (String) map.get("url");
-        File file = new File(imageFileManager.getImageLocalPath(path));
-        RotateImage.metadataExtractor(file);
-        
-        boolean facePic = false;
-		try {
-			facePic = memberService.isFacePic(imageFileManager.getImageUrl(path));
-		} catch (BizException e) {
-			if(e.getErrorContext().equalsErrorCode(MemberErrorCode.NO_FACE) || e.getErrorContext().equalsErrorCode(MemberErrorCode.MORE_THEN_ONE_FACE)) {
-				data.setFailMsg(e.getErrorContext().getMessage());
-			} else {
-				ExceptionUtils.throwException(e.getErrorContext(), e.getErrorContext().getMessage());
-			}
-		}
-        
-        data.setFacePic(facePic);
-		if(facePic) {
-			data.setVerifyFaceUrl(imageFileManager.getImageUrl(path));
-		}
-		br.setData(data);
-		
-		return br;
-    }
-	
-	@ApiOperation(value="记录登录日志", notes="记录登录日志")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/loginLog", method=RequestMethod.POST)
-    @ResponseBody
-    public BaseResponse loginLog(@RequestBody LoginLogModel model) {
-		
-		if(model.getModuleType() == null) return new BaseResponse();
-		
-		memberService.addLoginLog(model.getOrgId(), model.getMemberId(), model.getModuleType()).pickDataThrowException();
-    	
-		return new BaseResponse();
-    	
-    }
-	
-	@ApiOperation(value="判断是否首次登录", notes="判断是否首次登录")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/isFirstLogin", method=RequestMethod.GET)
-    @ResponseBody
-    public BaseResponse isFirstLogin(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "memberId") Long memberId, @RequestParam(value = "moduleType") Integer moduleType) {
-		
-		BaseResponse<Boolean> br = new BaseResponse<>();
-		
-		br.setData(memberService.isFirstLogin(orgId, memberId, moduleType));
-    	
-		return br;
-    	
     }
 	
 }

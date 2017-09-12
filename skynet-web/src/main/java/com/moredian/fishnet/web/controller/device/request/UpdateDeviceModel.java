@@ -1,10 +1,11 @@
 package com.moredian.fishnet.web.controller.device.request;
 
-public class UpdateDeviceNameModel {
+public class UpdateDeviceModel {
 	
 	private Long orgId;
 	private Long deviceId;
 	private String deviceName;
+	private String position;
 	
 	public Long getOrgId() {
 		return orgId;
@@ -23,6 +24,12 @@ public class UpdateDeviceNameModel {
 	}
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
+	}
+	public String getPosition() {
+		return position;
+	}
+	public void setPosition(String position) {
+		this.position = position;
 	}
 
 }

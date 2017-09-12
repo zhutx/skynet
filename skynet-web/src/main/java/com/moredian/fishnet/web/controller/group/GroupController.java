@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moredian.bee.common.utils.BeanUtils;
-import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.common.web.BaseResponse;
 import com.moredian.bee.filemanager.ImageFileManager;
@@ -26,24 +22,19 @@ import com.moredian.fishnet.member.model.MemberInfo;
 import com.moredian.fishnet.member.request.GroupMemberQueryRequest;
 import com.moredian.fishnet.member.service.GroupRangeService;
 import com.moredian.fishnet.member.service.MemberService;
-import com.moredian.fishnet.org.model.DeptInfo;
 import com.moredian.fishnet.org.model.GroupInfo;
 import com.moredian.fishnet.org.service.DeptService;
 import com.moredian.fishnet.org.service.GroupService;
 import com.moredian.fishnet.web.controller.BaseController;
+import com.moredian.fishnet.web.controller.group.request.AllMemberFlagModel;
 import com.moredian.fishnet.web.controller.group.request.CreateGroupModel;
-import com.moredian.fishnet.web.controller.group.request.UpdateGroupNameModel;
 import com.moredian.fishnet.web.controller.group.request.GroupRangeConfigModel;
 import com.moredian.fishnet.web.controller.group.request.SearchGroupMemberModel;
-import com.moredian.fishnet.web.controller.group.request.AllMemberFlagModel;
+import com.moredian.fishnet.web.controller.group.request.UpdateGroupNameModel;
 import com.moredian.fishnet.web.controller.group.response.GroupData;
 import com.moredian.fishnet.web.controller.group.response.GroupMemberData;
-import com.moredian.fishnet.web.controller.group.response.GroupScopeData;
 import com.moredian.fishnet.web.controller.group.response.PaginationGroupMemberData;
 import com.moredian.fishnet.web.controller.group.response.RelationDeptAndMemberData;
-import com.moredian.fishnet.web.controller.group.response.RelationDeptAndMemberPCData;
-import com.moredian.fishnet.web.controller.group.response.SimpleDeptData;
-import com.moredian.fishnet.web.controller.group.response.SimpleMemberData;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,8 +43,6 @@ import io.swagger.annotations.ApiOperation;
 @Api(value="Group API", description = "群组接口")
 @RequestMapping(value="/group") 
 public class GroupController extends BaseController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
 	
 	@SI
 	private GroupService groupService;
@@ -65,6 +54,27 @@ public class GroupController extends BaseController {
 	private DeptService deptService;
 	@SI
 	private GroupRangeService groupRangeService;
+	
+	@SuppressWarnings("rawtypes")
+	@ApiOperation(value="创建群组", notes="创建群组")
+	@RequestMapping(value="/create", method=RequestMethod.POST)
+	@ResponseBody
+    public BaseResponse create(@RequestBody CreateGroupModel model) {
+		BaseResponse br = new BaseResponse();
+		boolean allMember = model.getAllMemberFlag() == YesNoFlag.YES.getValue() ? true : false;
+		groupService.addSimpleGroup(model.getOrgId(), model.getGroupName(), allMember).pickDataThrowException();
+		return br;
+    }
+	
+	@SuppressWarnings("rawtypes")
+	@ApiOperation(value="修改群组名", notes="修改群组名")
+	@RequestMapping(value="/updateName", method=RequestMethod.PUT)
+	@ResponseBody
+    public BaseResponse updateName(@RequestBody UpdateGroupNameModel model) {
+		BaseResponse br = new BaseResponse();
+		groupService.editGroup(model.getOrgId(), model.getGroupId(), model.getGroupName()).pickDataThrowException();
+		return br;
+    }
 	
 	@SuppressWarnings("rawtypes")
 	@ApiOperation(value="获取群组数", notes="获取群组数")
@@ -89,51 +99,6 @@ public class GroupController extends BaseController {
 		BaseResponse<List<GroupData>> br = new BaseResponse<>();
 		List<GroupInfo> groupInfoList = groupService.findGroup(orgId);
 		br.setData(this.groupInfoListToGroupDataList(groupInfoList));
-		return br;
-    }
-	
-	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="创建群组", notes="创建群组")
-	@RequestMapping(value="/create", method=RequestMethod.POST)
-	@ResponseBody
-    public BaseResponse create(@RequestBody CreateGroupModel model) {
-		BaseResponse br = new BaseResponse();
-		boolean allMember = model.getAllMemberFlag() == YesNoFlag.YES.getValue() ? true : false;
-		groupService.addSimpleGroup(model.getOrgId(), model.getGroupName(), allMember).pickDataThrowException();
-		return br;
-    }
-	
-	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="修改群组名", notes="修改群组名")
-	@RequestMapping(value="/updateName", method=RequestMethod.PUT)
-	@ResponseBody
-    public BaseResponse updateName(@RequestBody UpdateGroupNameModel model) {
-		BaseResponse br = new BaseResponse();
-		groupService.editGroup(model.getOrgId(), model.getGroupId(), model.getGroupName()).pickDataThrowException();
-		return br;
-    }
-	
-	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="切换全员使用标识", notes="切换全员使用标识")
-	@RequestMapping(value="/allMemberFlag", method=RequestMethod.PUT)
-	@ResponseBody
-    public BaseResponse allMemberFlag(@RequestBody AllMemberFlagModel model) {
-		BaseResponse br = new BaseResponse();
-		if(model.getAllMemberFlag() == YesNoFlag.NO.getValue()) return br;
-		groupService.updateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
-		return br;
-    }
-	
-	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="修改群组范围配置", notes="修改群组范围配置")
-	@RequestMapping(value="/range", method=RequestMethod.PUT)
-	@ResponseBody
-    public BaseResponse configRange(@RequestBody GroupRangeConfigModel model) {
-		
-		BaseResponse br = new BaseResponse();
-		
-		groupService.justUpdateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
-		groupRangeService.resetGroupRange(model.getOrgId(), model.getGroupId(), model.getDeptIds(), model.getMemberIds()).pickDataThrowException();
 		return br;
     }
 	
@@ -195,57 +160,16 @@ public class GroupController extends BaseController {
 		return br;
     }
 	
-	private List<String> getDeptNames(Long orgId, List<Long> deptIds) {
-		return deptService.findDeptNamesByIds(orgId, deptIds);
-	}
-	
-	private List<String> getMemberNames(Long orgId, List<Long> memberIds) {
-		return memberService.findMemberNamesByIds(orgId, memberIds);
-	}
-	
 	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="获取群组范围描述", notes="获取群组范围描述")
-	@RequestMapping(value="/rangeDesc", method=RequestMethod.GET)
+	@ApiOperation(value="配置群组范围", notes="配置群组范围")
+	@RequestMapping(value="/range", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse rangeDesc(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "groupId") Long groupId) {
-		BaseResponse<GroupScopeData> br = new BaseResponse<>();
+    public BaseResponse configRange(@RequestBody GroupRangeConfigModel model) {
 		
-		GroupInfo groupInfo = groupService.getGroupInfo(orgId, groupId);
+		BaseResponse br = new BaseResponse();
 		
-		List<Long> deptIds = groupRangeService.findDeptId(orgId, groupId);
-		// 获取群组部门
-		List<String> deptNames = getDeptNames(orgId, deptIds);
-		
-		// 获取群组人员
-		List<String> memberNames = new ArrayList<>();
-		if(deptNames.size() < 6) { // 部门不足6个时，需继续提取成员
-			List<Long> memberIds = groupRangeService.findMemberId(orgId, groupId);
-			memberNames = getMemberNames(orgId, memberIds);
-		}
-		
-		StringBuffer sb = new StringBuffer();
-		for(int i=0;i<deptNames.size();i++) {
-			if(sb.length() > 0) {
-				sb.append(","+deptNames.get(i));
-			} else {
-				sb.append(deptNames.get(i));
-			}
-			if(i == 5) break;
-		}
-		for(int i=0;i<memberNames.size();i++) {
-			if(sb.length() > 0) {
-				sb.append(","+memberNames.get(i));
-			} else {
-				sb.append(memberNames.get(i));
-			}
-			if(i == 5) break;
-		}
-		
-		GroupScopeData data = new GroupScopeData();
-		data.setScopeDesc(sb.toString());
-		data.setMemberSize(groupInfo.getMemberSize());
-		br.setData(data);
-		
+		groupService.justUpdateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
+		groupRangeService.resetGroupRange(model.getOrgId(), model.getGroupId(), model.getDeptIds(), model.getMemberIds()).pickDataThrowException();
 		return br;
     }
 	
@@ -266,40 +190,14 @@ public class GroupController extends BaseController {
 		return br;
     }
 	
-	private List<SimpleDeptData> deptInfoListToSimpleDeptDataList(List<DeptInfo> deptList) {
-		List<SimpleDeptData> list = new ArrayList<>();
-		if(CollectionUtils.isEmpty(deptList)) return list;
-		
-		for(DeptInfo dept : deptList) {
-			SimpleDeptData item = BeanUtils.copyProperties(SimpleDeptData.class, dept);
-			//item.setDeptId(dept.getFromId());
-			list.add(item);
-		}
-		return list;
-	}
-	
-	private List<SimpleMemberData> memberInfoListToSimpleMemberDataList(List<MemberInfo> memberList) {
-		if(CollectionUtils.isEmpty(memberList)) return null;
-		return BeanUtils.copyListProperties(SimpleMemberData.class, memberList);
-	}
-	
 	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="获取群组范围数据", notes="获取群组范围数据")
-	@RequestMapping(value="/rangeForPC", method=RequestMethod.GET)
+	@ApiOperation(value="切换群组全员使用标识", notes="切换群组全员使用标识")
+	@RequestMapping(value="/allMemberFlag", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse getPCRange(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "groupId") Long groupId) {
-		BaseResponse<RelationDeptAndMemberPCData> br = new BaseResponse<>();
-		
-		List<Long> deptIds = groupRangeService.findDeptId(orgId, groupId);// 获取群组部门
-		List<DeptInfo> deptList = deptService.findDeptByIds(orgId, deptIds);
-		
-		List<Long> memberIds = groupRangeService.findMemberId(orgId, groupId);// 获取群组人员
-		List<MemberInfo> memberList = memberService.findMemberByIds(orgId, memberIds);
-		
-		RelationDeptAndMemberPCData data = new RelationDeptAndMemberPCData();
-		data.setDepts(deptInfoListToSimpleDeptDataList(deptList));
-		data.setMembers(memberInfoListToSimpleMemberDataList(memberList));
-		br.setData(data);
+    public BaseResponse allMemberFlag(@RequestBody AllMemberFlagModel model) {
+		BaseResponse br = new BaseResponse();
+		if(model.getAllMemberFlag() == YesNoFlag.NO.getValue()) return br;
+		groupService.updateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
 		return br;
     }
 	

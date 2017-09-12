@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.web.BaseResponse;
 import com.moredian.bee.filemanager.ImageFileManager;
@@ -44,18 +42,43 @@ public class DeptController extends BaseController {
 	@Autowired
 	private ImageFileManager imageFileManager;
 	
-	private DeptData deptInfoToDept(DeptInfo deptInfo) {
-		return BeanUtils.copyProperties(DeptData.class, deptInfo);
+	@ApiOperation(value="添加部门", notes="添加部门")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/create", method=RequestMethod.POST)
+	@ResponseBody
+    public BaseResponse create(@RequestBody CreateDeptModel model) {
+
+		deptService.addDept(model.getOrgId(), model.getDeptName(), model.getParentId()).pickDataThrowException();
+		
+		return new BaseResponse();
+    }
+	
+	private UpdateDeptRequest buildRequest(UpdateDeptModel model) {
+		return BeanUtils.copyProperties(UpdateDeptRequest.class, model);
 	}
 	
-	private List<DeptData> deptInfoListToDeptDataList(List<DeptInfo> deptInfoList) {
-		List<DeptData> deptDataList = new ArrayList<>();
-		if(CollectionUtils.isEmpty(deptInfoList)) return deptDataList;
+	@ApiOperation(value="修改部门", notes="修改部门")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
+	@ResponseBody
+    public BaseResponse update(@RequestBody UpdateDeptModel model) {
+
+		deptService.updateDept(this.buildRequest(model)).pickDataThrowException();
 		
-		for(DeptInfo deptInfo : deptInfoList) {
-			deptDataList.add(deptInfoToDept(deptInfo));
-		}
-		return deptDataList;
+		return new BaseResponse();
+    }
+	
+	@ApiOperation(value="删除部门", notes="删除部门")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
+	@ResponseBody
+	public BaseResponse delete(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "deptId") Long deptId) {
+		deptService.removeByDeptId(orgId,deptId).pickDataThrowException();
+		return new BaseResponse();
+	}
+	
+	private DeptData deptInfoToDept(DeptInfo deptInfo) {
+		return BeanUtils.copyProperties(DeptData.class, deptInfo);
 	}
 	
 	@ApiOperation(value="获取根部门", notes="获取根部门")
@@ -69,7 +92,17 @@ public class DeptController extends BaseController {
 		return br;
     }
 	
-	@ApiOperation(value="查询部门", notes="查询部门")
+	private List<DeptData> deptInfoListToDeptDataList(List<DeptInfo> deptInfoList) {
+		List<DeptData> deptDataList = new ArrayList<>();
+		if(CollectionUtils.isEmpty(deptInfoList)) return deptDataList;
+		
+		for(DeptInfo deptInfo : deptInfoList) {
+			deptDataList.add(deptInfoToDept(deptInfo));
+		}
+		return deptDataList;
+	}
+	
+	@ApiOperation(value="查询下级部门", notes="查询下级部门")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/children", method=RequestMethod.GET)
 	@ResponseBody
@@ -98,41 +131,8 @@ public class DeptController extends BaseController {
 		return list;
 	}
 
-	@ApiOperation(value="修改部门", notes="修改部门信息")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/put", method=RequestMethod.PUT)
-	@ResponseBody
-	public BaseResponse changeDeptInfo(@RequestParam(value = "orgId",required=true) Long orgId,
-									   @RequestParam(value = "deptId",required=true) Long deptId,
-									   @RequestParam(value = "deptName",required=true) String deptName,
-									   @RequestParam(value = "parentId",required=false) Long parentId,
-									   @RequestParam(value = "tpExtend",required=false) String tpExtend
-	) {
 
-		UpdateDeptRequest request=new UpdateDeptRequest();
-		request.setOrgId(orgId);
-		request.setDeptId(deptId);
-		request.setDeptName(deptName);
-		request.setParentId(parentId);
-		request.setTpExtend(tpExtend);
-
-		BaseResponse<Boolean> br = new BaseResponse<>();
-		ServiceResponse<Boolean> updateResult = deptService.updateDept(request);
-		br.setData(updateResult.getData());
-		return br;
-	}
-
-
-	@ApiOperation(value="删除部门", notes="删除部门信息")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
-	@ResponseBody
-	public BaseResponse delete(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "deptId") Long deptId) {
-		deptService.removeByDeptId(orgId,deptId).pickDataThrowException();
-		return new BaseResponse();
-	}
-
-	@ApiOperation(value="查询部门成员", notes="查询部门成员")
+	@ApiOperation(value="查询部门人员", notes="查询部门人员")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/members", method=RequestMethod.GET)
 	@ResponseBody
@@ -141,32 +141,6 @@ public class DeptController extends BaseController {
 		List<DeptMemberInfo> deptMemberInfoList = memberService.findMemberInDept(orgId, deptId);
 		br.setData(this.deptMemberInfoListToDeptMemberDataList(deptMemberInfoList));
 		return br;
-    }
-	
-	@ApiOperation(value="添加部门", notes="添加部门")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/create", method=RequestMethod.POST)
-	@ResponseBody
-    public BaseResponse create(@RequestBody CreateDeptModel model) {
-
-		deptService.addDept(model.getOrgId(), model.getDeptName(), model.getParentId()).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
-	
-	private UpdateDeptRequest buildRequest(UpdateDeptModel model) {
-		return BeanUtils.copyProperties(UpdateDeptRequest.class, model);
-	}
-	
-	@ApiOperation(value="修改部门", notes="修改部门")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/update", method=RequestMethod.PUT)
-	@ResponseBody
-    public BaseResponse update(@RequestBody UpdateDeptModel model) {
-
-		deptService.updateDept(this.buildRequest(model)).pickDataThrowException();
-		
-		return new BaseResponse();
     }
 
 }

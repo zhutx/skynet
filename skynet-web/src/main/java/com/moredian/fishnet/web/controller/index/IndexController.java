@@ -78,11 +78,11 @@ public class IndexController extends BaseController {
 		return list;
 	}
 	
-	@ApiOperation(value="查询机构所有权限", notes="查询机构所有权限")
+	@ApiOperation(value="查询所有权限", notes="查询所有权限")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/allPerms", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse perms(@RequestBody SearchAllPermModel model) {
+    public BaseResponse allPerms(@RequestBody SearchAllPermModel model) {
 		
 		BaseResponse<List<RcTreeNode>> br = new BaseResponse<>();
 		List<PermNode> permNodeList = permService.findPermNode(model.getModuleType());
@@ -97,24 +97,6 @@ public class IndexController extends BaseController {
 		return request;
 	}
 	
-	private RcTreeNode simpleRoleInfoToRcTreeNode(SimpleRoleInfo simpleRoleInfo) {
-		RcTreeNode rcTreeNode = new RcTreeNode();
-		rcTreeNode.setKey(String.valueOf(simpleRoleInfo.getRoleId()));
-		rcTreeNode.setLabel(simpleRoleInfo.getRoleName());
-		rcTreeNode.setValue(String.valueOf(simpleRoleInfo.getRoleId()));
-		return rcTreeNode;
-	}
-	
-	private List<RcTreeNode> buildRcTreeNodeList(List<SimpleRoleInfo> simpleRoleInfoList) {
-		List<RcTreeNode> list = new ArrayList<>();
-		if(CollectionUtils.isEmpty(simpleRoleInfoList)) return list;
-		
-		for(SimpleRoleInfo simpleRoleInfo : simpleRoleInfoList) {
-			list.add(simpleRoleInfoToRcTreeNode(simpleRoleInfo));
-		}
-		return list;
-	}
-	
 	private List<SimpleRoleData> buildSimpleRoleDataList(List<SimpleRoleInfo> simpleRoleInfoList) {
 		List<SimpleRoleData> list = new ArrayList<>();
 		if(CollectionUtils.isEmpty(simpleRoleInfoList)) return list;
@@ -125,7 +107,7 @@ public class IndexController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/allRoles", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse perms(@RequestBody OrgRoleModel model) {
+    public BaseResponse allRoles(@RequestBody OrgRoleModel model) {
 		
 		//BaseResponse<List<RcTreeNode>> bdr = new BaseResponse<>();
 		BaseResponse<List<SimpleRoleData>> bdr = new BaseResponse<>();
@@ -147,7 +129,7 @@ public class IndexController extends BaseController {
 		return list;
 	}
 	
-	@ApiOperation(value="查询我的机构", notes="查询我的机构")
+	@ApiOperation(value="查询账号关联机构", notes="查询账号关联机构")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/myOrgs", method=RequestMethod.POST)
 	@ResponseBody
@@ -162,7 +144,7 @@ public class IndexController extends BaseController {
 		return br;
 	}
 	
-	@ApiOperation(value="查询我的权限", notes="查询我的权限")
+	@ApiOperation(value="查询操作员的权限", notes="查询操作员的权限")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/myPerms", method=RequestMethod.POST)
 	@ResponseBody

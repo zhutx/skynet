@@ -35,7 +35,6 @@ import com.moredian.bee.common.web.BaseResponse;
 import com.moredian.bee.filemanager.ImageFileManager;
 import com.moredian.bee.filemanager.enums.FilePathType;
 import com.moredian.bee.tube.annotation.SI;
-import com.moredian.fishnet.device.model.DeviceInfo;
 import com.moredian.fishnet.device.service.DeviceGroupRelationService;
 import com.moredian.fishnet.device.service.DeviceService;
 import com.moredian.fishnet.member.enums.MemberErrorCode;
@@ -54,26 +53,20 @@ import com.moredian.fishnet.org.service.DeptService;
 import com.moredian.fishnet.org.service.GroupService;
 import com.moredian.fishnet.web.controller.BaseController;
 import com.moredian.fishnet.web.controller.member.request.AddMemberModel;
-import com.moredian.fishnet.web.controller.member.request.AddSimpleMemberModel;
 import com.moredian.fishnet.web.controller.member.request.AdminFlagModel;
 import com.moredian.fishnet.web.controller.member.request.ChargeFlagModel;
 import com.moredian.fishnet.web.controller.member.request.ConfigDeptModel;
 import com.moredian.fishnet.web.controller.member.request.ConfigGroupsModel;
-import com.moredian.fishnet.web.controller.member.request.GetUserInfoModel;
 import com.moredian.fishnet.web.controller.member.request.SearchMemberModel;
-import com.moredian.fishnet.web.controller.member.request.SimpleUpdateMemberModel;
-import com.moredian.fishnet.web.controller.member.request.ToggleShowImgModel;
-import com.moredian.fishnet.web.controller.member.request.UpdateShowPicModel;
 import com.moredian.fishnet.web.controller.member.request.UpdateMemberModel;
-import com.moredian.fishnet.web.controller.member.request.UpdateSignatureModel;
+import com.moredian.fishnet.web.controller.member.request.UpdateShowPicModel;
 import com.moredian.fishnet.web.controller.member.request.UpdateStatusModel;
-import com.moredian.fishnet.web.controller.member.request.UpdateVerifyPicModel;
 import com.moredian.fishnet.web.controller.member.request.UpdateVerifyPicByFileNameModel;
+import com.moredian.fishnet.web.controller.member.request.UpdateVerifyPicModel;
 import com.moredian.fishnet.web.controller.member.response.GroupData;
 import com.moredian.fishnet.web.controller.member.response.MemberData;
 import com.moredian.fishnet.web.controller.member.response.MemberDetailData;
 import com.moredian.fishnet.web.controller.member.response.PaginationMemberData;
-import com.moredian.fishnet.web.controller.member.response.UserPassDeviceModel;
 import com.moredian.fishnet.web.controller.utils.ExcelImportUtil;
 import com.moredian.fishnet.web.controller.utils.RotateImage;
 
@@ -81,7 +74,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @Controller
-@Api(value="Member API", description = "成员接口")
+@Api(value="Member API", description = "人员接口")
 @RequestMapping(value="/member") 
 public class MemberController extends BaseController {
 	
@@ -114,16 +107,6 @@ public class MemberController extends BaseController {
     	
     }
 	
-	@ApiOperation(value="修改个性签名", notes="修改个性签名")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/updatePersonalitySignature", method=RequestMethod.PUT)
-    @ResponseBody
-    public BaseResponse updatePersonalitySignature(@RequestBody UpdateSignatureModel model) {
-    	memberService.updateSignature(model.getOrgId(), model.getMemberId(), model.getSignature()).pickDataThrowException();
-		return new BaseResponse();
-    	
-    }
-	
 	@ApiOperation(value="切换管理员标识", notes="切换管理员标识")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/adminFlag", method=RequestMethod.PUT)
@@ -140,39 +123,6 @@ public class MemberController extends BaseController {
     public BaseResponse chargeFlag(@RequestBody ChargeFlagModel model) {
     	memberService.toggleChargeFlag(model.getOrgId(), model.getMemberId(), model.getChargeFlag()).pickDataThrowException();
 		return new BaseResponse();
-    }
-	
-	@SuppressWarnings("rawtypes")
-	@ApiOperation(value="获取人员通行信息", notes="获取人员通行信息")
-	@RequestMapping(value="/passInfo", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse passInfo(GetUserInfoModel model) {
-		BaseResponse<UserPassDeviceModel> br = new BaseResponse<>();
-		UserPassDeviceModel data = new UserPassDeviceModel();
-		
-		List<String> groupNames = new ArrayList<>();
-		List<Long> groupIdList = groupMemberRelationService.findGroupIdByMember(model.getOrgId(), model.getUserId());
-		if(CollectionUtils.isNotEmpty(groupIdList)) {
-			for(Long groupId : groupIdList) {
-				GroupInfo group = groupService.getGroupInfo(model.getOrgId(), groupId);
-				groupNames.add(group.getGroupName());
-			}
-		}
-		
-		List<String> deviceNames = new ArrayList<>();
-		List<Long> deviceIdList = deviceGroupRelationService.findDeviceIdByGroupIds(model.getOrgId(), groupIdList);
-		if(CollectionUtils.isNotEmpty(deviceIdList)) {
-			for(Long deviceId : deviceIdList) {
-				DeviceInfo device = deviceService.getDeviceById(model.getOrgId(), deviceId);
-				deviceNames.add(device.getDeviceName());
-			}
-		}
-		
-		data.setGroupName(groupNames);
-		data.setDeviceAliasName(deviceNames);
-		
-		br.setData(data);
-		return br;
     }
 	
 	private Pagination<MemberInfo> buildPagination(SearchMemberModel model) {
@@ -227,7 +177,7 @@ public class MemberController extends BaseController {
 		return data;
 	}
 	
-	@ApiOperation(value="查询成员", notes="查询成员")
+	@ApiOperation(value="查询人员", notes="查询人员")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
@@ -251,7 +201,7 @@ public class MemberController extends BaseController {
 		return BeanUtils.copyListProperties(GroupData.class, groupInfoList);
 	}
 	
-	@ApiOperation(value="查询成员通行群组", notes="查询成员通行群组")
+	@ApiOperation(value="查询某人员关联群组", notes="查询某人员关联群组")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/groups", method=RequestMethod.GET)
 	@ResponseBody
@@ -280,7 +230,7 @@ public class MemberController extends BaseController {
 		return data;
 	}
 	
-	@ApiOperation(value="查看人员详情", notes="查看人员详情")
+	@ApiOperation(value="获取人员信息", notes="获取人员信息")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/info", method=RequestMethod.GET)
 	@ResponseBody
@@ -366,30 +316,7 @@ public class MemberController extends BaseController {
 		return new BaseResponse();
     }
 	
-	private MemberAddRequest buildRequest(AddSimpleMemberModel model) {
-		if(!StringUtils.isBlank(model.getShowFaceUrl())) {
-			model.setShowFaceUrl(this.changeStoreImg(model.getShowFaceUrl(), FilePathType.TYPE_MEMBERHEADIMAGE));
-		}
-		
-		if(!StringUtils.isBlank(model.getVerifyFaceUrl())) {
-			model.setVerifyFaceUrl(this.changeStoreImg(model.getVerifyFaceUrl(), FilePathType.TYPE_MEMBERFACEIMAGE));
-		}
-		
-		return BeanUtils.copyProperties(MemberAddRequest.class, model);
-	}
-	
-	@ApiOperation(value="添加成员", notes="添加成员")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/simpleAdd", method=RequestMethod.POST)
-    @ResponseBody
-    public BaseResponse simpleAdd(@RequestBody AddSimpleMemberModel model) {
-    	
-		memberService.addMember(this.buildRequest(model)).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
-	
-	@ApiOperation(value="导入成员信息", notes="导入成员信息")
+	@ApiOperation(value="批量导入人员信息", notes="批量导入人员信息")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/import", method=RequestMethod.POST)
     @ResponseBody
@@ -557,7 +484,7 @@ public class MemberController extends BaseController {
 		return br;
     }
 	
-	@ApiOperation(value="修改成员信息", notes="修改成员信息")
+	@ApiOperation(value="修改人员信息", notes="修改人员信息")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/update", method=RequestMethod.PUT)
     @ResponseBody
@@ -579,29 +506,6 @@ public class MemberController extends BaseController {
 		return new BaseResponse();
     }
 	
-	private MemberUpdateRequest buildRequest(SimpleUpdateMemberModel model) {
-		if(!StringUtils.isBlank(model.getShowFaceUrl())) {
-			model.setShowFaceUrl(this.changeStoreImg(model.getShowFaceUrl(), FilePathType.TYPE_MEMBERHEADIMAGE));
-		}
-		
-		if(!StringUtils.isBlank(model.getVerifyFaceUrl())) {
-			model.setVerifyFaceUrl(this.changeStoreImg(model.getVerifyFaceUrl(), FilePathType.TYPE_MEMBERFACEIMAGE));
-		}
-		
-		return BeanUtils.copyProperties(MemberUpdateRequest.class, model);
-	}
-	
-	@ApiOperation(value="修改成员信息", notes="修改成员信息")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/simpleEdit", method=RequestMethod.PUT)
-    @ResponseBody
-    public BaseResponse simpleEdit(@RequestBody SimpleUpdateMemberModel model) {
-    	
-		memberService.updateMember(this.buildRequest(model)).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
-	
 	
 	@ApiOperation(value="配置人员部门关系", notes="配置人员部门关系")
 	@SuppressWarnings("rawtypes")
@@ -614,7 +518,7 @@ public class MemberController extends BaseController {
 		return new BaseResponse();
     }
 	
-	@ApiOperation(value="获取成员总数", notes="获取成员总数")
+	@ApiOperation(value="获取人员总数", notes="获取人员总数")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	@ResponseBody
@@ -627,7 +531,7 @@ public class MemberController extends BaseController {
 		return br;
     }
 	
-	@ApiOperation(value="获取未上传识别照片成员数", notes="获取未上传识别照片成员数")
+	@ApiOperation(value="获取无识别照片人员数", notes="获取无识别照片人员数")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/countNoVerifyPic", method=RequestMethod.GET)
 	@ResponseBody
@@ -640,20 +544,7 @@ public class MemberController extends BaseController {
 		return br;
     }
 	
-	@ApiOperation(value="获取所有人员第三方id", notes="获取所有人员第三方id")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/tpIds", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse tpIds(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "hasFaceUrl") boolean hasFaceUrl) {
-		
-		BaseResponse<List<String>> br = new BaseResponse<>();
-		
-		br.setData(memberService.findFromIds(orgId, hasFaceUrl));
-		
-		return br;
-    }
-	
-	@ApiOperation(value="修改识别头像", notes="修改识别头像")
+	@ApiOperation(value="修改识别照片", notes="修改识别照片")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/updateVerifyPic", method=RequestMethod.PUT)
     @ResponseBody
@@ -666,21 +557,6 @@ public class MemberController extends BaseController {
 		return new BaseResponse();
     }
 	
-	@ApiOperation(value="获取用户信息(按第三方id)", notes="获取用户信息(按第三方id)")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/simpleInfoByTpId", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse simpleInfoByTpId(@RequestParam(value = "orgId", required=false) Long orgId, @RequestParam(value = "tpUserId", required=false) String tpUserId) {
-		
-		BaseResponse<MemberData> br = new BaseResponse<>();
-		
-		MemberInfo memberInfo = memberService.getMemberByTpId(orgId, tpUserId);
-		br.setData(memberInfoToMemberData(memberInfo, false));
-		
-		return br;
-    }
-
-
 	@ApiOperation(value="停用/启用/删除人员", notes="停用/启用/删除人员")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/status", method=RequestMethod.PUT)
@@ -692,105 +568,5 @@ public class MemberController extends BaseController {
 		return br;
 	}
 	
-	@ApiOperation(value="获取用户信息", notes="获取用户信息")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/simpleInfo", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse infoByTpId(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "memberId") Long memberId) {
-		
-		BaseResponse<MemberData> br = new BaseResponse<>();
-		
-		MemberInfo memberInfo = memberService.getMemberInfo(orgId, memberId);
-		br.setData(memberInfoToMemberData(memberInfo, false));
-		
-		return br;
-    }
-	
-	@ApiOperation(value="快速检索成员", notes="快速检索成员")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/quickSearch", method=RequestMethod.GET)
-	@ResponseBody
-    public BaseResponse quickSearch(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "keywords", required = false) String keywords, @RequestParam(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize) {
-		
-		SearchMemberModel model = new SearchMemberModel();
-		model.setKeywords(keywords);
-		model.setOrgId(orgId);
-		model.setPageNo(pageNo);
-		model.setPageSize(pageSize);
-		
-		BaseResponse<PaginationMemberData> br = new BaseResponse<>();
-		
-		Pagination<MemberInfo> paginationMemberInfo = memberService.findPaginationMember(this.buildPagination(model), this.buildRequest(model));
-		
-		br.setData(paginationMemberInfoToPaginationMember(paginationMemberInfo, false));
-		return br;
-    }
-	
-	@ApiOperation(value="判断是否需要完善个人信息", notes="判断是否需要完善个人信息")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/needFillPersonalInfo", method=RequestMethod.GET)
-    @ResponseBody
-    public BaseResponse needFillPersonalInfo(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "memberId") Long memberId, @RequestParam(value = "moduleType", required = false) Integer moduleType, @RequestParam(value = "admin") boolean admin) {
-		
-		BaseResponse<Boolean> br = new BaseResponse<>();
-		
-		if(orgId == null) {
-			br.setData(true);
-			return br;
-		}
-		
-		if(moduleType == null) {
-			br.setData(false);
-			return br;
-		}
-		
-		MemberInfo memberInfo = memberService.getMemberInfo(orgId, memberId);
-		
-		boolean hadVerifyFace = false;
-		if(StringUtils.isNotBlank(memberInfo.getVerifyFaceUrl())) {
-			hadVerifyFace = true;
-		}
-		
-		boolean hadSignature = false;
-		if(StringUtils.isNotBlank(memberInfo.getSignature())) {
-			hadSignature = true;
-		}
-		
-		boolean hadNickName = false;
-		if(StringUtils.isNotBlank(memberInfo.getNickName())) {
-			hadNickName = true;
-		}
-		
-		if(!hadVerifyFace) { // 没有识别照片，无论管理版还是员工版，要需要完善信息
-			br.setData(true);
-			return br;
-		}
-		
-		if(!admin) { // 员工版
-			boolean firstLogin = memberService.isFirstLogin(orgId, memberId, moduleType);
-			if(firstLogin) { // 首次登录
-				if(!hadSignature || !hadNickName) { // 没有个性签名或昵称，也要引导完善
-					br.setData(true);
-					return br;
-				}
-			}
-		} 
-		
-		br.setData(false);
-    	
-		return br;
-    	
-    }
-	
-	@ApiOperation(value="切换默认显示照片", notes="切换默认显示识别照片/个性照片")
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/toggleShowImg", method=RequestMethod.PUT)
-    @ResponseBody
-    public BaseResponse toggleShowImg(@RequestBody ToggleShowImgModel model) {
-    	
-		memberService.toggleShowImg(model.getOrgId(), model.getMemberId(), model.getShowVerifyFlag()).pickDataThrowException();
-		
-		return new BaseResponse();
-    }
 	
 }

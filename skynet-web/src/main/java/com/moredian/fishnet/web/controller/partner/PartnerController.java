@@ -47,11 +47,11 @@ public class PartnerController extends BaseController {
 		return BeanUtils.copyProperties(ModuleBindRequest.class, model);
 	}
 	
-	@ApiOperation(value="分配机构管理员账号", notes="分配机构管理员账号")
+	@ApiOperation(value="配置机构业务系统管理员", notes="配置机构业务系统管理员")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/createOrgAdmin", method=RequestMethod.POST)
+	@RequestMapping(value="/configOrgAdmin", method=RequestMethod.POST)
     @ResponseBody
-    public BaseResponse createOrgAdmin(@RequestBody CreateAdminModel model) {
+    public BaseResponse configOrgAdmin(@RequestBody CreateAdminModel model) {
 		
 		orgService.bindModule(this.buildRequest(model)).pickDataThrowException();
 		
