@@ -80,7 +80,6 @@ import com.moredian.fishnet.web.controller.common.response.Constant;
 import com.moredian.fishnet.web.controller.common.response.LoginOperInfo;
 import com.moredian.fishnet.web.controller.common.response.TransFaceData;
 import com.moredian.fishnet.web.controller.model.ParentPoliceOrg;
-import com.moredian.fishnet.web.controller.model.SessionExtends;
 import com.moredian.fishnet.web.controller.model.SessionUser;
 import com.moredian.fishnet.web.controller.org.response.AreaData;
 import com.moredian.fishnet.web.controller.utils.ImageRule;
