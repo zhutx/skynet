@@ -12,14 +12,10 @@ public class OrgAddRequest implements Serializable {
 	private String orgName; // required
 	/** 机构类型  [参考{@link OrgType}]　*/
 	private Integer orgType; // required
-	/** 状态　[参考{@link OrgStatus}] */
-	private Integer status; // required
 	/** 机构层级 */
 	private Integer orgLevel = 1; // optional
 	/** 父机构id */
-	private Long parentOrgId = 0L; // optional
-	/** 是否启用人脸识别业务 */
-	private boolean enableRecognizeBiz = true; //optional
+	private Long parentId = 0L; // optional
 	/** 省id　*/
 	private Integer provinceId; //optional
 	/** 市id　*/
@@ -53,11 +49,11 @@ public class OrgAddRequest implements Serializable {
 	public void setOrgLevel(Integer orgLevel) {
 		this.orgLevel = orgLevel;
 	}
-	public Long getParentOrgId() {
-		return parentOrgId;
+	public Long getParentId() {
+		return parentId;
 	}
-	public void setParentOrgId(Long parentOrgId) {
-		this.parentOrgId = parentOrgId;
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 	public Integer getProvinceId() {
 		return provinceId;
@@ -125,19 +121,6 @@ public class OrgAddRequest implements Serializable {
 	public void setLat(Double lat) {
 		this.lat = lat;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-	public boolean isEnableRecognizeBiz() {
-		return enableRecognizeBiz;
-	}
-	public void setEnableRecognizeBiz(boolean enableRecognizeBiz) {
-		this.enableRecognizeBiz = enableRecognizeBiz;
-	}
-	
 	
 
 }

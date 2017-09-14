@@ -12,29 +12,25 @@ import org.springframework.transaction.annotation.Transactional;
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.bee.common.exception.BizException;
 import com.moredian.bee.common.rpc.ServiceResponse;
+import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.convertor.PaginationConvertor;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
-import com.moredian.bee.rmq.EventBus;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.cloudeye.core.api.CloudeyeErrorCode;
 import com.moredian.cloudeye.core.api.conf.huber.OHuberConfigProvider;
 import com.moredian.fishnet.auth.request.AdminInitRequest;
 import com.moredian.fishnet.auth.service.OperService;
-import com.moredian.fishnet.common.model.msg.ConfigGroupAtcDataMsg;
-import com.moredian.fishnet.org.domain.Group;
 import com.moredian.fishnet.org.domain.Org;
 import com.moredian.fishnet.org.domain.OrgBiz;
 import com.moredian.fishnet.org.domain.OrgQueryCondition;
 import com.moredian.fishnet.org.domain.Position;
 import com.moredian.fishnet.org.enums.BizType;
-import com.moredian.fishnet.org.enums.GroupType;
 import com.moredian.fishnet.org.enums.OrgBizStatus;
 import com.moredian.fishnet.org.enums.OrgErrorCode;
 import com.moredian.fishnet.org.enums.OrgStatus;
 import com.moredian.fishnet.org.enums.TpType;
-import com.moredian.fishnet.org.enums.YesNoFlag;
 import com.moredian.fishnet.org.manager.DeptManager;
 import com.moredian.fishnet.org.manager.OrgManager;
 import com.moredian.fishnet.org.manager.PositionCodeManager;
@@ -48,7 +44,6 @@ import com.moredian.fishnet.org.request.ModuleBindRequest;
 import com.moredian.fishnet.org.request.OrgAddRequest;
 import com.moredian.fishnet.org.request.OrgQueryRequest;
 import com.moredian.fishnet.org.request.OrgUpdateRequest;
-import com.moredian.fishnet.org.utils.PinyinUtil;
 import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
@@ -76,34 +71,25 @@ public class OrgManagerImpl implements OrgManager {
 	private DeptManager deptManager;
 	@Value("${rmq.switch}")
 	private int rmqSwitch;
+	
+	private Long genPrimaryKey(String name) {
+		return idgeneratorService.getNextIdByTypeName(name).getData();
+	}
 
 	@Override
 	public List<Long> findAllOrgId() {
 		return orgMapper.findAllId();
 	}
 
-	private Org orgAddRequestToOrg(OrgAddRequest request) {
-		Org org = new Org();
-		Long id = idgeneratorService.getNextIdByTypeName("com.moredian.fishnet.org.Org").getData();
-		org.setOrgId(id);
+	private Org requestToDomain(OrgAddRequest request) {
+		Org org = BeanUtils.copyProperties(Org.class, request);
+		
+		Long orgId = this.genPrimaryKey(Org.class.getName());
+		org.setOrgId(orgId);
 		org.setTpType(TpType.SELF.getValue());
-		org.setTpId(String.valueOf(id));
-		org.setParentOrgId(request.getParentOrgId());
-		org.setOrgName(request.getOrgName());
-		org.setEngName(PinyinUtil.cn2py(org.getOrgName()));
-		org.setProvinceId(request.getProvinceId());
-		org.setCityId(request.getCityId());
-		org.setDistrictId(request.getDistrictId());
-		org.setOrgType(request.getOrgType());
-		org.setOrgLevel(request.getOrgLevel());
-		org.setContact(request.getContact());
-		org.setPhone(request.getPhone());
-		org.setAddress(request.getAddress());
-		org.setMemo(request.getMemo());
-		org.setLon(request.getLon());
-		org.setLat(request.getLat());
-		org.setStatus(request.getStatus());
-		org.setOrgCode(positionCodeManager.genOrgCode(org));
+		org.setTpId(String.valueOf(orgId));
+		org.setStatus(OrgStatus.USABLE.getValue());
+		
 		return org;
 	}
 	
@@ -117,19 +103,18 @@ public class OrgManagerImpl implements OrgManager {
 		
 		BizAssert.notNull(request.getOrgName(), "orgName must not be null");
 		BizAssert.notNull(request.getOrgType(), "orgType must not be null");
-		BizAssert.notNull(request.getStatus(), "status must not be null");
 		
 		Org existOrg = orgMapper.loadExist(request.getOrgType(), request.getOrgName());
 		if(existOrg != null) ExceptionUtils.throwException(OrgErrorCode.ORG_EXIST, OrgErrorCode.ORG_EXIST.getMessage());
 		
-		Org org = this.orgAddRequestToOrg(request);
+		Org org = this.requestToDomain(request);
 		orgMapper.insert(org);
 		
 		positionManager.addRootPosition(org.getOrgId(), org.getOrgName());
 		
 		// 创建根部门
 		deptManager.addDept(org.getOrgId(), org.getOrgName(), 0L);
-		
+		/*
 		// 初始化全员组和访客组
 		Group group = new Group();
 		group.setGroupId(genGroupId());
@@ -143,15 +128,13 @@ public class OrgManagerImpl implements OrgManager {
 		groupMapper.insert(group);
 		
 		ConfigGroupAtcDataMsg msg = null;
-		if(YesNoFlag.YES.getValue() == rmqSwitch) { 
-			msg = new ConfigGroupAtcDataMsg();
-			msg.setOrgId(group.getOrgId());
-			msg.setGroupId(group.getGroupId());
-			msg.setGroupType(group.getGroupType());
-			msg.setGroupCode(group.getGroupCode());
-			msg.setGroupName(group.getGroupName());
-			EventBus.publish(msg);
-		}
+		msg = new ConfigGroupAtcDataMsg();
+		msg.setOrgId(group.getOrgId());
+		msg.setGroupId(group.getGroupId());
+		msg.setGroupType(group.getGroupType());
+		msg.setGroupCode(group.getGroupCode());
+		msg.setGroupName(group.getGroupName());
+		EventBus.publish(msg);
 		
 		group = new Group();
 		group.setGroupId(genGroupId());
@@ -164,15 +147,13 @@ public class OrgManagerImpl implements OrgManager {
 		group.setMemberSize(0);
 		groupMapper.insert(group);
 		
-		if(YesNoFlag.YES.getValue() == rmqSwitch) {
-			msg = new ConfigGroupAtcDataMsg();
-			msg.setOrgId(group.getOrgId());
-			msg.setGroupId(group.getGroupId());
-			msg.setGroupType(group.getGroupType());
-			msg.setGroupCode(group.getGroupCode());
-			msg.setGroupName(group.getGroupName());
-			EventBus.publish(msg);
-		}
+		msg = new ConfigGroupAtcDataMsg();
+		msg.setOrgId(group.getOrgId());
+		msg.setGroupId(group.getGroupId());
+		msg.setGroupType(group.getGroupType());
+		msg.setGroupCode(group.getGroupCode());
+		msg.setGroupName(group.getGroupName());
+		EventBus.publish(msg);*/
 			
 		return org.getOrgId();
 	}
@@ -283,9 +264,6 @@ public class OrgManagerImpl implements OrgManager {
 		org.setProvinceId(request.getProvinceId());
 		org.setCityId(request.getCityId());
 		org.setDistrictId(request.getDistrictId());
-		if(request.getOrgName() != null) {
-			org.setEngName(PinyinUtil.cn2py(request.getOrgName()));
-		}
 	    org.setContact(request.getContact());
 	    org.setPhone(request.getPhone());
 	    org.setAddress(request.getAddress());

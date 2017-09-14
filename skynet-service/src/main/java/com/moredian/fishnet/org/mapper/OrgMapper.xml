@@ -54,14 +54,12 @@
 	</select>
 	
 	<insert id="insert" parameterType="org">
-	    insert into hive_org (
+	    insert into sky_org (
 	        org_id,
 	        tp_type,
 	        tp_id,
-	        parent_org_id,
-			org_code,
+	        parent_id,
 			org_name,
-			eng_name,
 			province_id,
 			city_id,
 			district_id,
@@ -70,12 +68,10 @@
 			org_level,
 			contact,
 			phone,
-			detailed_address,
-			remark,
+			address,
+			memo,
 			lon,
 			lat,
-			geo_bit_29,
-			geo_bit_27,
 			status,
 			gmt_create,
 			gmt_modify
@@ -83,10 +79,9 @@
 	        #{orgId},
 	        #{tpType},
 	        #{tpId},
-	        #{parentOrgId},
+	        #{parentId},
 	        #{orgCode},
 	        #{orgName},
-	        #{engName},
 	        #{provinceId},
 	        #{cityId},
 	        #{districtId},
@@ -99,8 +94,6 @@
 	        #{memo},
 	        #{lon},
 	        #{lat},
-	        #{geoBit29},
-	        #{geoBit27},
 	        #{status},
 	        now(3),
 	        now(3)

@@ -11,10 +11,8 @@ public class Org implements Serializable {
 	private Long orgId;
 	private Integer tpType;
 	private String tpId;
-	private Long parentOrgId;
 	private String orgCode;
 	private String orgName;
-	private String engName;
 	private Integer provinceId;
 	private Integer cityId;
 	private Integer districtId;
@@ -27,8 +25,7 @@ public class Org implements Serializable {
 	private String memo;
 	private Double lon;
 	private Double lat;
-	private Long geoBit27;
-	private Long geoBit29;
+	private Long parentId;
 	private Integer status;
 	private Date gmtCreate;
 	private Date gmtModify;
@@ -51,11 +48,11 @@ public class Org implements Serializable {
 	public void setTpId(String tpId) {
 		this.tpId = tpId;
 	}
-	public Long getParentOrgId() {
-		return parentOrgId;
+	public Long getParentId() {
+		return parentId;
 	}
-	public void setParentOrgId(Long parentOrgId) {
-		this.parentOrgId = parentOrgId;
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 	public String getOrgCode() {
 		return orgCode;
@@ -68,12 +65,6 @@ public class Org implements Serializable {
 	}
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
-	}
-	public String getEngName() {
-		return engName;
-	}
-	public void setEngName(String engName) {
-		this.engName = engName;
 	}
 	public Integer getProvinceId() {
 		return provinceId;
@@ -146,18 +137,6 @@ public class Org implements Serializable {
 	}
 	public void setLat(Double lat) {
 		this.lat = lat;
-	}
-	public Long getGeoBit27() {
-		return geoBit27;
-	}
-	public void setGeoBit27(Long geoBit27) {
-		this.geoBit27 = geoBit27;
-	}
-	public Long getGeoBit29() {
-		return geoBit29;
-	}
-	public void setGeoBit29(Long geoBit29) {
-		this.geoBit29 = geoBit29;
 	}
 	public Integer getStatus() {
 		return status;

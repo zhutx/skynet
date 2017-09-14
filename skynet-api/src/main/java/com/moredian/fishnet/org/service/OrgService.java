@@ -18,15 +18,18 @@ import com.moredian.fishnet.org.request.OrgUpdateRequest;
  */
 public interface OrgService {
 	
-	List<Long> findAllOrgId();
-	
-	/**
-	 * 创建机构
-	 * @param request
-	 * @return
-	 * <li>OrgErrorCode.ORG_EXIST</li>
-	 */
 	ServiceResponse<Long> addOrg(OrgAddRequest request);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	List<Long> findAllOrgId();
 	
 	/**
 	 * 绑定系统模块

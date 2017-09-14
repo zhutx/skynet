@@ -98,7 +98,6 @@ public class DingOrgManagerImpl implements DingOrgManager {
 		org.setAddress(request.getDetailedAddress());
 		
 		org.setOrgCode(positionCodeManager.genOrgCode(org));
-		org.setEngName(PinyinUtil.cn2py(org.getOrgName()));
 		org.setMemo(org.getOrgName());
 		
 		return org;
