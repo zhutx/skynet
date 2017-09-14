@@ -6,6 +6,7 @@ public class CreateAdminModel {
 	private Integer moduleType;
 	private String accountName;
 	private String password;
+	private String operName = "系统管理员";
 	
 	public Long getOrgId() {
 		return orgId;
@@ -30,6 +31,12 @@ public class CreateAdminModel {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getOperName() {
+		return operName;
+	}
+	public void setOperName(String operName) {
+		this.operName = operName;
 	}
 	
 

@@ -4,11 +4,11 @@
 <mapper namespace="com.moredian.fishnet.auth.mapper.RolePermMapper" >
 
     <select id="getCountByPermId" parameterType="long" resultType="int">
-        select count(*) from auth_role_perm where perm_id = #{permId}
+        select count(*) from sky_role_perm where perm_id = #{permId}
     </select>
     
     <insert id="insert" parameterType="rolePerm">
-        insert into auth_role_perm (
+        insert into sky_role_perm (
             role_perm_id, 
             role_id,
             perm_id,
@@ -24,20 +24,20 @@
     </insert>
     
     <select id="findPermIdByRoleId" parameterType="long" resultType="long">
-        select perm_id from auth_role_perm where role_id = #{roleId}
+        select perm_id from sky_role_perm where role_id = #{roleId}
     </select>
     
     <select id="findPermIdByRoleIds" parameterType="map" resultType="long">
-        select perm_id from auth_role_perm where role_id in
+        select perm_id from sky_role_perm where role_id in
         <foreach collection="roleIdList" index="index" item="roleId" open="(" separator="," close=")">#{roleId}</foreach>
     </select>
     
     <delete id="delete" parameterType="map">
-        delete from auth_role_perm where role_id = #{roleId} and perm_id = #{permId}
+        delete from sky_role_perm where role_id = #{roleId} and perm_id = #{permId}
     </delete>
     
     <delete id="deleteByRoleId" parameterType="long">
-	    delete from auth_role_perm where role_id = #{roleId}
+	    delete from sky_role_perm where role_id = #{roleId}
 	</delete>
 	
 </mapper>

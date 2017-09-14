@@ -21,7 +21,7 @@
 	</resultMap>
 	
 	<insert id="insert" parameterType="perm">
-	    insert into auth_perm (
+	    insert into sky_perm (
 	        perm_id,
 	        perm_type,
 	        perm_name,
@@ -56,16 +56,16 @@
 	
 	<select id="loadByPermName" parameterType="map" resultMap="permResultMap">
 	    <include refid="sql_select"/>
-	    from auth_perm where module_type = #{moduleType} and perm_name = #{permName}
+	    from sky_perm where module_type = #{moduleType} and perm_name = #{permName}
 	</select>
 	
 	<select id="load" parameterType="long" resultMap="permResultMap">
 	    <include refid="sql_select"/>
-	    from auth_perm where perm_id = #{permId}
+	    from sky_perm where perm_id = #{permId}
 	</select>
 	
 	<update id="update" parameterType="perm">
-	    update auth_perm 
+	    update sky_perm 
 	    <set>
 	    <if test="permName != null">
 	    perm_name = #{permName}, 
@@ -82,20 +82,20 @@
 	</update>
 	
 	<update id="updateStatus" parameterType="map">
-	    update auth_perm set status = #{status}, gmt_modify = now(6) where perm_id = #{permId}
+	    update sky_perm set status = #{status}, gmt_modify = now(6) where perm_id = #{permId}
 	</update>
 	
 	<delete id="deleteById" parameterType="long">
-	    delete from auth_perm where perm_id = #{permId}
+	    delete from sky_perm where perm_id = #{permId}
 	</delete>
 	
 	<select id="getChildrenCount" parameterType="long" resultType="int">
-	    select count(*) from auth_perm where parent_id = #{parentId}
+	    select count(*) from sky_perm where parent_id = #{parentId}
 	</select>
 	
 	<select id="findByCondition" parameterType="map" resultMap="permResultMap">
 	    <include refid="sql_select"></include>
-	    from auth_perm where 1 = 1
+	    from sky_perm where 1 = 1
 	    <if test="moduleType != null">
 	    and module_type = #{moduleType}
 	    </if>
@@ -108,36 +108,36 @@
 	</select>
 	
 	<update id="incChildrenSize" parameterType="long">
-	    update auth_perm set children_size = children_size + 1 where perm_id = #{permId}
+	    update sky_perm set children_size = children_size + 1 where perm_id = #{permId}
 	</update>
 	
 	<update id="decChildrenSize" parameterType="long">
-	    update auth_perm set children_size = children_size - 1 where perm_id = #{permId}
+	    update sky_perm set children_size = children_size - 1 where perm_id = #{permId}
 	</update>
 	
 	<select id="findPermUrl" parameterType="map" resultType="string">
-	    select perm_url from auth_perm where perm_id in
+	    select perm_url from sky_perm where perm_id in
 	    <foreach collection="permIdList" index="index" item="permId" open="(" separator="," close=")">#{permId}</foreach>
 	</select>
 	
 	<select id="findPermByOper" parameterType="map" resultMap="permResultMap">
 	    <include refid="sql_select"></include>
-	    from auth_perm
+	    from sky_perm
 	    where module_type = #{moduleType} and perm_id in (select perm_id from auth_role_perm where role_id in (select role_id from auth_oper_role where oper_id = #{operId}))
 	</select>
 	
 	<select id="findPermByModule" parameterType="int" resultMap="permResultMap">
 	    <include refid="sql_select"></include>
-	    from auth_perm
+	    from sky_perm
 	    where module_type = #{moduleType} order by parent_id
 	</select>
 	
 	<select id="findPermIdByModule" parameterType="int" resultType="long">
-	    select perm_id from auth_perm where module_type = #{moduleType}
+	    select perm_id from sky_perm where module_type = #{moduleType}
 	</select>
 	
 	<select id="findChildrenId" parameterType="long" resultType="long">
-	    select perm_id from auth_perm where parent_id = #{parentId}
+	    select perm_id from sky_perm where parent_id = #{parentId}
 	</select>
 	
 	<sql id="sql_select">

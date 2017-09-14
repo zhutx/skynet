@@ -2,7 +2,7 @@ package com.moredian.fishnet.org.request;
 
 import java.io.Serializable;
 
-public class ModuleBindRequest implements Serializable {
+public class ModuleAdminConfigRequest implements Serializable {
 	
 	private static final long serialVersionUID = -2232468057091430527L;
 	

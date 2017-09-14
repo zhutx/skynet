@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.bee.common.exception.BizException;
-import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.Pagination;
@@ -20,7 +19,12 @@ import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.cloudeye.core.api.CloudeyeErrorCode;
 import com.moredian.cloudeye.core.api.conf.huber.OHuberConfigProvider;
-import com.moredian.fishnet.auth.request.AdminInitRequest;
+import com.moredian.fishnet.auth.domain.Role;
+import com.moredian.fishnet.auth.manager.OperManager;
+import com.moredian.fishnet.auth.manager.PermManager;
+import com.moredian.fishnet.auth.manager.RoleManager;
+import com.moredian.fishnet.auth.request.OperAddRequest;
+import com.moredian.fishnet.auth.request.RoleAddRequest;
 import com.moredian.fishnet.auth.service.OperService;
 import com.moredian.fishnet.org.domain.Org;
 import com.moredian.fishnet.org.domain.OrgBiz;
@@ -40,7 +44,7 @@ import com.moredian.fishnet.org.mapper.OrgBizMapper;
 import com.moredian.fishnet.org.mapper.OrgMapper;
 import com.moredian.fishnet.org.mapper.OrgRelationMapper;
 import com.moredian.fishnet.org.model.OrgInfo;
-import com.moredian.fishnet.org.request.ModuleBindRequest;
+import com.moredian.fishnet.org.request.ModuleAdminConfigRequest;
 import com.moredian.fishnet.org.request.OrgAddRequest;
 import com.moredian.fishnet.org.request.OrgQueryRequest;
 import com.moredian.fishnet.org.request.OrgUpdateRequest;
@@ -71,6 +75,12 @@ public class OrgManagerImpl implements OrgManager {
 	private DeptManager deptManager;
 	@Value("${rmq.switch}")
 	private int rmqSwitch;
+	@Autowired
+	private RoleManager roleManager;
+	@Autowired
+	private OperManager operManager;
+	@Autowired
+	private PermManager permManager;
 	
 	private Long genPrimaryKey(String name) {
 		return idgeneratorService.getNextIdByTypeName(name).getData();
@@ -158,24 +168,46 @@ public class OrgManagerImpl implements OrgManager {
 		return org.getOrgId();
 	}
 	
+	private void initOneAdmin(ModuleAdminConfigRequest request) {
+		Long roleId = null;
+		// 2) 创建或获取管理员角色
+		Role role = roleManager.getRoleByName(request.getOrgId(), "系统管理员");
+		if(role == null){
+			RoleAddRequest roleAddRequest = new RoleAddRequest();
+			roleAddRequest.setOrgId(request.getOrgId());
+			roleAddRequest.setRoleName("系统管理员");
+			roleAddRequest.setRoleDesc("系统管理员");
+			List<Long> permIds = permManager.findPermIdByModuleType(request.getModuleType()); // 赋予模块所有权限
+			roleAddRequest.setPermIds(permIds);
+			roleId = roleManager.addRole(roleAddRequest);
+		} else {
+			roleId = role.getRoleId();
+		}
+		
+		// 3) 创建账号
+		OperAddRequest operAddRequest = new OperAddRequest();
+		operAddRequest.setOrgId(request.getOrgId());
+		operAddRequest.setModuleType(request.getModuleType());
+		operAddRequest.setOperName(request.getOperName());
+		operAddRequest.setAccountName(request.getAccountName());
+		operAddRequest.setPassword(request.getPassword());
+		operAddRequest.setMobile(request.getMobile());
+		List<Long> roleIds = new ArrayList<>();
+		roleIds.add(roleId);
+		operAddRequest.setRoleIds(roleIds); // 赋予管理员角色
+		operManager.addOper(operAddRequest);
+	}
+	
 	@Override
-	public boolean bindModule(ModuleBindRequest request) {
+	public boolean configModuleAdmin(ModuleAdminConfigRequest request) {
 		
 		BizAssert.notNull(request.getOrgId());
 		BizAssert.notNull(request.getModuleType());
 		BizAssert.notBlank(request.getAccountName());
 		BizAssert.notBlank(request.getOperName());
 		
-		AdminInitRequest adminInitRequest = new AdminInitRequest();
-		adminInitRequest.setOrgId(request.getOrgId());
-		adminInitRequest.setModuleType(request.getModuleType());
-		adminInitRequest.setAccountName(request.getAccountName());
-		adminInitRequest.setPassword(request.getPassword());
-		adminInitRequest.setOperName(request.getOperName());
-		adminInitRequest.setMobile(request.getMobile());
+		this.initOneAdmin(request);
 		
-		ServiceResponse<Boolean> sr = operService.initOneAdmin(adminInitRequest);
-		if(!sr.isSuccess()) sr.pickDataThrowException();
 		return true;
 	}
 

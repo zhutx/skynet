@@ -27,7 +27,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("fishnet RESTful APIs")
+                .title("skynet RESTful APIs")
                 .description("仅用于调试")
                 .contact("zhutx")
                 .version("0.0.1")

@@ -36,7 +36,6 @@ public class DeptManagerImpl implements DeptManager {
 		BizAssert.notNull(orgId);
 		BizAssert.notBlank(deptName);
 		BizAssert.notNull(parentId);
-		BizAssert.isTrue(parentId != 0);
 		
 		Dept dept = new Dept();
 		dept.setOrgId(orgId);

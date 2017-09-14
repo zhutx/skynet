@@ -6,7 +6,7 @@ import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.fishnet.org.enums.BizType;
 import com.moredian.fishnet.org.model.OrgInfo;
-import com.moredian.fishnet.org.request.ModuleBindRequest;
+import com.moredian.fishnet.org.request.ModuleAdminConfigRequest;
 import com.moredian.fishnet.org.request.OrgAddRequest;
 import com.moredian.fishnet.org.request.OrgQueryRequest;
 import com.moredian.fishnet.org.request.OrgUpdateRequest;
@@ -36,7 +36,7 @@ public interface OrgService {
 	 * @param request
 	 * @return
 	 */
-	ServiceResponse<Boolean> bindModule(ModuleBindRequest request);
+	ServiceResponse<Boolean> configModuleAdmin(ModuleAdminConfigRequest request);
 	
 	/**
 	 * 修改机构

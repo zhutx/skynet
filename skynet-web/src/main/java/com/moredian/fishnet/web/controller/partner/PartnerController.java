@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.web.BaseResponse;
 import com.moredian.bee.tube.annotation.SI;
-import com.moredian.fishnet.org.request.ModuleBindRequest;
+import com.moredian.fishnet.org.request.ModuleAdminConfigRequest;
 import com.moredian.fishnet.org.request.OrgAddRequest;
 import com.moredian.fishnet.org.service.OrgService;
 import com.moredian.fishnet.web.controller.BaseController;
@@ -43,8 +43,8 @@ public class PartnerController extends BaseController {
 		return new BaseResponse();
     }
 	
-	private ModuleBindRequest buildRequest(CreateAdminModel model) {
-		return BeanUtils.copyProperties(ModuleBindRequest.class, model);
+	private ModuleAdminConfigRequest buildRequest(CreateAdminModel model) {
+		return BeanUtils.copyProperties(ModuleAdminConfigRequest.class, model);
 	}
 	
 	@ApiOperation(value="配置机构业务系统管理员", notes="配置机构业务系统管理员")
@@ -53,7 +53,7 @@ public class PartnerController extends BaseController {
     @ResponseBody
     public BaseResponse configOrgAdmin(@RequestBody CreateAdminModel model) {
 		
-		orgService.bindModule(this.buildRequest(model)).pickDataThrowException();
+		orgService.configModuleAdmin(this.buildRequest(model)).pickDataThrowException();
 		
 		return new BaseResponse();
     }

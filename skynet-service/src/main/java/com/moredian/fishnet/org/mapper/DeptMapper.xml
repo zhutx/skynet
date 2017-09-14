@@ -16,7 +16,7 @@
 	</resultMap>
 	
 	<insert id="insert" parameterType="dept">
-	    insert into hive_dept (
+	    insert into sky_dept (
 	        dept_id,
 	        org_id,
 	        tp_type,
@@ -40,7 +40,7 @@
 	</insert>
 	
 	<update id="update" parameterType="dept">
-	    update hive_dept
+	    update sky_dept
 	    <set>
 		<if test="deptName != null">
 			dept_name=#{deptName},
@@ -58,7 +58,7 @@
 	
 	<select id="findDepts" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
-	    from hive_dept 
+	    from sky_dept 
 	    where org_id = #{orgId}
 	    <if test="parentId != null">
 	    and parent_id = #{parentId}
@@ -70,73 +70,73 @@
 	</select>
 	
 	<select id="findDeptNamesByIds" parameterType="map" resultType="string">
-	    select dept_name from hive_dept where org_id = #{orgId} and parent_id > 0 and dept_id in
+	    select dept_name from sky_dept where org_id = #{orgId} and parent_id > 0 and dept_id in
 	    <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
 	</select>
 	
 	<select id="findDeptNamesWithoutRootByIds" parameterType="map" resultType="string">
-	    select dept_name from hive_dept where org_id = #{orgId} and parent_id > 0 and dept_id in 
+	    select dept_name from sky_dept where org_id = #{orgId} and parent_id > 0 and dept_id in 
 	    <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
 	</select>
 	
 	<select id="findDeptByIds" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
-	    from hive_dept where org_id = #{orgId} and dept_id in 
+	    from sky_dept where org_id = #{orgId} and dept_id in 
 	    <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
 	</select>
 	
 	<select id="loadByName" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
-	    from hive_dept
+	    from sky_dept
 	    where org_id = #{orgId}
 	    and dept_name = #{deptName}
 	</select>
 	
 	<select id="loadRoot" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
-	    from hive_dept
+	    from sky_dept
 	    where org_id = #{orgId}
 	    and parent_id = 0
 	</select>
 	
 	<select id="loadByTpId" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
-	    from hive_dept
+	    from sky_dept
 	    where org_id = #{orgId}
 	    and tp_id = #{tpId}
 	</select>
 	
 	<select id="load" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
-	    from hive_dept
+	    from sky_dept
 	    where org_id = #{orgId}
 	    and dept_id = #{deptId}
 	</select>
 	
 	<select id="findDeptIdByDeptName" parameterType="map" resultType="long">
-	    select dept_id from hive_dept where org_id = #{orgId} and parent_id > 0 and dept_name like CONCAT('%',#{deptName},'%')
+	    select dept_id from sky_dept where org_id = #{orgId} and parent_id > 0 and dept_name like CONCAT('%',#{deptName},'%')
 	</select>
 	
 	<select id="count" parameterType="long" resultType="int">
 	    select count(*)
-	    from hive_dept
+	    from sky_dept
 	    where org_id = #{orgId} and parent_id > 1
 	</select>
 	
 	<delete id="deleteByTpId" parameterType="map">
-	    delete from hive_dept where org_id = #{orgId} and tp_id = #{tpId}
+	    delete from sky_dept where org_id = #{orgId} and tp_id = #{tpId}
 	</delete>
 
 	<delete id="deleteByDeptId" parameterType="map">
-		delete from hive_dept where org_id = #{orgId} and dept_id = #{deptId}
+		delete from sky_dept where org_id = #{orgId} and dept_id = #{deptId}
 	</delete>
 	
 	<select id="findTpId" parameterType="map" resultType="long">
-	    select tp_id from hive_dept where org_id = #{orgId}
+	    select tp_id from sky_dept where org_id = #{orgId}
 	</select>
 	
 	<select id="findTpIdByIds" parameterType="map" resultType="long">
-	    select tp_id from hive_dept where org_id = #{orgId} and dept_id in 
+	    select tp_id from sky_dept where org_id = #{orgId} and dept_id in 
 	    <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
 	</select>
 	

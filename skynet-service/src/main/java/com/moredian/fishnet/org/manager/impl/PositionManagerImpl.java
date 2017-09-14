@@ -13,6 +13,7 @@ import com.moredian.bee.tube.annotation.SI;
 import com.moredian.fishnet.org.domain.Position;
 import com.moredian.fishnet.org.enums.OrgErrorCode;
 import com.moredian.fishnet.org.enums.PositionModel;
+import com.moredian.fishnet.org.enums.PositionType;
 import com.moredian.fishnet.org.manager.PositionCodeManager;
 import com.moredian.fishnet.org.manager.PositionManager;
 import com.moredian.fishnet.org.mapper.PositionMapper;
@@ -29,6 +30,10 @@ public class PositionManagerImpl implements PositionManager {
 	private PositionCodeManager positionCodeManager;
 	@SI
 	private IdgeneratorService idgeneratorService;
+	
+	private Long genPrimaryKey(String name) {
+		return idgeneratorService.getNextIdByTypeName(name).getData();
+	}
 
 	@Override
 	public Position getRootPosition(Long orgId) {
@@ -262,18 +267,17 @@ public class PositionManagerImpl implements PositionManager {
 		
 		Position position = new Position();
 		position.setOrgId(orgId);
-		position.setPositionType(0);
+		position.setPositionType(PositionType.ROOT.getValue());
 		position.setPositionName(positionName);
 		position.setPositionModel(PositionModel.TREE.getValue());
 		
 		position.setFullName(positionName);
 		position.setLevel(0);
-		position.setParentId(orgId);
+		position.setParentId(0L);
 		
-		position.setPositionCode(positionCodeManager.genPositionCode(position));
+		//position.setPositionCode(positionCodeManager.genPositionCode(position));
 		
-		Long id = idgeneratorService.getNextIdByTypeName("com.moredian.fishnet.org.Position").getData();
-		position.setPositionId(id);
+		position.setPositionId(this.genPrimaryKey(Position.class.getName()));
 		positionMapper.insert(position);
 		return position;
 	}

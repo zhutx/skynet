@@ -18,7 +18,7 @@ import com.moredian.fishnet.org.enums.PoliceOrgLevel;
 import com.moredian.fishnet.org.manager.OrgManager;
 import com.moredian.fishnet.org.manager.OrgRelationManager;
 import com.moredian.fishnet.org.model.OrgInfo;
-import com.moredian.fishnet.org.request.ModuleBindRequest;
+import com.moredian.fishnet.org.request.ModuleAdminConfigRequest;
 import com.moredian.fishnet.org.request.OrgAddRequest;
 import com.moredian.fishnet.org.request.OrgQueryRequest;
 import com.moredian.fishnet.org.request.OrgUpdateRequest;
@@ -49,8 +49,8 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public ServiceResponse<Boolean> bindModule(ModuleBindRequest request) {
-		boolean result = orgManager.bindModule(request);
+	public ServiceResponse<Boolean> configModuleAdmin(ModuleAdminConfigRequest request) {
+		boolean result = orgManager.configModuleAdmin(request);
 		return new ServiceResponse<Boolean>(true, null, result);
 	}
 

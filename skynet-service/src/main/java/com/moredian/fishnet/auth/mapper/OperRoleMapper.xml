@@ -4,7 +4,7 @@
 <mapper namespace="com.moredian.fishnet.auth.mapper.OperRoleMapper" >
 
     <insert id="insert" parameterType="operRole">
-        insert into auth_oper_role (
+        insert into sky_oper_role (
             oper_role_id, 
             oper_id,
             role_id,
@@ -20,19 +20,19 @@
     </insert>
 
     <select id="getCountByRoleId" parameterType="long" resultType="int">
-        select count(*) from auth_oper_role where role_id = #{roleId}
+        select count(*) from sky_oper_role where role_id = #{roleId}
     </select>
     
     <select id="findRoleIdByOperId" parameterType="long" resultType="long">
-        select role_id from auth_oper_role where oper_id = #{operId}
+        select role_id from sky_oper_role where oper_id = #{operId}
     </select>
     
     <delete id="delete" parameterType="map">
-        delete from auth_oper_role where oper_id = #{operId} and role_id = #{roleId}
+        delete from sky_oper_role where oper_id = #{operId} and role_id = #{roleId}
     </delete>
     
     <delete id="deleteByOper" parameterType="long">
-        delete from auth_oper_role where oper_id = #{operId}
+        delete from sky_oper_role where oper_id = #{operId}
     </delete>
 	
 </mapper>

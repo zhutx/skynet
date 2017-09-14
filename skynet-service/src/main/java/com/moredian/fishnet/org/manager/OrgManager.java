@@ -6,7 +6,7 @@ import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.fishnet.org.domain.Org;
 import com.moredian.fishnet.org.model.OrgInfo;
-import com.moredian.fishnet.org.request.ModuleBindRequest;
+import com.moredian.fishnet.org.request.ModuleAdminConfigRequest;
 import com.moredian.fishnet.org.request.OrgAddRequest;
 import com.moredian.fishnet.org.request.OrgQueryRequest;
 import com.moredian.fishnet.org.request.OrgUpdateRequest;
@@ -17,7 +17,7 @@ public interface OrgManager {
 	
 	Long addOrg(OrgAddRequest request);
 	
-	boolean bindModule(ModuleBindRequest request);
+	boolean configModuleAdmin(ModuleAdminConfigRequest request);
 	
 	boolean enableBiz(Long orgId, Integer bizType);
 	
