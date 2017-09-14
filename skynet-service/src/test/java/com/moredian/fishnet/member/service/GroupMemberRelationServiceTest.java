@@ -17,12 +17,12 @@ import org.springframework.util.Assert;
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.tube.annotation.SI;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 import com.moredian.fishnet.org.model.GroupInfo;
 import com.moredian.fishnet.org.service.GroupService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class GroupMemberRelationServiceTest {
 	

@@ -12,10 +12,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.moredian.bee.common.utils.JsonUtils;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class DeptMemberRelationServiceTest {
 	

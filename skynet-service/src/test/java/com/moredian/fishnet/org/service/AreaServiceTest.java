@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.moredian.bee.common.utils.JsonUtils;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 import com.moredian.fishnet.org.model.AreaInfo;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class AreaServiceTest {
 	

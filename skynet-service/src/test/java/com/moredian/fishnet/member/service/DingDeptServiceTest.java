@@ -15,12 +15,12 @@ import org.springframework.util.Assert;
 
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.JsonUtils;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 import com.moredian.fishnet.member.request.DingDeleteDepartmentRequest;
 import com.moredian.fishnet.member.request.DingDepartmentsSearchRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class DingDeptServiceTest {
 	

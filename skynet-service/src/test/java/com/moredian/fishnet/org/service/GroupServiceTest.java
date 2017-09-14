@@ -17,14 +17,14 @@ import org.springframework.util.Assert;
 import com.moredian.bee.common.exception.BizException;
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.JsonUtils;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 import com.moredian.fishnet.org.enums.GroupType;
 import com.moredian.fishnet.org.enums.OrgErrorCode;
 import com.moredian.fishnet.org.enums.YesNoFlag;
 import com.moredian.fishnet.org.model.GroupInfo;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class GroupServiceTest {
 	

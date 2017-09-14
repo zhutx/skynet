@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.JsonUtils;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 import com.moredian.fishnet.member.request.ModifyDingUserIsAdminRequest;
 import com.moredian.fishnet.member.request.ModifyDingUserUnionRequest;
 import com.moredian.fishnet.member.request.UserCloseRequest;
@@ -24,7 +24,7 @@ import com.moredian.fishnet.member.request.UserForSynDingResponse;
 import com.moredian.fishnet.member.request.UserSearchForSynRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class DingUserServiceTest {
 	

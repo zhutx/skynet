@@ -17,13 +17,13 @@ import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.cloudeye.core.api.CloudeyeErrorCode;
 import com.moredian.cloudeye.core.api.conf.huber.OHuberConfigProvider;
-import com.moredian.fishnet.FishnetCoreApplication;
+import com.moredian.fishnet.SkynetApplication;
 import com.moredian.fishnet.org.enums.BizType;
 import com.moredian.fishnet.org.model.OrgInfo;
 import com.moredian.fishnet.org.request.OrgUpdateRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=FishnetCoreApplication.class)
+@SpringBootTest(classes=SkynetApplication.class)
 @Transactional
 public class OrgServiceTest {
 	
