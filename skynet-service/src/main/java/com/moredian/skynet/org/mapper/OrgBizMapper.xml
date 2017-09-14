@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.org.mapper.OrgBizMapper" >
+
+    <resultMap id="orgBizResultMap" type="orgBiz">
+        <result column="org_biz_id" property="orgBizId" />
+		<result column="org_id" property="orgId" />
+		<result column="biz_type" property="bizType" />
+		<result column="status" property="status" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<select id="loadByBizType" parameterType="map" resultMap="orgBizResultMap">
+		<include refid="sql_select"/>
+		from hive_org_biz
+		where 
+			org_id=#{orgId} and biz_type = #{bizType}
+	</select>
+	
+	<select id="countEnable" parameterType="map" resultType="int">
+	    select count(*) from hive_org_biz where org_id = #{orgId} and status = #{status}
+	</select>
+	
+	<insert id="insert" parameterType="orgBiz">
+	    insert into hive_org_biz (
+	        org_biz_id,
+	        org_id,
+			biz_type,
+			status,
+			gmt_create,
+			gmt_modify
+	    ) values (
+	        #{orgBizId},
+	        #{orgId},
+	        #{bizType},
+	        #{status},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+	
+	<update id="updateStatus" parameterType="map">
+	    update hive_org_biz set status = #{status} where org_id = #{orgId} and biz_type = #{bizType}
+	</update>
+	
+	<sql id="sql_select">
+		select
+			org_biz_id,
+	        org_id,
+			biz_type,
+			status,
+			gmt_create,
+			gmt_modify
+	</sql>
+	
+</mapper>

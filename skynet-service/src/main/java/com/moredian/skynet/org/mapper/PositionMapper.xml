@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.org.mapper.PositionMapper" >
+
+    <resultMap id="positionResultMap" type="position">
+		<result column="position_id" property="positionId" />
+		<result column="org_id" property="orgId" />
+		<result column="position_type" property="positionType" />
+		<result column="position_code" property="positionCode" />
+		<result column="position_name" property="positionName" />
+		<result column="position_model" property="positionModel" />
+		<result column="level" property="level" />
+		<result column="parent_id" property="parentId" />
+		<result column="full_name" property="fullName" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="position">
+	    insert into sky_position(
+	        position_id,
+	        org_id,
+	        position_type,
+	        position_code,
+	        position_name,
+	        position_model,
+	        level,
+	        parent_id,
+	        full_name,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{positionId},
+	        #{orgId},
+	        #{positionType},
+	        #{positionCode},
+	        #{positionName},
+	        #{positionModel},
+	        #{level},
+	        #{parentId},
+	        #{fullName},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+	
+	<select id="getRoot" parameterType="map" resultMap="positionResultMap">
+		<include refid="sql_select"/>
+		from sky_position
+		where 
+		    org_id = #{orgId}
+			and parent_id = #{orgId}
+			and position_model = #{positionModel}
+	</select>
+	
+	<select id="load" parameterType="map" resultMap="positionResultMap">
+		<include refid="sql_select"/>
+		from sky_position
+		where 
+			position_id = #{positionId}
+			and org_id=#{orgId}
+	</select>
+	
+	<update id="updatePositionName" parameterType="map">
+	    update sky_position set position_name = #{positionName}, full_name = #{fullName} where org_id = #{orgId} and position_id = #{positionId}
+	</update>
+	
+	<select id="findChildren" parameterType="map" resultMap="positionResultMap">
+	    <include refid="sql_select"/>
+	    from sky_position 
+	    where org_id = #{orgId} and position_model = #{positionModel} and level > #{level} and position_code like CONCAT(#{positionCodePrefix},'%')
+	</select>
+	
+	<update id="updateFullName" parameterType="map">
+	    update sky_position set full_name = #{fullName} where org_id = #{orgId} and position_id = #{positionId}
+	</update>
+	
+	<delete id="delete" parameterType="map">
+	    delete from sky_position where org_id = #{orgId} and position_id = #{positionId}
+	</delete>
+	
+	<select id="findPlatPositions" parameterType="map" resultMap="positionResultMap">
+	    <include refid="sql_select"/>
+	    from sky_position 
+	    where org_id = #{orgId} and position_type = #{positionType} and position_model = #{positionModel}
+	    order by gmt_create
+	</select>
+	
+	
+	<select id="findDirectChildrens" parameterType="map" resultMap="positionResultMap">
+	    <include refid="sql_select"/>
+	    from sky_position 
+	    where org_id = #{orgId} and position_model = #{positionModel}
+	    <if test="parentId != null">
+	    and parent_id = #{parentId}
+	    </if>
+	    <if test="parentId == null">
+	    and parent_id = 0
+	    </if>
+	    order by gmt_create
+	</select>
+	
+	<select id="findDirectChildrenIds" parameterType="map" resultType="long">
+	    select position_id
+	    from sky_position 
+	    where org_id = #{orgId} and position_model = #{positionModel}
+	    <if test="parentId != null">
+	    and parent_id = #{parentId}
+	    </if>
+	    <if test="parentId == null">
+	    and parent_id = 0
+	    </if>
+	    order by gmt_create
+	</select>
+	
+	<select id="findAllChildrenIds" parameterType="map" resultType="long">
+	    select position_id
+	    from sky_position 
+	    where org_id = #{orgId} and position_model = #{positionModel} and level > #{level} and position_code like CONCAT(#{positionCodePrefix},'%')
+	    order by gmt_create
+	</select>
+	
+	<select id="findByNameAndType" parameterType="map" resultMap="positionResultMap">
+	    select * from sky_position where org_id = #{orgId} and position_type = #{positionType} and position_name = #{positionName}
+	</select>
+	
+	
+	<sql id="sql_select">
+		select
+			position_id,
+			org_id,
+			position_type,
+			position_code,
+			position_name,
+			position_model,
+			level,
+			parent_id,
+			full_name,
+			gmt_create,
+			gmt_modify	
+	</sql>
+	
+</mapper>

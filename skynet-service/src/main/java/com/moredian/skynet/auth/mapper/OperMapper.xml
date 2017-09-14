@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.auth.mapper.OperMapper" >
+
+    <resultMap id="operResultMap" type="oper">
+		<result column="oper_id" property="operId" />
+		<result column="org_id" property="orgId" />
+		<result column="account_id" property="accountId" />
+		<result column="account_name" property="accountName" />
+		<result column="module_type" property="moduleType" />
+		<result column="oper_name" property="operName" />
+		<result column="email" property="email" />
+		<result column="mobile" property="mobile" />
+		<result column="oper_desc" property="operDesc" />
+		<result column="default_flag" property="defaultFlag" />
+		<result column="status" property="status" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="oper">
+	    insert into sky_oper (
+	        oper_id,
+	        org_id,
+	        account_id,
+	        account_name,
+	        module_type,
+	        oper_name,
+	        email,
+	        mobile,
+	        oper_desc,
+	        default_flag,
+	        status,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{operId},
+	        #{orgId},
+	        #{accountId},
+	        #{accountName},
+	        #{moduleType},
+	        #{operName},
+	        #{email},
+	        #{mobile},
+	        #{operDesc},
+	        #{defaultFlag},
+	        #{status},
+	        now(6),
+	        now(6)
+	    )
+	</insert>
+
+    <select id="loadByAccount" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where account_id = #{accountId} and module_type = #{moduleType}
+	</select>
+	
+	<select id="loadByMobile" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where mobile = #{mobile} and module_type = #{moduleType}
+	</select>
+	
+	<select id="load" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where org_id = #{orgId} and oper_id = #{operId}
+	</select>
+	
+	<update id="update" parameterType="oper">
+	    update sky_oper set oper_name = #{operName}, email = #{email}, mobile = #{mobile}, oper_desc = #{operDesc}, gmt_modify = now(6) where org_id = #{orgId} and oper_id = #{operId}
+	</update>
+	
+	<delete id="delete" parameterType="map">
+	    delete from sky_oper where org_id = #{orgId} and oper_id = #{operId}
+	</delete>
+	
+	<update id="updateStatus" parameterType="map">
+	    update sky_oper set status = #{status} where org_id = #{orgId} and oper_id = #{operId}
+	</update>
+	
+	<select id="findByCondition" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where org_id = #{orgId}
+	    <if test="operName != null">
+	    and oper_name = #{operName}
+	    </if>
+	    <if test="moduleType != null">
+	    and module_type = #{moduleType}
+	    </if>
+	    <if test="accountName != null">
+	    and account_name = #{accountName}
+	    </if>
+	    <if test="keywords != null">
+	    and (oper_name like CONCAT('%',#{keywords},'%') or account_name like CONCAT('%',#{keywords},'%') or mobile like CONCAT('%',#{keywords},'%'))
+	    </if>
+	    order by gmt_create desc
+	</select>
+	
+	<select id="findEnable" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where account_id = #{accountId} and module_type = #{moduleType} and status = #{status}
+	    order by default_flag desc 
+	</select>
+	
+	<select id="loadOne" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where org_id = #{orgId} and account_id = #{accountId} and module_type = #{moduleType}
+	</select>
+	
+	<select id="findOperByRoleId" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where org_id = #{orgId} and status = #{status} and oper_id in (select oper_id from sky_oper_role where role_id = #{roleId})
+	</select>
+	
+	<select id="getOperByMobile" parameterType="map" resultMap="operResultMap">
+	    <include refid="sql_select"/>
+	    from sky_oper where module_type = #{moduleType} and mobile = #{mobile}
+	</select>
+	
+	<sql id="sql_select">
+		select
+			oper_id,
+	        org_id,
+	        account_id,
+	        account_name,
+	        module_type,
+	        oper_name,
+	        email,
+	        mobile,
+	        oper_desc,
+	        default_flag,
+	        status,
+	        gmt_create,
+	        gmt_modify
+	</sql>
+
+	
+</mapper>

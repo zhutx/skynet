@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.org.mapper.ObjectSeedMapper" >
+
+    <resultMap id="objectSeedResultMap" type="objectSeed">
+		<result column="seed_id" property="seedId" />
+		<result column="object_range" property="objectRange" />
+		<result column="object_code" property="objectCode" />
+		<result column="object_seed" property="objectSeed" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="positionSeed">
+	    insert into hive_object_seed(
+		    seed_id,
+		    object_range,
+		    object_code,
+		    object_seed
+		) values (
+		    #{seedId},
+		    #{objectRange},
+		    #{objectCode},
+		    #{objectSeed}
+		)
+	</insert>
+	
+	<update id="updateObjectSeed" parameterType="map">
+      update hive_object_seed 
+          set object_seed = #{objectSeed}
+      where 
+          seed_id = #{seedId}
+          and object_seed = #{oldObjectSeed};
+    </update>
+	
+	<select id="getByRangeAndCode" parameterType="map" resultMap="objectSeedResultMap">
+		<include refid="sql_select"/>
+            from hive_object_seed
+        where
+            object_range = #{objectRange}
+            and object_code = #{objectCode}
+	</select>
+	
+	
+	
+	<sql id="sql_select">
+		select
+			seed_id,
+			object_range,
+			object_code,
+			object_seed
+	</sql>
+	
+</mapper>

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.member.mapper.MemberMapper">
+
+    <resultMap id="memberResultMap" type="member">
+		<result column="member_id" property="memberId" />
+		<result column="org_id" property="orgId" />
+		<result column="tp_type" property="tpType" />
+		<result column="tp_id" property="tpId" />
+		<result column="account_id" property="accountId" />
+		<result column="show_face_url" property="showFaceUrl" />
+		<result column="verify_face_url" property="verifyFaceUrl" />
+		<result column="member_type" property="memberType" />
+		<result column="charge_flag" property="chargeFlag" />
+		<result column="admin_flag" property="adminFlag" />
+		<result column="member_name" property="memberName" />
+		<result column="nick_name" property="nickName" />
+		<result column="signature" property="signature" />
+		<result column="show_verify_flag" property="showVerifyFlag" />
+		<result column="sex" property="sex" />
+		<result column="age" property="age" />
+		<result column="mobile" property="mobile" />
+		<result column="email" property="email" />
+		<result column="org_email" property="orgEmail" />
+		<result column="birthday" property="birthday" />
+		<result column="cert_type" property="certType" />
+		<result column="cert_no" property="certNo" />
+		<result column="job_num" property="jobNum" />
+		<result column="enter_time" property="enterTime" />
+		<result column="post" property="post" />
+		<result column="hide_flag" property="hideFlag" />
+		<result column="memo" property="memo" />
+		<result column="status" property="status" />
+		<result column="tp_extend" property="tpExtend" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+	
+	<resultMap id="idMappingResultMap" type="com.moredian.skynet.member.service.adapter.response.MemberIdMapping">
+		<result column="member_id" property="memberId" />
+		<result column="tp_id" property="tpId" />
+	</resultMap>
+	
+	<select id="load" parameterType="map" resultMap="memberResultMap">
+	    <include refid="sql_select"/>
+	    from hive_member where org_id = #{orgId} and member_id = #{memberId}
+	</select>
+	
+	<select id="loadByTpId" parameterType="map" resultMap="memberResultMap">
+	    <include refid="sql_select"/>
+	    from hive_member where org_id = #{orgId} and tp_id = #{tpId}
+	</select>
+	
+	<select id="loadByCertNo" parameterType="map" resultMap="memberResultMap">
+	    <include refid="sql_select"/>
+	    from hive_member where org_id = #{orgId} and cert_no = #{certNo}
+	</select>
+	
+	<select id="loadByMobile" parameterType="map" resultMap="memberResultMap">
+	    <include refid="sql_select"/>
+	    from hive_member where org_id = #{orgId} and mobile = #{mobile}
+	</select>
+
+	<update id="updateShowFaceUrl" parameterType="map">
+	    update hive_member set show_face_url = #{showFaceUrl} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<update id="updateVerifyFaceUrl" parameterType="map">
+	    update hive_member set verify_face_url = #{verifyFaceUrl} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<update id="updateSignature" parameterType="map">
+	    update hive_member set signature = #{signature} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<select id="loadByNameAndMobile" parameterType="map" resultMap="memberResultMap">
+	    <include refid="sql_select"/>
+	    from hive_member where org_id = #{orgId} and mobile = #{mobile} and member_name = #{memberName}
+	</select>
+	
+	<select id="count" parameterType="map" resultType="int">
+	    select count(*) from hive_member where org_id = #{orgId} and status = #{status}
+	</select>
+	
+	<select id="countNoVerifyPic" parameterType="map" resultType="int">
+	    select count(*) from hive_member where org_id = #{orgId} and status = #{status} and verify_face_url = ''
+	</select>
+	
+	<select id="findMemberId" parameterType="map" resultType="long">
+	    select member_id from hive_member where org_id = #{orgId} and status = #{status}
+	</select>
+	
+	<select id="findAdminTpIds" parameterType="map" resultType="string">
+	    select tp_id from hive_member where org_id = #{orgId} and admin_flag = #{adminFlag} and status = #{status}
+	</select>
+	
+	<select id="findByIds" parameterType="map" resultMap="memberResultMap">
+	    <include refid="sql_select"/>
+	    from hive_member where org_id = #{orgId} and member_id in 
+	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
+	    
+	    <if test="keywords != null">
+	    and ((mobile like concat(#{keywords},'%')) or (member_name like concat(#{keywords},'%')) or (nick_name like concat(#{keywords},'%')))
+	    </if>
+	    and status = #{status}
+	    order by member_id
+	</select>
+	
+	<select id="getTotalCountByCondition" resultType="int" parameterType="memberQueryCondition" >
+		select 
+			count(DISTINCT(m.member_id))		
+		<include refid="condition_sql_where"/>
+	</select>
+	
+	<select id="findPaginationByCondition" resultMap="memberResultMap" parameterType="memberQueryCondition" >
+		<include refid="condition_sql_select"/>			
+		<include refid="condition_sql_where"/>
+		group by m.member_id
+		order by m.gmt_create desc
+		limit #{startRow}, #{pageSize}
+	</select>
+	
+	<select id="findMemberNamesByIds" parameterType="map" resultType="string">
+	    select member_name from hive_member where org_id = #{orgId} and member_id in 
+	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
+	</select>
+	
+	<select id="findIdsWithoutVerifyUrl" parameterType="map" resultType="long">
+	    select member_id from hive_member where org_id = #{orgId} and verify_face_url = ''
+	</select>
+	
+	<select id="findIdsByOrgId" parameterType="map" resultType="long">
+	    select member_id from hive_member where org_id = #{orgId} and status = #{status}
+	</select>
+	
+	<select id="findFromIds" parameterType="map" resultType="string">
+	    select tp_id from hive_member where org_id = #{orgId} and status = #{status}
+	    <if test="hasVerifyPic != null and !hasVerifyPic">
+			and verify_face_url =''
+		</if>
+	    tp_id != ''
+	</select>
+	
+	<select id="findTpId"  parameterType="map" resultType="string">
+	    select tp_id from hive_member where org_id = #{orgId} and member_id in 
+	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
+	</select>
+	
+	<select id="loadTpUserId" parameterType="map" resultType="string">
+	    select tp_id from hive_member where org_id = #{orgId} and member_id = #{memberId}
+	</select>
+	
+	<update id="updateShowVerifyFlag" parameterType="map">
+	    update hive_member set show_verify_flag = #{showVerifyFlag} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<update id="insert" parameterType="member">
+	    insert into hive_member (
+	        member_id,
+	        org_id,
+	        tp_type,
+	        tp_id,
+	        member_type,
+	        account_id,
+	        show_face_url,
+	        verify_face_url,
+	        charge_flag,
+	        admin_flag,
+	        member_name,
+	        nick_name,
+	        signature,
+	        show_verify_flag,
+	        sex,
+	        age,
+	        mobile,
+	        email,
+	        org_email,
+	        birthday,
+	        cert_type,
+	        cert_no,
+	        job_num,
+	        enter_time,
+	        post,
+	        hide_flag,
+	        memo,
+	        status,
+	        tp_extend,
+	        gmt_create,
+	        gmt_modify
+	    ) values (
+	        #{memberId},
+	        #{orgId},
+	        #{tpType},
+	        #{tpId},
+	        #{memberType},
+	        #{accountId},
+	        #{showFaceUrl},
+	        #{verifyFaceUrl},
+	        #{chargeFlag},
+	        #{adminFlag},
+	        #{memberName},
+	        #{nickName},
+	        #{signature},
+	        #{showVerifyFlag},
+	        #{sex},
+	        #{age},
+	        #{mobile},
+	        #{email},
+	        #{orgEmail},
+	        #{birthday},
+	        #{certType},
+	        #{certNo},
+	        #{jobNum},
+	        #{enterTime},
+	        #{post},
+	        #{hideFlag},
+	        #{memo},
+	        #{status},
+	        #{tpExtend},
+	        now(3),
+	        now(3)
+	    ) ON DUPLICATE KEY UPDATE status = #{status}, gmt_modify = now(3)
+	</update>
+	
+	<update id="updateStatus" parameterType="map">
+	    update hive_member set status = #{status} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<update id="updateAdminFlag" parameterType="map">
+	    update hive_member set admin_flag = #{adminFlag} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<update id="updateChargeFlag" parameterType="map">
+	    update hive_member set charge_flag = #{chargeFlag} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<select id="findAllTpId" parameterType="map" resultType="string">
+	    select tp_id from hive_member where org_id = #{orgId} and status = #{status} limit 20000
+	</select>
+	
+	<update id="updateTpExtend" parameterType="map">
+	    update hive_member set tp_extend = #{tpExtend} where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<update id="update" parameterType="member">
+	    update hive_member
+	    <set>
+		<if test="showFaceUrl != null">
+			show_face_url=#{showFaceUrl},
+		</if>
+		<if test="verifyFaceUrl != null">
+			verify_face_url=#{verifyFaceUrl},
+		</if>
+		<if test="memberType != null">
+			member_type=#{memberType},
+		</if>
+		<if test="memberName != null">
+			member_name=#{memberName},
+		</if>
+		<if test="nickName != null">
+			nick_name=#{nickName},
+		</if>
+		<if test="sex != null">
+			sex=#{sex},
+		</if>
+		<if test="mobile != null">
+			mobile=#{mobile},
+		</if>
+		<if test="email != null">
+			email=#{email},
+		</if>
+		<if test="orgEmail != null">
+			org_email=#{orgEmail},
+		</if>
+		<if test="certNo != null">
+			cert_no=#{certNo},
+		</if>
+		<if test="jobNum != null">
+			job_num=#{jobNum},
+		</if>
+		<if test="enterTime != null">
+			enter_time=#{enterTime},
+		</if>
+		<if test="post != null">
+			post=#{post},
+		</if>
+		<if test="signature != null">
+			signature=#{signature},
+		</if>
+		<if test="birthday != null">
+			birthday=#{birthday},
+		</if>
+		<if test="memo != null">
+			memo=#{memo},
+		</if>
+		<if test="status != null">
+			status=#{status},
+		</if>
+		<if test="tpExtend != null">
+			tp_extend=#{tpExtend},
+		</if>
+			gmt_modify = now(3)
+	    </set>
+	    where org_id = #{orgId} and member_id = #{memberId}
+	</update>
+	
+	<select id="findIdMappingByIds" parameterType="map" resultMap="idMappingResultMap">
+	    select member_id, tp_id from hive_member where org_id = #{orgId} and member_id in 
+	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
+	</select>
+	
+	<select id="findIdMappingByTpIds" parameterType="map" resultMap="idMappingResultMap">
+	    select member_id, tp_id from hive_member where org_id = #{orgId} and tp_id in 
+	    <foreach collection="tpIdList" index="index" item="tpId" open="(" separator="," close=")">#{tpId}</foreach>
+	</select>
+	
+	<sql id="sql_select">
+		select
+			member_id,
+	        org_id,
+	        tp_type,
+	        tp_id,
+	        member_type,
+	        account_id,
+	        show_face_url,
+	        verify_face_url,
+	        charge_flag,
+	        admin_flag,
+	        member_name,
+	        nick_name,
+	        signature,
+	        show_verify_flag,
+	        sex,
+	        age,
+	        mobile,
+	        email,
+	        org_email,
+	        birthday,
+	        cert_type,
+	        cert_no,
+	        job_num,
+	        enter_time,
+	        post,
+	        hide_flag,
+	        memo,
+	        status,
+	        tp_extend,
+	        gmt_create,
+	        gmt_modify	
+	</sql>
+	
+	<sql id="condition_sql_select">
+		select
+	        m.member_id,
+	        m.org_id,
+	        m.tp_type,
+	        m.tp_id,
+	        m.member_type,
+	        m.account_id,
+	        m.show_face_url,
+	        m.verify_face_url,
+	        m.charge_flag,
+	        m.admin_flag,
+	        m.member_name,
+	        m.nick_name,
+	        m.signature,
+	        m.show_verify_flag,
+	        m.sex,
+	        m.age,
+	        m.mobile,
+	        m.email,
+	        m.org_email,
+	        m.birthday,
+	        m.cert_type,
+	        m.cert_no,
+	        m.job_num,
+	        m.enter_time,
+	        m.post,
+	        m.hide_flag,
+	        m.memo,
+	        m.status,
+	        m.gmt_create,
+	        m.gmt_modify	
+	</sql>
+	
+	<sql id="condition_sql_where">
+	    from hive_member m
+	    <if test="deptId != null">
+	    left join hive_dept_relation pd on m.member_id = pd.member_id
+	    </if>
+	    <if test="deptIdList != null">
+	    left join hive_dept_relation pd on m.member_id = pd.member_id
+	    </if>
+	    <where>
+		    m.org_id = #{orgId}
+		<if test="deptId != null">
+	        and pd.dept_id = #{deptId}
+	    </if>
+	    <if test="deptIdList != null">
+	        and pd.dept_id in 
+	        <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
+	    </if>
+		<if test="memberType != null">
+		    and m.member_type = #{memberType}
+		</if>
+		<if test="memberName != null">
+		    and m.member_name = #{memberName}
+		</if>
+		<if test="mobile != null">
+		    and m.mobile like CONCAT('%',#{mobile})
+		</if>
+		<if test="certNo != null">
+		    and m.cert_no like CONCAT('%',#{certNo})
+		</if>
+		<if test="statusList != null">
+		    and m.status in
+		    <foreach collection="statusList" index="index" item="status" open="(" separator="," close=")">#{status}</foreach>
+		</if>
+		<if test="memberIdList != null">
+	        and m.member_id in
+	        <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
+	    </if>
+	    <if test="keywords != null">
+		    and (m.member_name like CONCAT('%',#{keywords},'%') )
+		</if>
+		</where>
+	</sql>
+	
+</mapper>

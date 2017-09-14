@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.device.mapper.DeviceConfigMapper" >
+
+    <resultMap id="deviceConfigResultMap" type="deviceConfig">
+		<result column="device_config_id" property="deviceConfigId" />
+		<result column="device_sn" property="deviceSn" />
+		<result column="xml_config" property="xmlConfig" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>	
+	<insert id="insertOrUpdate" parameterType="deviceConfig">
+		insert into hive_device_config(
+			device_config_id,
+			device_sn,
+			xml_config,
+			gmt_create,
+			gmt_modify	
+		)
+		values (
+		 	#{deviceConfigId},
+			#{deviceSn},
+			#{xmlConfig},
+			now(6),
+			now(6)
+		) on duplicate key update xml_config = #{xmlConfig}
+	</insert>
+	
+	<select id="load" parameterType="string" resultMap="deviceConfigResultMap">
+	    <include refid="sql_select"></include>
+	    from hive_device_config where device_sn = #{deviceSn}
+	</select>
+	
+	<delete id="deleteBySn" parameterType="string">
+	    delete from hive_device_config where device_sn = #{deviceSn}
+	</delete>
+	
+	<sql id="sql_select">
+		select
+			device_config_id,
+			device_sn,
+			xml_config,
+			gmt_create,
+			gmt_modify	
+	</sql>
+	
+</mapper>

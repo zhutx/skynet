@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.moredian.skynet.device.mapper.DeployDetailMapper" >
+
+    <resultMap id="deployDetailResultMap" type="deployDetail">
+		<result column="deploy_detail_id" property="deployDetailId" />
+		<result column="org_id" property="orgId" />
+		<result column="deploy_id" property="deployId" />
+		<result column="group_code" property="groupCode" />
+		<result column="deploy_label" property="deployLabel" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modify" property="gmtModify" />
+	</resultMap>
+
+    <insert id="insert" parameterType="deployDetail">
+        insert into hive_deploy_detail (
+            deploy_detail_id,
+            org_id,
+            deploy_id,
+            group_code,
+            deploy_label,
+            gmt_create,
+            gmt_modify
+        ) values (
+            #{deployDetailId},
+            #{orgId},
+            #{deployId},
+            #{groupCode},
+            #{deployLabel},
+            now(6),
+            now(6)
+        )
+    </insert>
+	
+	<delete id="deleteOne" parameterType="map">
+	    delete from hive_deploy_detail where org_id = #{orgId} and deploy_id = #{deployId} and group_code = #{groupCode}
+	</delete>
+	
+	<select id="findByDeployId" parameterType="map" resultMap="deployDetailResultMap">
+	    <include refid="sql_select"/>
+	    from hive_deploy_detail where org_id = #{orgId} and deploy_id = #{deployId}
+	</select>
+	
+	
+	<sql id="sql_select">
+		select
+			deploy_detail_id,
+			org_id,
+			deploy_id,
+			group_code,
+			deploy_label,
+			gmt_create,
+			gmt_modify	
+	</sql>
+	
+</mapper>
