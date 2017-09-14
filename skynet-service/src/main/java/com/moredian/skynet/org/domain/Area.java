@@ -13,7 +13,6 @@ public class Area implements Serializable {
 	private Integer parentCode;
 	private String zipCode;
 	private String areaNumber;
-	private String operator;
 	private Integer areaLevel;
 	private String extendsInfo;
 	private Date gmtCreate;
@@ -54,12 +53,6 @@ public class Area implements Serializable {
 	}
 	public void setAreaNumber(String areaNumber) {
 		this.areaNumber = areaNumber;
-	}
-	public String getOperator() {
-		return operator;
-	}
-	public void setOperator(String operator) {
-		this.operator = operator;
 	}
 	public Integer getAreaLevel() {
 		return areaLevel;

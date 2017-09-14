@@ -31,7 +31,7 @@ public enum OrgErrorCode implements ErrorCode {
 	
 	DEPT_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "部门已存在"),
 	
-	PARENT_DEPT_NOTEXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "上级部门不存在"),
+	PARENT_DEPT_NOTEXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "父部门不存在"),
 	
 	GROUP_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "组已存在"),
 	

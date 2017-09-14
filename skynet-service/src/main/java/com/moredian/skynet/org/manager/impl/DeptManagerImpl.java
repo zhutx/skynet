@@ -2,8 +2,10 @@ package com.moredian.skynet.org.manager.impl;
 
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.bee.common.utils.BeanUtils;
+import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.org.domain.Dept;
+import com.moredian.skynet.org.enums.OrgErrorCode;
 import com.moredian.skynet.org.enums.TpType;
 import com.moredian.skynet.org.manager.DeptManager;
 import com.moredian.skynet.org.mapper.DeptMapper;
@@ -36,6 +38,17 @@ public class DeptManagerImpl implements DeptManager {
 		BizAssert.notNull(orgId);
 		BizAssert.notBlank(deptName);
 		BizAssert.notNull(parentId);
+		
+		Dept existDept = deptMapper.loadByName(orgId, deptName);
+		if(existDept != null) ExceptionUtils.throwException(OrgErrorCode.DEPT_EXIST, OrgErrorCode.DEPT_EXIST.getMessage());
+		
+		if(parentId == 0L) {
+			Dept rootDept = deptMapper.loadRoot(orgId);
+			if(rootDept != null) ExceptionUtils.throwException(OrgErrorCode.DEPT_EXIST, OrgErrorCode.DEPT_EXIST.getMessage());
+		} else {
+			Dept parentDept = deptMapper.load(orgId, parentId);
+			if(parentDept == null) ExceptionUtils.throwException(OrgErrorCode.PARENT_DEPT_NOTEXIST, OrgErrorCode.PARENT_DEPT_NOTEXIST.getMessage());
+		}
 		
 		Dept dept = new Dept();
 		dept.setOrgId(orgId);
@@ -172,8 +185,19 @@ public class DeptManagerImpl implements DeptManager {
 
 	@Override
 	public boolean updateDept(UpdateDeptRequest request) {
+		BizAssert.notNull(request.getOrgId());
+		BizAssert.notNull(request.getDeptId());
+		BizAssert.notNull(request.getParentId());
+		BizAssert.notBlank(request.getDeptName());
+		
+		if(request.getParentId() != 0) {
+			Dept parentDept = deptMapper.load(request.getOrgId(), request.getParentId());
+			if(parentDept == null) ExceptionUtils.throwException(OrgErrorCode.PARENT_DEPT_NOTEXIST, OrgErrorCode.PARENT_DEPT_NOTEXIST.getMessage());
+		}
+		
 		Dept dept = this.buildDept(request);
 		deptMapper.update(dept);
+		
 		return true;
 	}
 
@@ -228,6 +252,15 @@ public class DeptManagerImpl implements DeptManager {
 		BizAssert.notNull(orgId);
 		BizAssert.notNull(deptId);
 		return deptMapper.load(orgId, deptId);
+	}
+
+	@Override
+	public boolean updateDeptName(Long orgId, Long deptId, String deptName) {
+		BizAssert.notNull(orgId);
+		BizAssert.notNull(deptId);
+		BizAssert.notBlank(deptName);
+		deptMapper.updateDeptName(orgId, deptId, deptName);
+		return true;
 	}
 
 }

@@ -36,6 +36,8 @@ public interface DeptManager {
 	
 	boolean updateDept(UpdateDeptRequest request);
 	
+	boolean updateDeptName(Long orgId, Long deptId, String deptName);
+	
 	Dept getDept(Long orgId, Long deptId);
 	
 	Dept getDeptByTpId(Long orgId, Long tpId);

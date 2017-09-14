@@ -39,7 +39,7 @@ public class PositionManagerImpl implements PositionManager {
 	public Position getRootPosition(Long orgId) {
 		BizAssert.notNull(orgId, "orgId must not be null");
 		
-		Long parentId = orgId;
+		Long parentId = 0L;
 		Integer positionModel = PositionModel.TREE.getValue();
 		return positionMapper.getRoot(orgId, parentId, positionModel);
 	}

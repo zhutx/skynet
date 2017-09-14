@@ -41,4 +41,6 @@ public interface DeptMapper {
 	
 	Dept load(@Param("orgId")Long orgId, @Param("deptId")Long deptId);
 	
+	boolean updateDeptName(@Param("orgId")Long orgId, @Param("deptId")Long deptId, @Param("deptName")String deptName);
+	
 }

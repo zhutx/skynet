@@ -50,7 +50,7 @@
 		from sky_position
 		where 
 		    org_id = #{orgId}
-			and parent_id = #{orgId}
+			and parent_id = #{parentId}
 			and position_model = #{positionModel}
 	</select>
 	

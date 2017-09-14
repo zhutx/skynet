@@ -19,6 +19,7 @@ import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.cloudeye.core.api.CloudeyeErrorCode;
 import com.moredian.cloudeye.core.api.conf.huber.OHuberConfigProvider;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.auth.domain.Role;
 import com.moredian.skynet.auth.manager.OperManager;
 import com.moredian.skynet.auth.manager.PermManager;
@@ -26,6 +27,7 @@ import com.moredian.skynet.auth.manager.RoleManager;
 import com.moredian.skynet.auth.request.OperAddRequest;
 import com.moredian.skynet.auth.request.RoleAddRequest;
 import com.moredian.skynet.auth.service.OperService;
+import com.moredian.skynet.org.domain.Dept;
 import com.moredian.skynet.org.domain.Org;
 import com.moredian.skynet.org.domain.OrgBiz;
 import com.moredian.skynet.org.domain.OrgQueryCondition;
@@ -48,7 +50,6 @@ import com.moredian.skynet.org.request.ModuleAdminConfigRequest;
 import com.moredian.skynet.org.request.OrgAddRequest;
 import com.moredian.skynet.org.request.OrgQueryRequest;
 import com.moredian.skynet.org.request.OrgUpdateRequest;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class OrgManagerImpl implements OrgManager {
@@ -289,24 +290,8 @@ public class OrgManagerImpl implements OrgManager {
 		return true;
 	}
 
-	private Org orgUpdateRequestToOrg(OrgUpdateRequest request) {
-		Org org = new Org();
-		org.setOrgId(request.getOrgId());
-		org.setOrgName(request.getOrgName());
-		org.setProvinceId(request.getProvinceId());
-		org.setCityId(request.getCityId());
-		org.setDistrictId(request.getDistrictId());
-	    org.setContact(request.getContact());
-	    org.setPhone(request.getPhone());
-	    org.setAddress(request.getAddress());
-	    org.setMemo(request.getMemo());
-	    org.setLon(request.getLon());
-		org.setLat(request.getLat());
-		if(request.getLon() != null && request.getLat() != null) {
-			//org.setGeoBit29(GeohashUtil.getGeoLongValueWithLengthAround(request.getLat(), request.getLon(), 29)[0]);
-			//org.setGeoBit27(GeohashUtil.getGeoLongValueWithLengthAround(request.getLat(), request.getLon(), 27)[0]);
-		}
-		return org;
+	private Org requestToDomain(OrgUpdateRequest request) {
+		return BeanUtils.copyProperties(Org.class, request);
 	}
 
 	@Override
@@ -314,14 +299,14 @@ public class OrgManagerImpl implements OrgManager {
 	public boolean updateOrg(OrgUpdateRequest request) {
 		BizAssert.notNull(request.getOrgId(), "orgId must not be null");
 		
-		Org org = orgUpdateRequestToOrg(request);
-		int result = orgMapper.update(org);
-		
-		if(result == 0) ExceptionUtils.throwException(OrgErrorCode.ORG_NOT_EXIST, OrgErrorCode.ORG_NOT_EXIST.getMessage());
+		Org org = requestToDomain(request);
+		orgMapper.update(org);
 		
 		Position rootPosition = positionManager.getRootPosition(request.getOrgId());
 		
 		if(request.getOrgName() != null) { // 修改机构名同步修改位置里的相关描述
+			Dept rootDept = deptManager.getRootDept(request.getOrgId());
+			deptManager.updateDeptName(request.getOrgId(), rootDept.getDeptId(), request.getOrgName());
 			positionManager.updatePosition(rootPosition.getOrgId(), rootPosition.getPositionId(), org.getOrgName());
 		}
 		

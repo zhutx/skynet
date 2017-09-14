@@ -14,17 +14,17 @@
 	
 	<select id="loadByBizType" parameterType="map" resultMap="orgBizResultMap">
 		<include refid="sql_select"/>
-		from hive_org_biz
+		from sky_org_biz
 		where 
 			org_id=#{orgId} and biz_type = #{bizType}
 	</select>
 	
 	<select id="countEnable" parameterType="map" resultType="int">
-	    select count(*) from hive_org_biz where org_id = #{orgId} and status = #{status}
+	    select count(*) from sky_org_biz where org_id = #{orgId} and status = #{status}
 	</select>
 	
 	<insert id="insert" parameterType="orgBiz">
-	    insert into hive_org_biz (
+	    insert into sky_org_biz (
 	        org_biz_id,
 	        org_id,
 			biz_type,
@@ -42,7 +42,7 @@
 	</insert>
 	
 	<update id="updateStatus" parameterType="map">
-	    update hive_org_biz set status = #{status} where org_id = #{orgId} and biz_type = #{bizType}
+	    update sky_org_biz set status = #{status} where org_id = #{orgId} and biz_type = #{bizType}
 	</update>
 	
 	<sql id="sql_select">

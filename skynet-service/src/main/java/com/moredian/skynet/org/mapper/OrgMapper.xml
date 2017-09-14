@@ -104,9 +104,6 @@
 		<if test="orgName != null">
 			org_name=#{orgName},
 		</if>
-		<if test="engName != null">
-			eng_name=#{engName},
-		</if>
 		<if test="provinceId != null">
 			province_id=#{provinceId},
 		</if>
@@ -136,12 +133,6 @@
 		</if>
 		<if test="lat != null">
 			lat=#{lat},
-		</if>
-		<if test="geoBit29 != null">
-			geo_bit_29=#{geoBit29},
-		</if>
-		<if test="geoBit27 != null">
-			geo_bit_27=#{geoBit27},
 		</if>
 		<if test="status != null">
 			status=#{status},

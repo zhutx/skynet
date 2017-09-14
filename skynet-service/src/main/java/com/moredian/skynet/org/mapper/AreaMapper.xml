@@ -10,7 +10,6 @@
 		<result column="parent_code" property="parentCode" />
 		<result column="zip_code" property="zipCode" />
 		<result column="area_number" property="areaNumber" />
-		<result column="operator" property="operator" />
 		<result column="area_level" property="areaLevel" />
 		<result column="extends_info" property="extendsInfo" />
 		<result column="gmt_create" property="gmtCreate" />
@@ -19,25 +18,25 @@
 	
 	<select id="findByParent" parameterType="int" resultMap="areaResultMap">
 	    <include refid="sql_select"/>
-	        from hive_area where parent_code = #{parentCode} order by area_id
+	        from sky_area where parent_code = #{parentCode} order by area_id
 	</select>
 	
 	<select id="findChildrenCode" parameterType="int" resultType="int">
-	    select area_code from hive_area where parent_code = #{parentCode} order by area_id
+	    select area_code from sky_area where parent_code = #{parentCode} order by area_id
 	</select>
 	
 	<select id="loadByCode" parameterType="int" resultMap="areaResultMap">
 	    <include refid="sql_select"/>
-	    from hive_area where area_code = #{areaCode}
+	    from sky_area where area_code = #{areaCode}
 	</select>
 	
 	<select id="findByPrefix" parameterType="map" resultMap="areaResultMap">
 	    <include refid="sql_select"/>
-	        from hive_area where area_code like CONCAT(#{prefixCode},'%') and area_level = #{areaLevel} order by area_id
+	        from sky_area where area_code like CONCAT(#{prefixCode},'%') and area_level = #{areaLevel} order by area_id
 	</select>
 	
 	<update id="updateExtendsInfo" parameterType="map">
-	    update hive_area set extends_info = #{extendsInfo} where area_id = #{areaId}
+	    update sky_area set extends_info = #{extendsInfo} where area_id = #{areaId}
 	</update>
 	
 	<sql id="sql_select">
@@ -48,7 +47,6 @@
 			parent_code,
 			zip_code,
 			area_number,
-			operator,
 			area_level,
 			extends_info,
 			gmt_create,

@@ -56,6 +56,10 @@
 		where org_id = #{orgId} and dept_id = #{deptId}
 	</update>
 	
+	<update id="updateDeptName"  parameterType="map">
+	    update sky_dept set dept_name=#{deptName} where org_id = #{orgId} and dept_id = #{deptId}
+	</update>
+	
 	<select id="findDepts" parameterType="map" resultMap="deptResultMap">
 	    <include refid="sql_select"/>
 	    from sky_dept 

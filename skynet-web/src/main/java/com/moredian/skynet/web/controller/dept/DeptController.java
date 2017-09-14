@@ -42,7 +42,7 @@ public class DeptController extends BaseController {
 	@Autowired
 	private ImageFileManager imageFileManager;
 	
-	@ApiOperation(value="添加部门", notes="添加部门")
+	@ApiOperation(value="创建部门", notes="创建部门")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
