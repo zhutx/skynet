@@ -40,12 +40,11 @@ public class DeptManagerImpl implements DeptManager {
 		
 		Dept dept = new Dept();
 		dept.setOrgId(orgId);
-		
 		dept.setDeptId(this.genPrimaryKey(Dept.class.getName()));
 		dept.setDeptName(deptName);
 		dept.setParentId(parentId);
 		dept.setTpType(TpType.SELF.getValue());
-		dept.setTpId(dept.getDeptId());
+		dept.setTpId(String.valueOf(dept.getDeptId()));
 		
 		deptMapper.insert(dept);
 		

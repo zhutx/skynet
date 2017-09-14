@@ -11,7 +11,7 @@ public class Dept implements Serializable {
 	private Long deptId;
 	private Long orgId;
 	private Integer tpType;
-	private Long tpId;
+	private String tpId;
 	private String deptName;
 	private Long parentId;
 	private String tpExtend;
@@ -36,10 +36,10 @@ public class Dept implements Serializable {
 	public void setTpType(Integer tpType) {
 		this.tpType = tpType;
 	}
-	public Long getTpId() {
+	public String getTpId() {
 		return tpId;
 	}
-	public void setTpId(Long tpId) {
+	public void setTpId(String tpId) {
 		this.tpId = tpId;
 	}
 	public String getDeptName() {

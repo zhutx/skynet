@@ -247,7 +247,7 @@ public class MemberManagerImpl implements MemberManager {
 			deptMember.setDeptRelationId(this.genPrimaryId(DeptRelation.class.getName()));
 			deptMember.setOrgId(request.getOrgId());
 			deptMember.setDeptId(deptId);
-			deptMember.setTpDeptId(deptId);
+			deptMember.setTpDeptId(String.valueOf(deptId));
 			deptMember.setMemberId(member.getMemberId());
 			deptMember.setLeaderFlag(YesNoFlag.NO.getValue());
 			deptMember.setStatus(YesNoFlag.YES.getValue());

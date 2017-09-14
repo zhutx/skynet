@@ -7,7 +7,7 @@ public class DeptRelation {
 	private Long deptRelationId;
 	private Long orgId;
 	private Long deptId;
-	private Long tpDeptId;
+	private String tpDeptId;
 	private Long memberId;
 	private Integer leaderFlag;
 	private Integer status;
@@ -32,10 +32,10 @@ public class DeptRelation {
 	public void setDeptId(Long deptId) {
 		this.deptId = deptId;
 	}
-	public Long getTpDeptId() {
+	public String getTpDeptId() {
 		return tpDeptId;
 	}
-	public void setTpDeptId(Long tpDeptId) {
+	public void setTpDeptId(String tpDeptId) {
 		this.tpDeptId = tpDeptId;
 	}
 	public Long getMemberId() {
