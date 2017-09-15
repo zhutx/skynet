@@ -7,6 +7,7 @@ public class GroupData {
 	private String groupName;
 	private Integer systemDefault;
 	private Integer allMemberFlag;
+	private Integer blackFlag;
 	private Integer personSize;
 	
 	public Long getGroupId() {
@@ -32,6 +33,12 @@ public class GroupData {
 	}
 	public void setAllMemberFlag(Integer allMemberFlag) {
 		this.allMemberFlag = allMemberFlag;
+	}
+	public Integer getBlackFlag() {
+		return blackFlag;
+	}
+	public void setBlackFlag(Integer blackFlag) {
+		this.blackFlag = blackFlag;
 	}
 	public Integer getSystemDefault() {
 		return systemDefault;

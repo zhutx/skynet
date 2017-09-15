@@ -14,7 +14,8 @@ public class Group implements Serializable {
 	private String groupName;
 	private Integer systemDefault;
 	private Integer allMemberFlag;
-	private Integer memberSize;
+	private Integer blackFlag;
+	private Integer personSize;
 	private Date gmtCreate;
 	private Date gmtModify;
 	
@@ -60,11 +61,17 @@ public class Group implements Serializable {
 	public void setAllMemberFlag(Integer allMemberFlag) {
 		this.allMemberFlag = allMemberFlag;
 	}
-	public Integer getMemberSize() {
-		return memberSize;
+	public Integer getBlackFlag() {
+		return blackFlag;
 	}
-	public void setMemberSize(Integer memberSize) {
-		this.memberSize = memberSize;
+	public void setBlackFlag(Integer blackFlag) {
+		this.blackFlag = blackFlag;
+	}
+	public Integer getPersonSize() {
+		return personSize;
+	}
+	public void setPersonSize(Integer personSize) {
+		this.personSize = personSize;
 	}
 	public Date getGmtCreate() {
 		return gmtCreate;

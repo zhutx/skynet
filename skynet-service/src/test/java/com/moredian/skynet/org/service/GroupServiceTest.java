@@ -67,7 +67,7 @@ public class GroupServiceTest {
 		GroupInfo group = this.fetchOneSystemGroup();
 		String groupName = group.getGroupName()+"UT";
 		try {
-			groupService.editGroup(orgId, group.getGroupId(), groupName);
+			groupService.updateGroupName(orgId, group.getGroupId(), groupName);
 		} catch (BizException e) {
 			Assert.isTrue(e.getErrorContext().equalsErrorCode(OrgErrorCode.GROUP_NAME_UPDATE_REFUSE));
 		}
@@ -79,7 +79,7 @@ public class GroupServiceTest {
 		GroupInfo group = this.fetchOneCustomGroup();
 		if(group != null) {
 			String groupName = group.getGroupName()+"UT";
-			ServiceResponse<Boolean> sr = groupService.editGroup(orgId, group.getGroupId(), groupName);
+			ServiceResponse<Boolean> sr = groupService.updateGroupName(orgId, group.getGroupId(), groupName);
 			Assert.isTrue(sr.isSuccess());
 		}
 
@@ -131,18 +131,6 @@ public class GroupServiceTest {
 		List<String> groupNameList = groupService.findGroupNameByIds(orgId, groupIdList);
 		Assert.notEmpty(groupNameList);
 		logger.info(JsonUtils.toJson(groupNameList));
-
-	}
-	
-	@Test
-	public void testGetGroupByCode() {	
-		
-		GroupInfo group = this.fetchOneGroup();
-		String groupCode = group.getGroupCode();
-		
-		GroupInfo groupInfo = groupService.getGroupByCode(orgId, groupCode);
-		Assert.notNull(groupInfo);
-		logger.info(JsonUtils.toJson(groupInfo));
 
 	}
 	

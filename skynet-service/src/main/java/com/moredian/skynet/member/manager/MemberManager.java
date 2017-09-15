@@ -102,5 +102,7 @@ public interface MemberManager {
 	boolean toggleAdminFlag(Long orgId, Long memberId, Integer adminFlag);
 	
 	boolean toggleChargeFlag(Long orgId, Long memberId, Integer chargeFlag);
+	
+	int getCount(Long orgId);
 
 }

@@ -4,12 +4,11 @@
 <mapper namespace="com.moredian.skynet.device.mapper.DeviceGroupMapper" >
 
     <insert id="insert" parameterType="deviceGroup">
-		insert into hive_device_group(
+		insert into sky_device_group(
 			device_group_id,
 			org_id,
 			device_id,
 			group_id,
-			group_code,
 			gmt_create,
 			gmt_modify	
 		)
@@ -18,39 +17,34 @@
 			#{orgId},
 			#{deviceId},
 			#{groupId},
-			#{groupCode},
 			now(6),
 			now(6)
 		)
 	</insert>
 
 	<delete id="deleteByGroup" parameterType="map">
-	    delete from hive_device_group where org_id = #{orgId} and group_id = #{groupId}
+	    delete from sky_device_group where org_id = #{orgId} and group_id = #{groupId}
 	</delete>
 	
 	<delete id="deleteByDevice" parameterType="map">
-	    delete from hive_device_group where org_id = #{orgId} and device_id = #{deviceId}
+	    delete from sky_device_group where org_id = #{orgId} and device_id = #{deviceId}
 	</delete>
 	
 	<select id="findDeviceIdByGroupIds" parameterType="map" resultType="long">
-	    select DISTINCT(device_id) from hive_device_group where org_id = #{orgId} and group_id in
+	    select DISTINCT(device_id) from sky_device_group where org_id = #{orgId} and group_id in
 	    <foreach collection="groupIdList" index="index" item="groupId" open="(" separator="," close=")">#{groupId}</foreach>
 	</select>
 	
 	<select id="findDeviceIdByGroupId" parameterType="map" resultType="long">
-	    select device_id from hive_device_group where org_id = #{orgId} and group_id = #{groupId}
-	</select>
-	
-	<select id="findGroupCodeByDeviceId" parameterType="map" resultType="string">
-	    select group_code from hive_device_group where org_id = #{orgId} and device_id = #{deviceId}
+	    select device_id from sky_device_group where org_id = #{orgId} and group_id = #{groupId}
 	</select>
 	
 	<select id="findGroupIdByDeviceId" parameterType="map" resultType="long">
-	    select group_id from hive_device_group where org_id = #{orgId} and device_id = #{deviceId}
+	    select group_id from sky_device_group where org_id = #{orgId} and device_id = #{deviceId}
 	</select>
 	
 	<delete id="delete" parameterType="map">
-	    delete from hive_device_group where org_id = #{orgId} and device_id = #{deviceId} and group_id = #{groupId}
+	    delete from sky_device_group where org_id = #{orgId} and device_id = #{deviceId} and group_id = #{groupId}
 	</delete>
 	
 </mapper>

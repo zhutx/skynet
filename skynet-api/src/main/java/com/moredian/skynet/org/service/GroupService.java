@@ -10,13 +10,13 @@ import com.moredian.skynet.org.request.GroupQueryRequest;
 
 public interface GroupService {
 	
-	ServiceResponse<Long> addSimpleGroup(Long orgId, String groupName, boolean allMemberUse);
+	ServiceResponse<Long> addSimpleGroup(Long orgId, String groupName, Integer allMemberFlag);
 	
 	ServiceResponse<Long> addGroup(GroupAddRequest request);
 	
 	ServiceResponse<Boolean> deleteGroup(Long orgId, Long groupId);
 	
-	ServiceResponse<Boolean> editGroup(Long orgId, Long groupId, String groupName);
+	ServiceResponse<Boolean> updateGroupName(Long orgId, Long groupId, String groupName);
 	
 	int countGroup(Long orgId);
 	
@@ -45,8 +45,6 @@ public interface GroupService {
 	List<GroupInfo> findGroupByIds(Long orgId, List<Long> groupIdList);
 	
 	List<String> findGroupNameByIds(Long orgId, List<Long> groupIdList);
-	
-	GroupInfo getGroupByCode(Long orgId, String groupCode);
 	
 	List<Long> findGroupIdByTypes(Long orgId, List<Integer> groupTypeList);
 	

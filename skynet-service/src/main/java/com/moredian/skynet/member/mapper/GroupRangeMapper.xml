@@ -14,7 +14,7 @@
 	</resultMap>
 	
 	<insert id="insert" parameterType="groupRange">
-	    insert into hive_group_range (
+	    insert into sky_group_range (
 	        group_range_id,
 			org_id,
 			group_id,
@@ -34,23 +34,23 @@
 	</insert>
 	
 	<select id="findRangeIdByGroupId" parameterType="map" resultType="long">
-	    select range_id from hive_group_range where org_id = #{orgId} and group_id = #{groupId} and range_type = #{rangeType} order by range_id
+	    select range_id from sky_group_range where org_id = #{orgId} and group_id = #{groupId} and range_type = #{rangeType} order by range_id
 	</select>
 	
 	<delete id="delete" parameterType="groupRange">
-	    delete from hive_group_range where org_id = #{orgId} and group_id = #{groupId} and range_type = #{rangeType} and range_id = #{rangeId}
+	    delete from sky_group_range where org_id = #{orgId} and group_id = #{groupId} and range_type = #{rangeType} and range_id = #{rangeId}
 	</delete>
 	
 	<delete id="deleteByGroupId" parameterType="map">
-	    delete from hive_group_range where org_id = #{orgId} and group_id = #{groupId}
+	    delete from sky_group_range where org_id = #{orgId} and group_id = #{groupId}
 	</delete>
 	
 	<delete id="deleteByRangeId" parameterType="map">
-	    delete from hive_group_range where org_id = #{orgId} and range_type = #{rangeType} and range_id = #{rangeId}
+	    delete from sky_group_range where org_id = #{orgId} and range_type = #{rangeType} and range_id = #{rangeId}
 	</delete>
 	
 	<select id="findGroupIdByRanges" parameterType="map" resultType="long">
-	    select DISTINCT(group_id) from hive_group_range where org_id = #{orgId} and range_type = #{rangeType} and range_id in
+	    select DISTINCT(group_id) from sky_group_range where org_id = #{orgId} and range_type = #{rangeType} and range_id in
 	    <foreach collection="rangeIdList" index="index" item="rangeId" open="(" separator="," close=")">#{rangeId}</foreach>
 	</select>
 	

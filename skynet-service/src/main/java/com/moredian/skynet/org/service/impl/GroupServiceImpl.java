@@ -26,8 +26,8 @@ public class GroupServiceImpl implements GroupService {
 	private GroupManager groupManager;
 
 	@Override
-	public ServiceResponse<Long> addSimpleGroup(Long orgId, String groupName, boolean allMemberUse) {
-		Long groupId = groupManager.addSimpleGroup(orgId, groupName, allMemberUse);
+	public ServiceResponse<Long> addSimpleGroup(Long orgId, String groupName, Integer allMemberFlag) {
+		Long groupId = groupManager.addSimpleGroup(orgId, groupName, allMemberFlag);
 		return new ServiceResponse<Long>(true, null, groupId);
 	}
 
@@ -44,8 +44,8 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public ServiceResponse<Boolean> editGroup(Long orgId, Long groupId, String groupName) {
-		boolean result = groupManager.editGroup(orgId, groupId, groupName);
+	public ServiceResponse<Boolean> updateGroupName(Long orgId, Long groupId, String groupName) {
+		boolean result = groupManager.updateGroupName(orgId, groupId, groupName);
 		return new ServiceResponse<Boolean>(true, null, result);
 	}
 	
@@ -144,12 +144,6 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public GroupInfo getGroupByName(Long orgId, String groupName) {
 		Group group = groupManager.getGroupByName(orgId, groupName);
-		return groupToGroupInfo(group);
-	}
-
-	@Override
-	public GroupInfo getGroupByCode(Long orgId, String groupCode) {
-		Group group = groupManager.getGroupByCode(orgId, groupCode);
 		return groupToGroupInfo(group);
 	}
 

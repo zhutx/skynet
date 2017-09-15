@@ -11,11 +11,11 @@ import com.moredian.skynet.org.request.GroupQueryRequest;
 
 public interface GroupManager {
 	
-	Long addSimpleGroup(Long orgId, String groupName, boolean allMemberUse);
+	Long addSimpleGroup(Long orgId, String groupName, Integer allMemberFlag);
 	
 	Long addGroup(GroupAddRequest request);
 	
-	boolean editGroup(Long orgId, Long groupId, String groupName);
+	boolean updateGroupName(Long orgId, Long groupId, String groupName);
 	
 	int countGroup(Long orgId);
 	
@@ -42,8 +42,6 @@ public interface GroupManager {
 	boolean resetMemberSize(Long orgId, Long groupId, int memberSize);
 	
 	Group getGroupByName(Long orgId, String groupName);
-	
-	Group getGroupByCode(Long orgId, String groupCode);
 	
 	List<Group> findGroupByIds(Long orgId, List<Long> groupIdList);
 	

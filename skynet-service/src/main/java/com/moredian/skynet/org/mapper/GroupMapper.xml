@@ -5,107 +5,102 @@
 
     <resultMap id="groupResultMap" type="group">
         <result column="group_id" property="groupId" />
-        <result column="group_code" property="groupCode" />
 		<result column="org_id" property="orgId" />
 		<result column="group_type" property="groupType" />
 		<result column="group_name" property="groupName" />
 		<result column="system_default" property="systemDefault" />
 		<result column="all_member_flag" property="allMemberFlag" />
-		<result column="member_size" property="memberSize" />
+		<result column="black_flag" property="blackFlag" />
+		<result column="person_size" property="personSize" />
 		<result column="gmt_create" property="gmtCreate" />
 		<result column="gmt_modify" property="gmtModify" />
 	</resultMap>
 	
 	<insert id="insert" parameterType="group">
-	    insert into hive_group (
+	    insert into sky_group (
 	        group_id,
-	        group_code,
 	        org_id,
 	        group_type,
 	        group_name,
 	        system_default,
 	        all_member_flag,
-	        member_size,
+	        black_flag,
+	        person_size,
 	        gmt_create,
 	        gmt_modify
 	    ) values (
 	        #{groupId},
-	        #{groupCode},
 	        #{orgId},
 	        #{groupType},
 	        #{groupName},
 	        #{systemDefault},
 	        #{allMemberFlag},
-	        #{memberSize},
+	        #{blackFlag},
+	        #{personSize},
 	        now(6),
 	        now(6)
 	    )
 	</insert>
 	
 	<update id="update" parameterType="group">
-	    update hive_group set group_name = #{groupName} where org_id = #{orgId} and group_id = #{groupId}
+	    update sky_group set group_name = #{groupName} where org_id = #{orgId} and group_id = #{groupId}
 	</update>
 	
 	<select id="loadByGroupName" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId} and group_name = #{groupName}
-	</select>
-	
-	<select id="loadByGroupCode" parameterType="map" resultMap="groupResultMap">
-	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId} and group_code = #{groupCode}
+	    from sky_group where org_id = #{orgId} and group_name = #{groupName}
 	</select>
 	
 	<select id="loadByGroupType" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId} and group_type = #{groupType}
+	    from sky_group where org_id = #{orgId} and group_type = #{groupType}
 	</select>
 	
 	<select id="findAllMemberUseGroupIds" parameterType="map" resultType="long">
-	    select group_id from hive_group where org_id = #{orgId} and all_member_flag = #{allMemberFlag}
+	    select group_id from sky_group where org_id = #{orgId} and all_member_flag = #{allMemberFlag}
 	</select>
 	
-	<update id="incMemberSize" parameterType="map">
-	    update hive_group set member_size = member_size + #{memberSize} where org_id = #{orgId} and group_id = #{groupId}
+	<update id="incPersonSize" parameterType="map">
+	    update sky_group set person_size = person_size + #{personSize} where org_id = #{orgId} and group_id = #{groupId}
 	</update>
 	
-	<update id="decMemberSize" parameterType="map">
-	    update hive_group set member_size = member_size - #{memberSize} where org_id = #{orgId} and group_id = #{groupId}
+	<update id="decPersonSize" parameterType="map">
+	    update sky_group set person_size = person_size - #{personSize} where org_id = #{orgId} and group_id = #{groupId}
 	</update>
 	
-	<update id="updateMemberSize" parameterType="map">
-	    update hive_group set member_size = #{memberSize} where org_id = #{orgId} and group_id = #{groupId}
+	<update id="updatePersonSize" parameterType="map">
+	    update sky_group set person_size = #{personSize} where org_id = #{orgId} and group_id = #{groupId}
 	</update>
 	
 	<select id="count" parameterType="long" resultType="int">
-	    select count(*) from hive_group where org_id = #{orgId}
+	    select count(*) from sky_group where org_id = #{orgId}
 	</select>
 	
 	<select id="findByIds" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId} and group_id in
+	    from sky_group where org_id = #{orgId} and group_id in
 	    <foreach collection="groupIdList" index="index" item="groupId" open="(" separator="," close=")">#{groupId}</foreach>
 	</select>
 	
 	<select id="findNameByIds" parameterType="map" resultType="string">
 	    select group_name
-	    from hive_group where org_id = #{orgId} and group_id in
+	    from sky_group where org_id = #{orgId} and group_id in
 	    <foreach collection="groupIdList" index="index" item="groupId" open="(" separator="," close=")">#{groupId}</foreach>
 	</select>
 	
 	<select id="load" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId} and group_id = #{groupId}
+	    from sky_group where org_id = #{orgId} and group_id = #{groupId}
 	</select>
 	
 	<select id="loadQYGroup" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId} and group_type = #{groupType}
+	    from sky_group where org_id = #{orgId} and group_type = #{groupType}
 	</select>
 	
 	<select id="findAll" parameterType="long" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from hive_group where org_id = #{orgId}
+	    from sky_group where org_id = #{orgId}
 	</select>
 	
 	<select id="findByCondition" parameterType="groupQueryCondition" resultMap="groupResultMap">
@@ -114,15 +109,15 @@
 	</select>
 	
 	<delete id="delete" parameterType="map">
-	    delete from hive_group where org_id = #{orgId} and group_id = #{groupId}
+	    delete from sky_group where org_id = #{orgId} and group_id = #{groupId}
 	</delete>
 	
 	<update id="updateAllMemberFlag" parameterType="map">
-	    update hive_group set all_member_flag = #{allMemberFlag}, member_size = 0 where org_id = #{orgId} and group_id = #{groupId}
+	    update sky_group set all_member_flag = #{allMemberFlag}, person_size = 0 where org_id = #{orgId} and group_id = #{groupId}
 	</update>
 	
 	<update id="justUpdateAllMemberFlag" parameterType="map">
-	    update hive_group set all_member_flag = #{allMemberFlag} where org_id = #{orgId} and group_id = #{groupId}
+	    update sky_group set all_member_flag = #{allMemberFlag} where org_id = #{orgId} and group_id = #{groupId}
 	</update>
 	
 	<select id="getTotalCountByCondition" resultType="int" parameterType="groupQueryCondition" >
@@ -139,26 +134,26 @@
 	</select>
 	
 	<select id="findGroupIdByTypes" parameterType="map" resultType="long">
-	    select group_id from hive_group where org_id = #{orgId} and group_type in
+	    select group_id from sky_group where org_id = #{orgId} and group_type in
 	    <foreach collection="groupTypeList" index="index" item="groupType" open="(" separator="," close=")">#{groupType}</foreach>
 	</select>
 	
 	<sql id="sql_select">
 		select
 			group_id,
-			group_code,
 			group_type,
 			org_id,
 			group_name,
 			system_default,
 			all_member_flag,
-			member_size,
+			black_flag,
+			person_size,
 			gmt_create,
 			gmt_modify
 	</sql>
 	
 	<sql id="condition_sql_where">
-	    from hive_group
+	    from sky_group
 	    <where>
 	    org_id = #{orgId}
 		<if test="groupName != null">

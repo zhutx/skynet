@@ -9,7 +9,6 @@ public class GroupRangeConfigModel {
 	private Long groupId;
 	private List<Long> deptIds = new ArrayList<>();
 	private List<Long> memberIds = new ArrayList<>();
-	private Integer allMemberFlag = 0;
 	
 	public Long getOrgId() {
 		return orgId;
@@ -34,12 +33,6 @@ public class GroupRangeConfigModel {
 	}
 	public void setMemberIds(List<Long> memberIds) {
 		this.memberIds = memberIds;
-	}
-	public Integer getAllMemberFlag() {
-		return allMemberFlag;
-	}
-	public void setAllMemberFlag(Integer allMemberFlag) {
-		this.allMemberFlag = allMemberFlag;
 	}
 
 }

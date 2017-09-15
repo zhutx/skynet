@@ -1,5 +1,18 @@
 package com.moredian.skynet.device.manager.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.bee.common.utils.ExceptionUtils;
@@ -10,7 +23,12 @@ import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.rmq.EventBus;
 import com.moredian.bee.rmq.annotation.Subscribe;
 import com.moredian.bee.tube.annotation.SI;
-import com.moredian.skynet.common.model.msg.*;
+import com.moredian.idgenerator.service.IdgeneratorService;
+import com.moredian.skynet.common.model.msg.BindDefaultSubjectMsg;
+import com.moredian.skynet.common.model.msg.DeleteGroupRelationDataMsg;
+import com.moredian.skynet.common.model.msg.RefreshDeviceConfigMsg;
+import com.moredian.skynet.common.model.msg.RemoveDeviceSubjectMsg;
+import com.moredian.skynet.common.model.msg.SyncLocalDeployMsg;
 import com.moredian.skynet.device.domain.Device;
 import com.moredian.skynet.device.domain.DeviceConfig;
 import com.moredian.skynet.device.domain.DeviceMatch;
@@ -18,12 +36,20 @@ import com.moredian.skynet.device.domain.DeviceQueryCondition;
 import com.moredian.skynet.device.enums.DeviceAction;
 import com.moredian.skynet.device.enums.DeviceErrorCode;
 import com.moredian.skynet.device.enums.DeviceType;
-import com.moredian.skynet.device.manager.*;
+import com.moredian.skynet.device.manager.CameraDeviceManager;
+import com.moredian.skynet.device.manager.CloudeyeDeviceSyncProxy;
+import com.moredian.skynet.device.manager.DeviceGroupManager;
+import com.moredian.skynet.device.manager.DeviceManager;
+import com.moredian.skynet.device.manager.DeviceMatchManager;
 import com.moredian.skynet.device.mapper.DeviceConfigMapper;
 import com.moredian.skynet.device.mapper.DeviceGroupMapper;
 import com.moredian.skynet.device.mapper.DeviceMapper;
 import com.moredian.skynet.device.model.DeviceInfo;
-import com.moredian.skynet.device.request.*;
+import com.moredian.skynet.device.request.DeviceActiveRequest;
+import com.moredian.skynet.device.request.DeviceAddRequest;
+import com.moredian.skynet.device.request.DeviceMatchRequest;
+import com.moredian.skynet.device.request.DeviceQueryRequest;
+import com.moredian.skynet.device.request.DeviceUpdateRequest;
 import com.moredian.skynet.device.response.DeviceActiveResponse;
 import com.moredian.skynet.device.utils.HttpInvoker;
 import com.moredian.skynet.device.utils.HttpInvokerResponse;
@@ -33,17 +59,8 @@ import com.moredian.skynet.org.model.OrgInfo;
 import com.moredian.skynet.org.response.PositionInfo;
 import com.moredian.skynet.org.service.OrgService;
 import com.moredian.skynet.org.service.PositionService;
-import com.moredian.idgenerator.service.IdgeneratorService;
 import com.xier.guard.accessKey.dto.AccessKeyDto;
 import com.xier.guard.accessKey.service.UserAccessKeyService;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 public class DeviceManagerImpl implements DeviceManager {

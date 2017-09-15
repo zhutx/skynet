@@ -14,7 +14,7 @@
 	</resultMap>
 	
 	<insert id="insert" parameterType="groupPerson">
-	    insert into hive_group_person (
+	    insert into sky_group_person (
 	        group_person_id,
 			org_id,
 			group_id,
@@ -34,32 +34,32 @@
 	</insert>
 	
 	<select id="findPersonId" parameterType="map" resultType="long">
-	    select person_id from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
+	    select person_id from sky_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
 	</select>
 	
 	<select id="findPerson" parameterType="map" resultType="groupPerson">
 	    <include refid="sql_select"></include>
-	    from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
+	    from sky_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
 	</select>
 	
 	<delete id="delete" parameterType="groupPerson">
-	    delete from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_id = #{personId}
+	    delete from sky_group_person where org_id = #{orgId} and group_id = #{groupId} and person_id = #{personId}
 	</delete>
 	
 	<delete id="deleteByGroupId" parameterType="map">
-	    delete from hive_group_person where org_id = #{orgId} and group_id = #{groupId}
+	    delete from sky_group_person where org_id = #{orgId} and group_id = #{groupId}
 	</delete>
 	
 	<delete id="deleteByPerson" parameterType="map">
-	    delete from hive_group_person where org_id = #{orgId} and person_type = #{personType} and person_id = #{personId}
+	    delete from sky_group_person where org_id = #{orgId} and person_type = #{personType} and person_id = #{personId}
 	</delete>
 	
 	<select id="findGroupIdByMember" parameterType="map" resultType="long">
-	    select group_id from hive_group_person where org_id = #{orgId} and person_type = #{personType} and person_id = #{personId}
+	    select group_id from sky_group_person where org_id = #{orgId} and person_type = #{personType} and person_id = #{personId}
 	</select>
 	
 	<select id="getPersonSize" parameterType="map" resultType="int">
-	    select count(*) from hive_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
+	    select count(*) from sky_group_person where org_id = #{orgId} and group_id = #{groupId} and person_type = #{personType}
 	</select>
 	
 	<sql id="sql_select">

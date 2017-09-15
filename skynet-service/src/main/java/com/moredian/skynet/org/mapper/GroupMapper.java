@@ -17,13 +17,11 @@ public interface GroupMapper {
 	
 	Group loadByGroupName(@Param("orgId")Long orgId, @Param("groupName")String groupName);
 	
-	Group loadByGroupCode(@Param("orgId")Long orgId, @Param("groupCode")String groupCode);
+	int incPersonSize(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("personSize")Integer personSize);
 	
-	int incMemberSize(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("memberSize")Integer memberSize);
+	int decPersonSize(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("personSize")Integer personSize);
 	
-	int decMemberSize(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("memberSize")Integer memberSize);
-	
-	int updateMemberSize(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("memberSize")Integer memberSize);
+	int updatePersonSize(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("personSize")Integer personSize);
 	
 	int count(Long orgId);
 	

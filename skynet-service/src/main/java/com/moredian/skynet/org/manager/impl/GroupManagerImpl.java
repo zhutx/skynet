@@ -20,9 +20,13 @@ import com.moredian.bee.mybatis.convertor.PaginationConvertor;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.rmq.EventBus;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ConfigGroupRelationDataMsg;
-import com.moredian.skynet.common.model.msg.DeleteGroupRelationDataMsg;
 import com.moredian.skynet.common.model.msg.ResetGroupRelationDataMsg;
+import com.moredian.skynet.device.manager.DeviceGroupManager;
+import com.moredian.skynet.member.enums.PersonType;
+import com.moredian.skynet.member.manager.GroupPersonManager;
+import com.moredian.skynet.member.manager.GroupRangeManager;
 import com.moredian.skynet.member.manager.MemberManager;
 import com.moredian.skynet.org.domain.Group;
 import com.moredian.skynet.org.domain.GroupQueryCondition;
@@ -34,7 +38,6 @@ import com.moredian.skynet.org.mapper.GroupMapper;
 import com.moredian.skynet.org.model.GroupInfo;
 import com.moredian.skynet.org.request.GroupAddRequest;
 import com.moredian.skynet.org.request.GroupQueryRequest;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class GroupManagerImpl implements GroupManager {
@@ -48,30 +51,42 @@ public class GroupManagerImpl implements GroupManager {
 	@Value("${rmq.switch}")
 	private int rmqSwitch;
 	@Autowired
+	private GroupRangeManager groupRangeManager;
+	@Autowired
+	private GroupPersonManager groupPersonManager;
+	@Autowired
+	private DeviceGroupManager deviceGroupManager;
+	@Autowired
 	private MemberManager memberManager;
 	
-	private Long genGroupId() {
-		return idgeneratorService.getNextIdByTypeName("com.moredian.skynet.org.Group").getData();
+	private Long genPrimaryKey(String name) {
+		return idgeneratorService.getNextIdByTypeName(name).getData();
 	}
 
 	@Override
-	public Long addSimpleGroup(Long orgId, String groupName, boolean allMemberUse) {
+	public Long addSimpleGroup(Long orgId, String groupName, Integer allMemberFlag) {
 		
 		BizAssert.notNull(orgId, "orgId must not be null");
 		BizAssert.notBlank(groupName, "groupName must not be blank");
+		BizAssert.notNull(allMemberFlag, "allMemberFlag must not be null");
 		
 		Group group = groupMapper.loadByGroupName(orgId, groupName);
 		if(group != null) ExceptionUtils.throwException(OrgErrorCode.GROUP_EXIST, OrgErrorCode.GROUP_EXIST.getMessage());
 		
 		group = new Group();
-		group.setGroupId(genGroupId());
+		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
 		group.setOrgId(orgId);
 		group.setGroupCode(String.valueOf(group.getGroupId()));
 		group.setGroupName(groupName);
 		group.setGroupType(GroupType.CUSTOM.getValue());
 		group.setSystemDefault(YesNoFlag.NO.getValue());
-		group.setAllMemberFlag(allMemberUse?YesNoFlag.YES.getValue():YesNoFlag.NO.getValue());
-		group.setMemberSize(0);
+		group.setAllMemberFlag(allMemberFlag);
+		group.setBlackFlag(YesNoFlag.NO.getValue());
+		int personSize = 0;
+		if(YesNoFlag.YES.getValue() == allMemberFlag) {
+			personSize = memberManager.getCount(orgId);
+		}
+		group.setPersonSize(personSize);
 		groupMapper.insert(group);
 		
 		return group.getGroupId();
@@ -87,14 +102,14 @@ public class GroupManagerImpl implements GroupManager {
 		if(group != null) ExceptionUtils.throwException(OrgErrorCode.GROUP_EXIST, OrgErrorCode.GROUP_EXIST.getMessage());
 		
 		group = new Group();
-		group.setGroupId(this.genGroupId());
+		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
 		group.setOrgId(request.getOrgId());
 		group.setGroupCode(String.valueOf(group.getGroupId()));
 		group.setGroupName(request.getGroupName());
 		group.setGroupType(GroupType.CUSTOM.getValue());
 		group.setSystemDefault(YesNoFlag.NO.getValue());
 		group.setAllMemberFlag(request.isAllMember()?YesNoFlag.YES.getValue():YesNoFlag.NO.getValue());
-		group.setMemberSize(0);
+		group.setPersonSize(0);
 		groupMapper.insert(group);
 		
 		if(YesNoFlag.YES.getValue() == rmqSwitch) {
@@ -110,7 +125,7 @@ public class GroupManagerImpl implements GroupManager {
 	}
 
 	@Override
-	public boolean editGroup(Long orgId, Long groupId, String groupName) {
+	public boolean updateGroupName(Long orgId, Long groupId, String groupName) {
 		BizAssert.notNull(orgId, "orgId must not be null");
 		BizAssert.notNull(groupId, "groupId must not be null");
 		BizAssert.notBlank(groupName, "groupName must not be blank");
@@ -156,16 +171,18 @@ public class GroupManagerImpl implements GroupManager {
 		Group group = groupMapper.load(orgId, groupId);
 		if(YesNoFlag.YES.getValue() == group.getSystemDefault()) ExceptionUtils.throwException(OrgErrorCode.GROUP_REFUSE_DELETE, OrgErrorCode.GROUP_REFUSE_DELETE.getMessage());
 		
+		if(group.getPersonSize() > 0) {
+			ExceptionUtils.throwException(OrgErrorCode.GROUP_EXIST_PERSON, OrgErrorCode.GROUP_EXIST_PERSON.getMessage());
+		}
+		
 		groupMapper.delete(orgId, groupId);
 		
-		if(YesNoFlag.YES.getValue() == rmqSwitch) {
-			// 发出删除群组消息
-			DeleteGroupRelationDataMsg msg = new DeleteGroupRelationDataMsg();
-			msg.setOrgId(orgId);
-			msg.setGroupId(groupId);
-			EventBus.publish(msg);
-			logger.info("发出MQ消息[删除群组]: "+JsonUtils.toJson(msg));
-		}
+		// 删除群组范围配置
+		groupRangeManager.removeByGroupId(orgId, groupId);
+		// 删除群组人员关系
+		groupPersonManager.removeByGroupId(orgId, groupId);
+		// 删除群组设备关系
+		deviceGroupManager.removeByGroupId(orgId, groupId);
 		
 		return true;
 	}
@@ -190,19 +207,22 @@ public class GroupManagerImpl implements GroupManager {
 	public boolean updateAllMemberFlag(Long orgId, Long groupId, Integer allMemberFlag) {
 		
 		Group group = groupMapper.load(orgId, groupId);
-		if(group.getSystemDefault() != YesNoFlag.YES.getValue()) {
-			groupMapper.updateAllMemberFlag(orgId, groupId, allMemberFlag);
-			
-			if(YesNoFlag.YES.getValue() == allMemberFlag) { // 切换为全员使用
-				if(YesNoFlag.YES.getValue() == rmqSwitch) {
-					ResetGroupRelationDataMsg msg = new ResetGroupRelationDataMsg();
-					msg.setOrgId(orgId);
-					msg.setGroupId(groupId);
-					EventBus.publish(msg);
-					logger.info("发出MQ消息[切换为全员组]: " + JsonUtils.toJson(msg));
-				}
-			}
-		}
+		if(group.getSystemDefault() == YesNoFlag.YES.getValue()) ExceptionUtils.throwException(OrgErrorCode.SYSGROUP_REFUSE_OPERA, OrgErrorCode.SYSGROUP_REFUSE_OPERA.getMessage());
+		
+		if(group.getAllMemberFlag() == allMemberFlag) return true;
+		
+		groupMapper.updateAllMemberFlag(orgId, groupId, allMemberFlag);
+		
+		// 删除群组范围配置
+		groupRangeManager.removeByGroupId(orgId, groupId);
+		// 删除群组人员关系
+		groupPersonManager.removeByGroupId(orgId, groupId);
+		
+		if(YesNoFlag.YES.getValue() == allMemberFlag) { // 切换为全员使用
+			// 添加群组人员关系
+			groupRangeManager.resetGroupRange(orgId, groupId, new ArrayList<Long>(), new ArrayList<Long>());
+			groupPersonManager.resetGroupPersons(orgId, groupId, new ArrayList<Long>(), memberManager.findMemberId(orgId), PersonType.MEMBER.getValue());
+		} 
 		
 		return true;
 	}
@@ -212,8 +232,8 @@ public class GroupManagerImpl implements GroupManager {
 	public boolean justUpdateAllMemberFlag(Long orgId, Long groupId, Integer allMemberFlag) {
 		
 		Group group = groupMapper.load(orgId, groupId);
+		if(group.getAllMemberFlag().intValue() == allMemberFlag.intValue()) return true;
 		if(group.getSystemDefault() == YesNoFlag.YES.getValue()) ExceptionUtils.throwException(OrgErrorCode.SYSGROUP_REFUSE_OPERA, OrgErrorCode.SYSGROUP_REFUSE_OPERA.getMessage());
-		
 		groupMapper.justUpdateAllMemberFlag(orgId, groupId, allMemberFlag);
 		
 		return true;
@@ -242,9 +262,9 @@ public class GroupManagerImpl implements GroupManager {
 		BizAssert.notNull(orgId);
 		BizAssert.notNull(groupId);
 		if(inc) {
-			groupMapper.incMemberSize(orgId, groupId, incOrDecSize);
+			groupMapper.incPersonSize(orgId, groupId, incOrDecSize);
 		} else {
-			groupMapper.decMemberSize(orgId, groupId, incOrDecSize);
+			groupMapper.decPersonSize(orgId, groupId, incOrDecSize);
 		}
 		return true;
 	}
@@ -253,7 +273,7 @@ public class GroupManagerImpl implements GroupManager {
 	public boolean resetMemberSize(Long orgId, Long groupId, int memberSize) {
 		BizAssert.notNull(orgId);
 		BizAssert.notNull(groupId);
-		groupMapper.updateMemberSize(orgId, groupId, memberSize);
+		groupMapper.updatePersonSize(orgId, groupId, memberSize);
 		return true;
 	}
 
@@ -262,13 +282,6 @@ public class GroupManagerImpl implements GroupManager {
 		BizAssert.notNull(orgId, "orgId must not be null");
 		BizAssert.notBlank(groupName, "groupName must not be blank");
 		return groupMapper.loadByGroupName(orgId, groupName);
-	}
-
-	@Override
-	public Group getGroupByCode(Long orgId, String groupCode) {
-		BizAssert.notNull(orgId, "orgId must not be null");
-		BizAssert.notBlank(groupCode, "groupCode must not be blank");
-		return groupMapper.loadByGroupCode(orgId, groupCode);
 	}
 
 	@Override

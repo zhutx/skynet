@@ -8,8 +8,6 @@ public interface DeviceGroupManager {
 	
 	boolean addDefaultDeviceGroup(Long orgId, Long deviceId);
 	
-	List<String> findGroupCodeByDeviceId(Long orgId, Long deviceId);
-	
 	List<Long> findGroupIdByDeviceId(Long orgId, Long deviceId);
 	
 	List<Long> findDeviceIdByGroupId(Long orgId, Long groupId);
@@ -17,5 +15,7 @@ public interface DeviceGroupManager {
 	boolean resetDeviceGroupRelation(Long orgId, Long deviceId, List<Long> groupIdList);
 	
 	boolean deleteByDevice(Long orgId, Long deviceId);
+	
+	boolean removeByGroupId(Long orgId, Long groupId);
 
 }

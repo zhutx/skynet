@@ -132,7 +132,7 @@ public class DingOrgManagerImpl implements DingOrgManager {
 		group.setAllMemberFlag(YesNoFlag.YES.getValue());
 		group.setOrgId(orgId);
 		group.setSystemDefault(YesNoFlag.YES.getValue());
-		group.setMemberSize(0);
+		group.setPersonSize(0);
 		groupMapper.insert(group);
 		
 		ConfigGroupAtcDataMsg noticeGroupMsg = null;
@@ -151,7 +151,7 @@ public class DingOrgManagerImpl implements DingOrgManager {
 		group.setAllMemberFlag(YesNoFlag.NO.getValue());
 		group.setOrgId(orgId);
 		group.setSystemDefault(YesNoFlag.YES.getValue());
-		group.setMemberSize(0);
+		group.setPersonSize(0);
 		groupMapper.insert(group);
 		
 		if(YesNoFlag.YES.getValue() == rmqSwitch) {

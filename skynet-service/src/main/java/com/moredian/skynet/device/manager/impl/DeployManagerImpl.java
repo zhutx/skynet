@@ -316,11 +316,11 @@ public class DeployManagerImpl implements DeployManager {
 		request.setDeviceId(deviceLog.getDeviceId());
 		List<DeployGroupInfo> groups = new ArrayList<>();
 		
-		List<String> groupCodeList = deviceGroupManager.findGroupCodeByDeviceId(deviceLog.getOrgId(), deviceLog.getDeviceId());
-		for(String groupCode : groupCodeList) {
+		List<Long> groupIdList = deviceGroupManager.findGroupIdByDeviceId(deviceLog.getOrgId(), deviceLog.getDeviceId());
+		for(Long groupId : groupIdList) {
 			DeployGroupInfo group = new DeployGroupInfo();
 			group.setDeployLabel(DeployLabel.WHITE.getValue());
-			group.setGroupCode(groupCode);
+			group.setGroupCode(groupId.toString());
 			groups.add(group);
 		}
 		
@@ -344,11 +344,11 @@ public class DeployManagerImpl implements DeployManager {
 		DeployUpdateRequest request = BeanUtils.copyProperties(DeployUpdateRequest.class, deploy);
 		
 		List<DeployGroupInfo> groups = new ArrayList<>();
-		List<String> groupCodeList = deviceGroupManager.findGroupCodeByDeviceId(deviceLog.getOrgId(), deviceLog.getDeviceId());
-		for(String groupCode : groupCodeList) {
+		List<Long> groupIdList = deviceGroupManager.findGroupIdByDeviceId(deviceLog.getOrgId(), deviceLog.getDeviceId());
+		for(Long groupId : groupIdList) {
 			DeployGroupInfo group = new DeployGroupInfo();
 			group.setDeployLabel(DeployLabel.WHITE.getValue());
-			group.setGroupCode(groupCode);
+			group.setGroupCode(groupId.toString());
 			groups.add(group);
 		}
 		request.setGroups(groups);

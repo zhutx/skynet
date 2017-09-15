@@ -19,6 +19,7 @@ import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.rmq.annotation.Subscribe;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.cloudeye.core.api.lib.PersonFullInfo;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ClearMemberRelationDataMsg;
 import com.moredian.skynet.common.model.msg.ConfigMemberGroupDataMsg;
 import com.moredian.skynet.common.model.msg.DeleteGroupRelationDataMsg;
@@ -39,7 +40,6 @@ import com.moredian.skynet.org.request.GroupMemberBatchAddRequest;
 import com.moredian.skynet.org.request.GroupMemberBatchRemoveRequest;
 import com.moredian.skynet.org.request.GroupPersonAddRequest;
 import com.moredian.skynet.org.request.GroupPersonRemoveRequest;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class GroupPersonManagerImpl implements GroupPersonManager {
@@ -77,7 +77,7 @@ public class GroupPersonManagerImpl implements GroupPersonManager {
 	
 	@Override
 	@Transactional
-	public boolean addGroupMembers(GroupMemberBatchAddRequest request, Integer personType) {
+	public boolean addGroupPersons(GroupMemberBatchAddRequest request, Integer personType) {
 		BizAssert.notNull(request.getOrgId(), "orgId must not be null");
 		BizAssert.notNull(request.getGroupId(), "groupId must not be null");
 		BizAssert.notNull(personType, "personType must not be null");
@@ -139,7 +139,7 @@ public class GroupPersonManagerImpl implements GroupPersonManager {
 
 	@Override
 	@Transactional
-	public boolean removeGroupMembers(GroupMemberBatchRemoveRequest request, Integer personType) {
+	public boolean removeGroupPersons(GroupMemberBatchRemoveRequest request, Integer personType) {
 		BizAssert.notNull(request.getOrgId(), "orgId must not be null");
 		BizAssert.notNull(request.getGroupId(), "groupId must not be null");
 		BizAssert.notNull(personType, "personType must not be null");
@@ -379,6 +379,35 @@ public class GroupPersonManagerImpl implements GroupPersonManager {
 		
 		return groupPersonMapper.getPersonSize(orgId, groupId, personType);
 	}
-
+	
+	private GroupMemberBatchRemoveRequest buildGroupMemberBatchRemoveRequest(Long orgId, Long groupId, List<Long> memberIds) {
+		GroupMemberBatchRemoveRequest request = new GroupMemberBatchRemoveRequest();
+		request.setOrgId(orgId);
+		request.setGroupId(groupId);
+		request.setMembers(memberIds);
+		return request;
+	}
+	
+	private GroupMemberBatchAddRequest buildGroupMemberBatchAddRequest(Long orgId, Long groupId, List<Long> memberIds) {
+		GroupMemberBatchAddRequest request = new GroupMemberBatchAddRequest();
+		request.setOrgId(orgId);
+		request.setGroupId(groupId);
+		request.setMembers(memberIds);
+		return request;
+	}
+	
+	public boolean resetGroupPersons(Long orgId, Long groupId, List<Long> existMemberIds, List<Long> finalMemberIds, Integer personType) {
+		
+		List<Long> existMemberIds_bak = new ArrayList<>();
+		existMemberIds_bak.addAll(existMemberIds);
+		
+		existMemberIds.removeAll(finalMemberIds); // 定位删除的组成员
+		this.removeGroupPersons(this.buildGroupMemberBatchRemoveRequest(orgId, groupId, existMemberIds), personType);
+		
+		finalMemberIds.removeAll(existMemberIds_bak); // 定位新增的组成员
+		this.addGroupPersons(this.buildGroupMemberBatchAddRequest(orgId, groupId, finalMemberIds), personType);
+		
+		return true;
+	}
 
 }

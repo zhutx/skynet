@@ -60,7 +60,6 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 		deviceGroup.setOrgId(orgId);
 		deviceGroup.setDeviceId(deviceId);
 		deviceGroup.setGroupId(groupInfo.getGroupId());
-		deviceGroup.setGroupCode(groupInfo.getGroupCode());
 		deviceGroupMapper.insert(deviceGroup);
 	}
 	
@@ -71,7 +70,6 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 		deviceGroup.setOrgId(orgId);
 		deviceGroup.setDeviceId(deviceId);
 		deviceGroup.setGroupId(groupInfo.getGroupId());
-		deviceGroup.setGroupCode(groupInfo.getGroupCode());
 		deviceGroupMapper.insert(deviceGroup);
 	}
 
@@ -102,11 +100,6 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 	}
 	
 	@Override
-	public List<String> findGroupCodeByDeviceId(Long orgId, Long deviceId) {
-		return deviceGroupMapper.findGroupCodeByDeviceId(orgId, deviceId);
-	}
-
-	@Override
 	public List<Long> findGroupIdByDeviceId(Long orgId, Long deviceId) {
 		return deviceGroupMapper.findGroupIdByDeviceId(orgId, deviceId);
 	}
@@ -135,8 +128,6 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 			deviceGroup.setOrgId(orgId);
 			deviceGroup.setDeviceId(deviceId);
 			deviceGroup.setGroupId(groupId);
-			GroupInfo group = groupService.getGroupInfo(orgId, groupId);
-			deviceGroup.setGroupCode(group.getGroupCode());
 			deviceGroupMapper.insert(deviceGroup);
 		}
 		
@@ -153,6 +144,12 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 	@Override
 	public boolean deleteByDevice(Long orgId, Long deviceId) {
 		deviceGroupMapper.deleteByDevice(orgId, deviceId);
+		return true;
+	}
+
+	@Override
+	public boolean removeByGroupId(Long orgId, Long groupId) {
+		deviceGroupMapper.deleteByGroup(orgId, groupId);
 		return true;
 	}
 

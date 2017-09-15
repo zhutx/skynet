@@ -59,10 +59,9 @@ public class GroupController extends BaseController {
 	@ApiOperation(value="创建群组", notes="创建群组")
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse create(@RequestBody CreateGroupModel model) {
+	public BaseResponse create(@RequestBody CreateGroupModel model) {
 		BaseResponse br = new BaseResponse();
-		boolean allMember = model.getAllMemberFlag() == YesNoFlag.YES.getValue() ? true : false;
-		groupService.addSimpleGroup(model.getOrgId(), model.getGroupName(), allMember).pickDataThrowException();
+		groupService.addSimpleGroup(model.getOrgId(), model.getGroupName(), model.getAllMemberFlag()).pickDataThrowException();
 		return br;
     }
 	
@@ -72,9 +71,18 @@ public class GroupController extends BaseController {
 	@ResponseBody
     public BaseResponse updateName(@RequestBody UpdateGroupNameModel model) {
 		BaseResponse br = new BaseResponse();
-		groupService.editGroup(model.getOrgId(), model.getGroupId(), model.getGroupName()).pickDataThrowException();
+		groupService.updateGroupName(model.getOrgId(), model.getGroupId(), model.getGroupName()).pickDataThrowException();
 		return br;
     }
+	
+	@ApiOperation(value="删除群组", notes="删除群组")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
+	@ResponseBody
+	public BaseResponse delete(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "groupId") Long groupId) {
+		groupService.deleteGroup(orgId, groupId).pickDataThrowException();
+		return new BaseResponse();
+	}
 	
 	@SuppressWarnings("rawtypes")
 	@ApiOperation(value="获取群组数", notes="获取群组数")
@@ -165,12 +173,9 @@ public class GroupController extends BaseController {
 	@RequestMapping(value="/range", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse configRange(@RequestBody GroupRangeConfigModel model) {
-		
-		BaseResponse br = new BaseResponse();
-		
-		groupService.justUpdateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
+		groupService.justUpdateAllMemberFlag(model.getOrgId(), model.getGroupId(), YesNoFlag.YES.getValue()).pickDataThrowException();
 		groupRangeService.resetGroupRange(model.getOrgId(), model.getGroupId(), model.getDeptIds(), model.getMemberIds()).pickDataThrowException();
-		return br;
+		return new BaseResponse();
     }
 	
 	@SuppressWarnings("rawtypes")
@@ -195,10 +200,8 @@ public class GroupController extends BaseController {
 	@RequestMapping(value="/allMemberFlag", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse allMemberFlag(@RequestBody AllMemberFlagModel model) {
-		BaseResponse br = new BaseResponse();
-		if(model.getAllMemberFlag() == YesNoFlag.NO.getValue()) return br;
 		groupService.updateAllMemberFlag(model.getOrgId(), model.getGroupId(), model.getAllMemberFlag()).pickDataThrowException();
-		return br;
+		return new BaseResponse();
     }
 	
 }

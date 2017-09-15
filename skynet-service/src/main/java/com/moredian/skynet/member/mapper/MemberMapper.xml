@@ -42,60 +42,60 @@
 	
 	<select id="load" parameterType="map" resultMap="memberResultMap">
 	    <include refid="sql_select"/>
-	    from hive_member where org_id = #{orgId} and member_id = #{memberId}
+	    from sky_member where org_id = #{orgId} and member_id = #{memberId}
 	</select>
 	
 	<select id="loadByTpId" parameterType="map" resultMap="memberResultMap">
 	    <include refid="sql_select"/>
-	    from hive_member where org_id = #{orgId} and tp_id = #{tpId}
+	    from sky_member where org_id = #{orgId} and tp_id = #{tpId}
 	</select>
 	
 	<select id="loadByCertNo" parameterType="map" resultMap="memberResultMap">
 	    <include refid="sql_select"/>
-	    from hive_member where org_id = #{orgId} and cert_no = #{certNo}
+	    from sky_member where org_id = #{orgId} and cert_no = #{certNo}
 	</select>
 	
 	<select id="loadByMobile" parameterType="map" resultMap="memberResultMap">
 	    <include refid="sql_select"/>
-	    from hive_member where org_id = #{orgId} and mobile = #{mobile}
+	    from sky_member where org_id = #{orgId} and mobile = #{mobile}
 	</select>
 
 	<update id="updateShowFaceUrl" parameterType="map">
-	    update hive_member set show_face_url = #{showFaceUrl} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set show_face_url = #{showFaceUrl} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<update id="updateVerifyFaceUrl" parameterType="map">
-	    update hive_member set verify_face_url = #{verifyFaceUrl} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set verify_face_url = #{verifyFaceUrl} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<update id="updateSignature" parameterType="map">
-	    update hive_member set signature = #{signature} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set signature = #{signature} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<select id="loadByNameAndMobile" parameterType="map" resultMap="memberResultMap">
 	    <include refid="sql_select"/>
-	    from hive_member where org_id = #{orgId} and mobile = #{mobile} and member_name = #{memberName}
+	    from sky_member where org_id = #{orgId} and mobile = #{mobile} and member_name = #{memberName}
 	</select>
 	
 	<select id="count" parameterType="map" resultType="int">
-	    select count(*) from hive_member where org_id = #{orgId} and status = #{status}
+	    select count(*) from sky_member where org_id = #{orgId} and status = #{status}
 	</select>
 	
 	<select id="countNoVerifyPic" parameterType="map" resultType="int">
-	    select count(*) from hive_member where org_id = #{orgId} and status = #{status} and verify_face_url = ''
+	    select count(*) from sky_member where org_id = #{orgId} and status = #{status} and verify_face_url = ''
 	</select>
 	
 	<select id="findMemberId" parameterType="map" resultType="long">
-	    select member_id from hive_member where org_id = #{orgId} and status = #{status}
+	    select member_id from sky_member where org_id = #{orgId} and status = #{status}
 	</select>
 	
 	<select id="findAdminTpIds" parameterType="map" resultType="string">
-	    select tp_id from hive_member where org_id = #{orgId} and admin_flag = #{adminFlag} and status = #{status}
+	    select tp_id from sky_member where org_id = #{orgId} and admin_flag = #{adminFlag} and status = #{status}
 	</select>
 	
 	<select id="findByIds" parameterType="map" resultMap="memberResultMap">
 	    <include refid="sql_select"/>
-	    from hive_member where org_id = #{orgId} and member_id in 
+	    from sky_member where org_id = #{orgId} and member_id in 
 	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
 	    
 	    <if test="keywords != null">
@@ -120,20 +120,20 @@
 	</select>
 	
 	<select id="findMemberNamesByIds" parameterType="map" resultType="string">
-	    select member_name from hive_member where org_id = #{orgId} and member_id in 
+	    select member_name from sky_member where org_id = #{orgId} and member_id in 
 	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
 	</select>
 	
 	<select id="findIdsWithoutVerifyUrl" parameterType="map" resultType="long">
-	    select member_id from hive_member where org_id = #{orgId} and verify_face_url = ''
+	    select member_id from sky_member where org_id = #{orgId} and verify_face_url = ''
 	</select>
 	
 	<select id="findIdsByOrgId" parameterType="map" resultType="long">
-	    select member_id from hive_member where org_id = #{orgId} and status = #{status}
+	    select member_id from sky_member where org_id = #{orgId} and status = #{status}
 	</select>
 	
 	<select id="findFromIds" parameterType="map" resultType="string">
-	    select tp_id from hive_member where org_id = #{orgId} and status = #{status}
+	    select tp_id from sky_member where org_id = #{orgId} and status = #{status}
 	    <if test="hasVerifyPic != null and !hasVerifyPic">
 			and verify_face_url =''
 		</if>
@@ -141,16 +141,16 @@
 	</select>
 	
 	<select id="findTpId"  parameterType="map" resultType="string">
-	    select tp_id from hive_member where org_id = #{orgId} and member_id in 
+	    select tp_id from sky_member where org_id = #{orgId} and member_id in 
 	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
 	</select>
 	
 	<select id="loadTpUserId" parameterType="map" resultType="string">
-	    select tp_id from hive_member where org_id = #{orgId} and member_id = #{memberId}
+	    select tp_id from sky_member where org_id = #{orgId} and member_id = #{memberId}
 	</select>
 	
 	<update id="insert" parameterType="member">
-	    insert into hive_member (
+	    insert into sky_member (
 	        member_id,
 	        org_id,
 	        tp_type,
@@ -214,27 +214,27 @@
 	</update>
 	
 	<update id="updateStatus" parameterType="map">
-	    update hive_member set status = #{status} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set status = #{status} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<update id="updateAdminFlag" parameterType="map">
-	    update hive_member set admin_flag = #{adminFlag} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set admin_flag = #{adminFlag} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<update id="updateChargeFlag" parameterType="map">
-	    update hive_member set charge_flag = #{chargeFlag} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set charge_flag = #{chargeFlag} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<select id="findAllTpId" parameterType="map" resultType="string">
-	    select tp_id from hive_member where org_id = #{orgId} and status = #{status} limit 20000
+	    select tp_id from sky_member where org_id = #{orgId} and status = #{status} limit 20000
 	</select>
 	
 	<update id="updateTpExtend" parameterType="map">
-	    update hive_member set tp_extend = #{tpExtend} where org_id = #{orgId} and member_id = #{memberId}
+	    update sky_member set tp_extend = #{tpExtend} where org_id = #{orgId} and member_id = #{memberId}
 	</update>
 	
 	<update id="update" parameterType="member">
-	    update hive_member
+	    update sky_member
 	    <set>
 		<if test="showFaceUrl != null">
 			show_face_url=#{showFaceUrl},
@@ -293,12 +293,12 @@
 	</update>
 	
 	<select id="findIdMappingByIds" parameterType="map" resultMap="idMappingResultMap">
-	    select member_id, tp_id from hive_member where org_id = #{orgId} and member_id in 
+	    select member_id, tp_id from sky_member where org_id = #{orgId} and member_id in 
 	    <foreach collection="memberIdList" index="index" item="memberId" open="(" separator="," close=")">#{memberId}</foreach>
 	</select>
 	
 	<select id="findIdMappingByTpIds" parameterType="map" resultMap="idMappingResultMap">
-	    select member_id, tp_id from hive_member where org_id = #{orgId} and tp_id in 
+	    select member_id, tp_id from sky_member where org_id = #{orgId} and tp_id in 
 	    <foreach collection="tpIdList" index="index" item="tpId" open="(" separator="," close=")">#{tpId}</foreach>
 	</select>
 	
@@ -368,7 +368,7 @@
 	</sql>
 	
 	<sql id="condition_sql_where">
-	    from hive_member m
+	    from sky_member m
 	    <if test="deptId != null">
 	    left join hive_dept_relation pd on m.member_id = pd.member_id
 	    </if>

@@ -16,8 +16,6 @@ public interface DeviceGroupMapper {
 	
 	List<Long> findDeviceIdByGroupIds(@Param("orgId")Long orgId, @Param("groupIdList")List<Long> groupIdList);
 	
-	List<String> findGroupCodeByDeviceId(@Param("orgId")Long orgId, @Param("deviceId")Long deviceId);
-	
 	List<Long> findGroupIdByDeviceId(@Param("orgId")Long orgId, @Param("deviceId")Long deviceId);
 	
 	List<Long> findDeviceIdByGroupId(@Param("orgId")Long orgId, @Param("groupId")Long groupId);

@@ -1226,4 +1226,10 @@ public class MemberManagerImpl implements MemberManager {
 		return true;
 	}
 
+	@Override
+	public int getCount(Long orgId) {
+		BizAssert.notNull(orgId);
+		return memberMapper.count(orgId, MemberStatus.USABLE.getValue());
+	}
+
 }

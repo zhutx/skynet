@@ -35,9 +35,11 @@ public enum OrgErrorCode implements ErrorCode {
 	
 	GROUP_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "组已存在"),
 	
-	GROUP_NAME_UPDATE_REFUSE(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "拒绝修改系统默认群组"),
+	GROUP_NAME_UPDATE_REFUSE(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "拒绝修改系统群组"),
 	
-	GROUP_REFUSE_DELETE(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "拒绝删除系统创建的组"),
+	GROUP_REFUSE_DELETE(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "拒绝删除系统群组"),
+	
+	GROUP_EXIST_PERSON(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "该群组存在关联人员"),
 	
 	SYSGROUP_REFUSE_OPERA(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0046"), "系统默认群组不支持本操作"),
 	

@@ -12,7 +12,6 @@ public class DeviceGroup implements Serializable {
 	private Long orgId;
 	private Long deviceId;
 	private Long groupId;
-	private String groupCode;
 	private Date gmtCreate;
 	private Date gmtModify;
 	
@@ -39,12 +38,6 @@ public class DeviceGroup implements Serializable {
 	}
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
-	}
-	public String getGroupCode() {
-		return groupCode;
-	}
-	public void setGroupCode(String groupCode) {
-		this.groupCode = groupCode;
 	}
 	public Date getGmtCreate() {
 		return gmtCreate;

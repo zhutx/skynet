@@ -109,10 +109,10 @@ public class GroupRangeManagerImpl implements GroupRangeManager {
 		existMemberIds_bak.addAll(existMemberIds);
 		
 		existMemberIds.removeAll(finalMemberIds); // 定位删除的组成员
-		groupPersonManager.removeGroupMembers(this.buildGroupMemberBatchRemoveRequest(orgId, groupId, existMemberIds), PersonType.MEMBER.getValue());
+		groupPersonManager.removeGroupPersons(this.buildGroupMemberBatchRemoveRequest(orgId, groupId, existMemberIds), PersonType.MEMBER.getValue());
 		
 		finalMemberIds.removeAll(existMemberIds_bak); // 定位新增的组成员
-		groupPersonManager.addGroupMembers(this.buildGroupMemberBatchAddRequest(orgId, groupId, finalMemberIds), PersonType.MEMBER.getValue());
+		groupPersonManager.addGroupPersons(this.buildGroupMemberBatchAddRequest(orgId, groupId, finalMemberIds), PersonType.MEMBER.getValue());
 		
 	}
 
