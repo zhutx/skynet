@@ -11,11 +11,11 @@ import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.convertor.PaginationConvertor;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
-import com.moredian.skynet.member.domain.DeptRelation;
-import com.moredian.skynet.member.domain.DeptRelationQueryCondition;
+import com.moredian.skynet.member.domain.DeptMember;
+import com.moredian.skynet.member.domain.DeptMemberQueryCondition;
 import com.moredian.skynet.member.enums.DeptPersonStatus;
 import com.moredian.skynet.member.manager.DeptMemberManager;
-import com.moredian.skynet.member.mapper.DeptRelationMapper;
+import com.moredian.skynet.member.mapper.DeptMemberMapper;
 import com.moredian.skynet.member.request.BindDeptRelationRequest;
 import com.moredian.skynet.member.request.DeptRelationQueryRequest;
 import com.moredian.skynet.member.service.adapter.request.JudgeDepartmentLeaderRequest;
@@ -27,7 +27,7 @@ import com.moredian.idgenerator.service.IdgeneratorService;
 public class DeptMemberManagerImpl implements DeptMemberManager {
 	
 	@Autowired
-	private DeptRelationMapper deptMemberMapper;
+	private DeptMemberMapper deptMemberMapper;
 	@Autowired
 	private DeptManager deptManager;
 	@SI
@@ -39,19 +39,19 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 	
 	@Override
 	public List<Long> findMemberIdByDeptId(Long orgId, Long deptId) {
-		return deptMemberMapper.findMemberIdsByDeptId(orgId, deptId, DeptPersonStatus.USABLE.getValue());
+		return deptMemberMapper.findMemberIdsByDeptId(orgId, deptId);
 	}
 	
-	private DeptRelationQueryCondition buildCondition(DeptRelationQueryRequest request) {
-		DeptRelationQueryCondition condition = new DeptRelationQueryCondition();
+	private DeptMemberQueryCondition buildCondition(DeptRelationQueryRequest request) {
+		DeptMemberQueryCondition condition = new DeptMemberQueryCondition();
 		condition.setOrgId(request.getOrgId());
 		condition.setDeptId(request.getDeptId());
 		condition.setStatus(YesNoFlag.YES.getValue());
 		return condition;
 	}
 	
-	private PaginationDomain<DeptRelation> paginationToPaginationDomain(Pagination<?> fromPagination) {
-		PaginationDomain<DeptRelation> toPagination = PaginationConvertor.paginationToPaginationDomain(fromPagination, new PaginationDomain<DeptRelation>());
+	private PaginationDomain<DeptMember> paginationToPaginationDomain(Pagination<?> fromPagination) {
+		PaginationDomain<DeptMember> toPagination = PaginationConvertor.paginationToPaginationDomain(fromPagination, new PaginationDomain<DeptMember>());
 		if (toPagination == null)
 			return null;
 		
@@ -60,14 +60,14 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PaginationDomain<DeptRelation> findPaginationDeptRelation(Pagination<?> pagination, DeptRelationQueryRequest request) {
-		DeptRelationQueryCondition condition = this.buildCondition(request);
-		PaginationDomain<DeptRelation> domainPagination = paginationToPaginationDomain(pagination);
+	public PaginationDomain<DeptMember> findPaginationDeptRelation(Pagination<?> pagination, DeptRelationQueryRequest request) {
+		DeptMemberQueryCondition condition = this.buildCondition(request);
+		PaginationDomain<DeptMember> domainPagination = paginationToPaginationDomain(pagination);
 		return this.getPagination(domainPagination, condition);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected  PaginationDomain getPagination(PaginationDomain pagination, DeptRelationQueryCondition condition) {
+	protected  PaginationDomain getPagination(PaginationDomain pagination, DeptMemberQueryCondition condition) {
         int totalCount = (Integer) deptMemberMapper.getTotalCountByCondition(condition);
         pagination.setTotalCount(totalCount);
         if (totalCount > 0) {
@@ -101,7 +101,7 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 	}
 
 	@Override
-	public void addMemberToDept(DeptRelation deptRelation) {
+	public void addMemberToDept(DeptMember deptRelation) {
 		deptMemberMapper.insertOrUpdate(deptRelation);
 	}
 
@@ -119,8 +119,8 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 		BizAssert.notNull(request.getLeaderFlag());
 		BizAssert.notNull(request.getStatus());
 		
-		DeptRelation deptRelation = BeanUtils.copyProperties(DeptRelation.class, request);
-		deptRelation.setDeptRelationId(this.genPrimaryKey(DeptRelation.class.getName()));
+		DeptMember deptRelation = BeanUtils.copyProperties(DeptMember.class, request);
+		deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
 		
 		deptMemberMapper.insertOrUpdate(deptRelation);
 		
@@ -138,7 +138,7 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 	@Override
 	public boolean disableRelation(Long orgId, Long memberId) {
 		
-		deptMemberMapper.updateStatusByMember(orgId, memberId, YesNoFlag.NO.getValue());
+		deptMemberMapper.deleteByMemberId(orgId, memberId);
 		
 		return true;
 	}
@@ -151,7 +151,7 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 	@Override
 	public boolean disableRelation(Long orgId, Long memberId, Long deptId) {
 		
-		deptMemberMapper.updateOneStatus(orgId, memberId, deptId, YesNoFlag.NO.getValue());
+		deptMemberMapper.deleteOne(orgId, deptId, memberId);
 		
 		return true;
 	}

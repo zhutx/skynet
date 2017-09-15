@@ -48,8 +48,9 @@ import com.moredian.bee.tube.annotation.SI;
 import com.moredian.cloudeye.core.api.lib.LibraryQueryService;
 import com.moredian.cloudeye.core.api.rs.DetectFace;
 import com.moredian.cloudeye.core.api.rs.LibraryDetectService;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ClearMemberRelationDataMsg;
-import com.moredian.skynet.member.domain.DeptRelation;
+import com.moredian.skynet.member.domain.DeptMember;
 import com.moredian.skynet.member.domain.GroupPerson;
 import com.moredian.skynet.member.domain.LoginLog;
 import com.moredian.skynet.member.domain.Member;
@@ -89,7 +90,6 @@ import com.moredian.skynet.org.enums.YesNoFlag;
 import com.moredian.skynet.org.manager.DeptManager;
 import com.moredian.skynet.org.manager.GroupManager;
 import com.moredian.skynet.org.manager.PositionManager;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 
 @Service
@@ -243,8 +243,8 @@ public class MemberManagerImpl implements MemberManager {
 			relationDepts.addAll(request.getRelationDepts());
 		}
 		for(Long deptId : relationDepts) {
-			DeptRelation deptMember = new DeptRelation();
-			deptMember.setDeptRelationId(this.genPrimaryId(DeptRelation.class.getName()));
+			DeptMember deptMember = new DeptMember();
+			deptMember.setDeptRelationId(this.genPrimaryId(DeptMember.class.getName()));
 			deptMember.setOrgId(request.getOrgId());
 			deptMember.setDeptId(deptId);
 			deptMember.setTpDeptId(String.valueOf(deptId));
@@ -675,8 +675,8 @@ public class MemberManagerImpl implements MemberManager {
 		
 		finalDeptIds.removeAll(existDeptIds_clone); // 定位新增的关系
 		for(Long deptId : finalDeptIds) {
-			DeptRelation deptRelation = new DeptRelation();
-        	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptRelation.class.getName()));
+			DeptMember deptRelation = new DeptMember();
+        	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
         	
         	Dept dept = deptManager.getDept(orgId, deptId);
         	
@@ -975,14 +975,6 @@ public class MemberManagerImpl implements MemberManager {
 		BizAssert.notNull(orgId);
 		BizAssert.notNull(memberId);
 		return memberMapper.loadTpUserId(orgId, memberId);
-	}
-
-	@Override
-	public void toggleShowImg(Long orgId, Long memberId, Integer showVerifyFlag) {
-		BizAssert.notNull(orgId);
-		BizAssert.notNull(memberId);
-		BizAssert.notNull(showVerifyFlag);
-		memberMapper.updateShowVerifyFlag(orgId, memberId, showVerifyFlag);
 	}
 
 	@Override

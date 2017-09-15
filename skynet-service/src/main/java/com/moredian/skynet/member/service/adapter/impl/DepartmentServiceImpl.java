@@ -18,7 +18,7 @@ import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
-import com.moredian.skynet.member.domain.DeptRelation;
+import com.moredian.skynet.member.domain.DeptMember;
 import com.moredian.skynet.member.domain.Member;
 import com.moredian.skynet.member.manager.DeptMemberManager;
 import com.moredian.skynet.member.manager.MemberManager;
@@ -126,10 +126,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 		req.setOrgId(request.getOrgId());
 		req.setDeptId(dept.getDeptId());
 		
-		PaginationDomain<DeptRelation> paginationDetpRelation = deptMemberManager.findPaginationDeptRelation(paginationParam, req);
+		PaginationDomain<DeptMember> paginationDetpRelation = deptMemberManager.findPaginationDeptRelation(paginationParam, req);
 		
 		List<Long> memberIdList = new ArrayList<>();
-		for(DeptRelation deptRelation : paginationDetpRelation.getData()) {
+		for(DeptMember deptRelation : paginationDetpRelation.getData()) {
 			memberIdList.add(deptRelation.getMemberId());
 		}
 		

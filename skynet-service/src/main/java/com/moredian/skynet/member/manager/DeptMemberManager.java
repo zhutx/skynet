@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
-import com.moredian.skynet.member.domain.DeptRelation;
+import com.moredian.skynet.member.domain.DeptMember;
 import com.moredian.skynet.member.request.BindDeptRelationRequest;
 import com.moredian.skynet.member.request.DeptRelationQueryRequest;
 import com.moredian.skynet.member.service.adapter.request.JudgeDepartmentLeaderRequest;
@@ -13,7 +13,7 @@ public interface DeptMemberManager {
 	
 	List<Long> findMemberIdByDeptId(Long orgId, Long deptId);
 	
-	PaginationDomain<DeptRelation> findPaginationDeptRelation(Pagination<?> pagination, DeptRelationQueryRequest request);
+	PaginationDomain<DeptMember> findPaginationDeptRelation(Pagination<?> pagination, DeptRelationQueryRequest request);
 	
 	List<Long> findMemberIdByDepts(Long orgId, List<Long> deptIds);
 	
@@ -23,7 +23,7 @@ public interface DeptMemberManager {
 	
 	List<Long> findDeptId(Long orgId, Long memberId);
 	
-	void addMemberToDept(DeptRelation deptRelation);
+	void addMemberToDept(DeptMember deptRelation);
 	
 	boolean addDeptRelation(BindDeptRelationRequest request);
 	

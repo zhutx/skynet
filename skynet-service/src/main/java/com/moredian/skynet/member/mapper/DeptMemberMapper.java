@@ -5,15 +5,15 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.moredian.skynet.member.domain.DeptRelation;
-import com.moredian.skynet.member.domain.DeptRelationQueryCondition;
+import com.moredian.skynet.member.domain.DeptMember;
+import com.moredian.skynet.member.domain.DeptMemberQueryCondition;
 
 @Mapper
-public interface DeptRelationMapper {
+public interface DeptMemberMapper {
 	
-	int insertOrUpdate(DeptRelation deptRelation);
+	int insertOrUpdate(DeptMember deptMember);
 	
-	List<Long> findMemberIdsByDeptId(@Param("orgId")Long orgId, @Param("deptId")Long deptId, @Param("status")Integer status);
+	List<Long> findMemberIdsByDeptId(@Param("orgId")Long orgId, @Param("deptId")Long deptId);
 	
 	List<Long> findMemberIdByDepts(@Param("orgId")Long orgId, @Param("deptIdList")List<Long> deptIdList, @Param("status")Integer status);
 	
@@ -23,16 +23,20 @@ public interface DeptRelationMapper {
 	
 	int updateLeaderFlag(@Param("orgId")Long orgId, @Param("deptId")Long deptId, @Param("memberId")Long memberId, @Param("leaderFlag")Integer leaderFlag);
 	
-	int updateStatusByMember(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("status")Integer status);
+	//int updateStatusByMember(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("status")Integer status);
 	
 	int findRelationCount(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("deptId")Long deptId);
 	
-	int updateOneStatus(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("deptId")Long deptId, @Param("status")Integer status);
+	//int updateOneStatus(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("deptId")Long deptId, @Param("status")Integer status);
 	
-	int getTotalCountByCondition(DeptRelationQueryCondition condition);
+	int getTotalCountByCondition(DeptMemberQueryCondition condition);
 	
-	List<DeptRelation> findPaginationByCondition(DeptRelationQueryCondition condition);
+	List<DeptMember> findPaginationByCondition(DeptMemberQueryCondition condition);
 	
 	int fillDeptIdByTpDeptId(@Param("orgId")Long orgId, @Param("tpDeptId")Long tpDeptId, @Param("deptId")Long deptId);
+	
+	int deleteByMemberId(@Param("orgId")Long orgId, @Param("memberId")Long memberId);
+	
+	int deleteOne(@Param("orgId")Long orgId, @Param("deptId")Long deptId, @Param("memberId")Long memberId);
 	
 }

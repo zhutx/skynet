@@ -11,13 +11,11 @@
 		<result column="account_id" property="accountId" />
 		<result column="show_face_url" property="showFaceUrl" />
 		<result column="verify_face_url" property="verifyFaceUrl" />
-		<result column="member_type" property="memberType" />
 		<result column="charge_flag" property="chargeFlag" />
 		<result column="admin_flag" property="adminFlag" />
 		<result column="member_name" property="memberName" />
 		<result column="nick_name" property="nickName" />
 		<result column="signature" property="signature" />
-		<result column="show_verify_flag" property="showVerifyFlag" />
 		<result column="sex" property="sex" />
 		<result column="age" property="age" />
 		<result column="mobile" property="mobile" />
@@ -151,17 +149,12 @@
 	    select tp_id from hive_member where org_id = #{orgId} and member_id = #{memberId}
 	</select>
 	
-	<update id="updateShowVerifyFlag" parameterType="map">
-	    update hive_member set show_verify_flag = #{showVerifyFlag} where org_id = #{orgId} and member_id = #{memberId}
-	</update>
-	
 	<update id="insert" parameterType="member">
 	    insert into hive_member (
 	        member_id,
 	        org_id,
 	        tp_type,
 	        tp_id,
-	        member_type,
 	        account_id,
 	        show_face_url,
 	        verify_face_url,
@@ -170,7 +163,6 @@
 	        member_name,
 	        nick_name,
 	        signature,
-	        show_verify_flag,
 	        sex,
 	        age,
 	        mobile,
@@ -193,7 +185,6 @@
 	        #{orgId},
 	        #{tpType},
 	        #{tpId},
-	        #{memberType},
 	        #{accountId},
 	        #{showFaceUrl},
 	        #{verifyFaceUrl},
@@ -202,7 +193,6 @@
 	        #{memberName},
 	        #{nickName},
 	        #{signature},
-	        #{showVerifyFlag},
 	        #{sex},
 	        #{age},
 	        #{mobile},
@@ -251,9 +241,6 @@
 		</if>
 		<if test="verifyFaceUrl != null">
 			verify_face_url=#{verifyFaceUrl},
-		</if>
-		<if test="memberType != null">
-			member_type=#{memberType},
 		</if>
 		<if test="memberName != null">
 			member_name=#{memberName},
@@ -321,7 +308,6 @@
 	        org_id,
 	        tp_type,
 	        tp_id,
-	        member_type,
 	        account_id,
 	        show_face_url,
 	        verify_face_url,
@@ -330,7 +316,6 @@
 	        member_name,
 	        nick_name,
 	        signature,
-	        show_verify_flag,
 	        sex,
 	        age,
 	        mobile,
@@ -356,7 +341,6 @@
 	        m.org_id,
 	        m.tp_type,
 	        m.tp_id,
-	        m.member_type,
 	        m.account_id,
 	        m.show_face_url,
 	        m.verify_face_url,
@@ -365,7 +349,6 @@
 	        m.member_name,
 	        m.nick_name,
 	        m.signature,
-	        m.show_verify_flag,
 	        m.sex,
 	        m.age,
 	        m.mobile,
@@ -401,9 +384,6 @@
 	        and pd.dept_id in 
 	        <foreach collection="deptIdList" index="index" item="deptId" open="(" separator="," close=")">#{deptId}</foreach>
 	    </if>
-		<if test="memberType != null">
-		    and m.member_type = #{memberType}
-		</if>
 		<if test="memberName != null">
 		    and m.member_name = #{memberName}
 		</if>

@@ -2,7 +2,7 @@ package com.moredian.skynet.member.domain;
 
 import java.io.Serializable;
 
-public class DeptRelationQueryCondition implements Serializable {
+public class DeptMemberQueryCondition implements Serializable {
 	
 	private static final long serialVersionUID = 5933210213130365233L;
 	

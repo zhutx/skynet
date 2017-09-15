@@ -54,8 +54,6 @@ public interface MemberMapper {
 	
 	String loadTpUserId(@Param("orgId")Long orgId, @Param("memberId")Long memberId);
 	
-	void updateShowVerifyFlag(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("showVerifyFlag")Integer showVerifyFlag);
-	
 	List<String> findTpId(@Param("orgId")Long orgId, @Param("memberIdList")List<Long> memberIdList);
 	
 	int updateStatus(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("status")Integer status);

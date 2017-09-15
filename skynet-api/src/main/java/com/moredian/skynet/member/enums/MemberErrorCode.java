@@ -39,9 +39,9 @@ public enum MemberErrorCode implements ErrorCode {
 	
 	USER_RELATION_NOT_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0011"), "成员关系不存在"),
 
-	DEPT_USER_RELATION_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0012"), "部门下还有成员存在"),
+	DEPT_USER_RELATION_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0012"), "存在部门人员"),
 
-	CHILD_DEPT_RELATION_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0013"), "部门下还有子部门存在"),
+	CHILD_DEPT_RELATION_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0013"), "存在下级部门"),
 
 	MOBILE_NUMBER_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0014"), "手机号已存在"),
 	;

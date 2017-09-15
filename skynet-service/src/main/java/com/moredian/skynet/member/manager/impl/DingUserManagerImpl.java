@@ -25,7 +25,7 @@ import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.common.model.msg.ClearMemberRelationDataMsg;
 import com.moredian.skynet.common.model.msg.ConfigMemberGroupDataMsg;
 import com.moredian.skynet.common.model.msg.ResetMemberGroupDataMsg;
-import com.moredian.skynet.member.domain.DeptRelation;
+import com.moredian.skynet.member.domain.DeptMember;
 import com.moredian.skynet.member.domain.Member;
 import com.moredian.skynet.member.enums.MemberErrorCode;
 import com.moredian.skynet.member.enums.MemberStatus;
@@ -325,8 +325,8 @@ public class DingUserManagerImpl implements DingUserManager {
                 	
                 	Dept dept = deptManager.getDeptByTpId(member.getOrgId(), dingDept);
                 	if(dept != null) {
-                		DeptRelation deptRelation = new DeptRelation();
-                    	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptRelation.class.getName()));
+                		DeptMember deptRelation = new DeptMember();
+                    	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
                     	deptRelation.setOrgId(member.getOrgId());
                     	deptRelation.setDeptId(dept.getDeptId());
                     	deptRelation.setTpDeptId(String.valueOf(dingDept));
@@ -368,8 +368,8 @@ public class DingUserManagerImpl implements DingUserManager {
         	
         	Dept dept = deptManager.getDeptByTpId(member.getOrgId(), tpDeptId);
         	
-        	DeptRelation deptRelation = new DeptRelation();
-        	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptRelation.class.getName()));
+        	DeptMember deptRelation = new DeptMember();
+        	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
         	deptRelation.setOrgId(member.getOrgId());
         	deptRelation.setDeptId(dept.getDeptId());
         	deptRelation.setTpDeptId(String.valueOf(tpDeptId));

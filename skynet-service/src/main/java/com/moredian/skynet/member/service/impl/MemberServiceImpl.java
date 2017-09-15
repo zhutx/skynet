@@ -16,7 +16,6 @@ import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.member.domain.Member;
 import com.moredian.skynet.member.enums.PersonType;
-import com.moredian.skynet.member.manager.DeptMemberManager;
 import com.moredian.skynet.member.manager.GroupPersonManager;
 import com.moredian.skynet.member.manager.MemberManager;
 import com.moredian.skynet.member.model.DeptMemberInfo;
@@ -40,8 +39,6 @@ public class MemberServiceImpl implements MemberService {
 	private GroupPersonManager groupPersonManager;
 	@Autowired
 	private DeptManager deptManager;
-	@Autowired
-	private DeptMemberManager deptMemberManager;
 	
 	@Override
 	public ServiceResponse<Long> addMember(MemberAddRequest request) {
@@ -249,13 +246,6 @@ public class MemberServiceImpl implements MemberService {
 	public List<Long> findAllMemberId(Long orgId) {
 		return memberManager.findAllMemberId(orgId);
 	}
-
-	@Override
-	public ServiceResponse<Boolean> toggleShowImg(Long orgId, Long memberId, Integer showVerifyFlag) {
-		memberManager.toggleShowImg(orgId, memberId, showVerifyFlag);
-		return new ServiceResponse<Boolean>(true, null, true);
-	}
-
 
 	@Override
 	public ServiceResponse<Boolean> removeMember(Long orgId, Long memberId) {

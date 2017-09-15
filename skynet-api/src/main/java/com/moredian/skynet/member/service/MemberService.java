@@ -60,8 +60,6 @@ public interface MemberService {
     
     List<Long> findAllMemberId(Long orgId);
     
-    ServiceResponse<Boolean> toggleShowImg(Long orgId, Long memberId, Integer showVerifyFlag);
-
 	ServiceResponse<Boolean>  removeMember(Long orgId,Long memberId);
 	
 	ServiceResponse<Boolean>  updateStatus(Long orgId,Long memberId,Integer status);

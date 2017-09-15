@@ -66,7 +66,7 @@ public class DeptManagerImpl implements DeptManager {
 	@Override
 	public List<Dept> findDepts(Long orgId, Long parentId) {
 		BizAssert.notNull(orgId, "orgId must not be null");
-		if(parentId != null && parentId == 0L) parentId = null;
+		BizAssert.notNull(parentId, "parentId must not be null");
 		return deptMapper.findDepts(orgId, parentId);
 	}
 

@@ -65,8 +65,6 @@ public interface MemberManager {
 	
 	String getTpUserId(Long orgId, Long memberId);
 	
-	void toggleShowImg(Long orgId, Long memberId, Integer showVerifyFlag);
-	
 	List<String> findTpId(Long orgId, List<Long> memberIds);
 	
 	boolean activeMember(Long orgId, Long memberId);

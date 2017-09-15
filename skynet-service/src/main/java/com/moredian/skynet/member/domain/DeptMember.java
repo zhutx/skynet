@@ -2,7 +2,7 @@ package com.moredian.skynet.member.domain;
 
 import java.util.Date;
 
-public class DeptRelation {
+public class DeptMember {
 	
 	private Long deptRelationId;
 	private Long orgId;
