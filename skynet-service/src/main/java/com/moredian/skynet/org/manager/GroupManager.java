@@ -33,10 +33,6 @@ public interface GroupManager {
 	
 	List<Long> findAllMemberUseGroupIds(Long orgId);
 	
-	Group getQYGroup(Long orgId);
-	
-	Group getVisitorGroup(Long orgId);
-	
 	boolean updateMemberSize(Long orgId, Long groupId, boolean inc, int incOrDecSize);
 	
 	boolean resetMemberSize(Long orgId, Long groupId, int memberSize);
@@ -49,6 +45,4 @@ public interface GroupManager {
 	
 	PaginationDomain<Group> findPaginationGroup(GroupQueryRequest request, Pagination<GroupInfo> pagination);
 	
-	List<Long> findGroupIdByTypes(Long orgId, List<Integer> groupTypeList);
-
 }

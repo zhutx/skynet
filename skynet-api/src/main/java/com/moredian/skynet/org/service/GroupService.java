@@ -32,10 +32,6 @@ public interface GroupService {
 	
 	List<Long> findAllMemberUseGroupIds(Long orgId);
 	
-	GroupInfo getQYGroup(Long orgId);
-	
-	GroupInfo getVisitorGroup(Long orgId);
-	
 	ServiceResponse<Boolean> updateMemberSize(Long orgId, Long groupId, boolean inc, int incOrDecSize);
 	
 	ServiceResponse<Boolean> resetMemberSize(Long orgId, Long groupId, int memberSize);
@@ -45,7 +41,5 @@ public interface GroupService {
 	List<GroupInfo> findGroupByIds(Long orgId, List<Long> groupIdList);
 	
 	List<String> findGroupNameByIds(Long orgId, List<Long> groupIdList);
-	
-	List<Long> findGroupIdByTypes(Long orgId, List<Integer> groupTypeList);
 	
 }

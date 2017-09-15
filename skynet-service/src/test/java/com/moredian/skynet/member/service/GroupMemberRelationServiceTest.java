@@ -60,7 +60,7 @@ public class GroupMemberRelationServiceTest {
 	 * ----------------------------Private Helper Method-----------------------------------
 	 */
 	private GroupInfo fetchQYGroup() {
-		return groupService.getQYGroup(orgId);
+		return groupService.getGroupByName(orgId, "全员组");
 	}
 	
 

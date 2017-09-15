@@ -6,7 +6,6 @@
     <resultMap id="groupResultMap" type="group">
         <result column="group_id" property="groupId" />
 		<result column="org_id" property="orgId" />
-		<result column="group_type" property="groupType" />
 		<result column="group_name" property="groupName" />
 		<result column="system_default" property="systemDefault" />
 		<result column="all_member_flag" property="allMemberFlag" />
@@ -20,7 +19,6 @@
 	    insert into sky_group (
 	        group_id,
 	        org_id,
-	        group_type,
 	        group_name,
 	        system_default,
 	        all_member_flag,
@@ -31,7 +29,6 @@
 	    ) values (
 	        #{groupId},
 	        #{orgId},
-	        #{groupType},
 	        #{groupName},
 	        #{systemDefault},
 	        #{allMemberFlag},
@@ -53,7 +50,7 @@
 	
 	<select id="loadByGroupType" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from sky_group where org_id = #{orgId} and group_type = #{groupType}
+	    from sky_group where org_id = #{orgId}
 	</select>
 	
 	<select id="findAllMemberUseGroupIds" parameterType="map" resultType="long">
@@ -95,7 +92,7 @@
 	
 	<select id="loadQYGroup" parameterType="map" resultMap="groupResultMap">
 	    <include refid="sql_select" />
-	    from sky_group where org_id = #{orgId} and group_type = #{groupType}
+	    from sky_group where org_id = #{orgId}
 	</select>
 	
 	<select id="findAll" parameterType="long" resultMap="groupResultMap">
@@ -133,15 +130,9 @@
 		limit #{startRow}, #{pageSize}
 	</select>
 	
-	<select id="findGroupIdByTypes" parameterType="map" resultType="long">
-	    select group_id from sky_group where org_id = #{orgId} and group_type in
-	    <foreach collection="groupTypeList" index="index" item="groupType" open="(" separator="," close=")">#{groupType}</foreach>
-	</select>
-	
 	<sql id="sql_select">
 		select
 			group_id,
-			group_type,
 			org_id,
 			group_name,
 			system_default,

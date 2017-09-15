@@ -28,6 +28,7 @@ import com.moredian.skynet.auth.request.OperAddRequest;
 import com.moredian.skynet.auth.request.RoleAddRequest;
 import com.moredian.skynet.auth.service.OperService;
 import com.moredian.skynet.org.domain.Dept;
+import com.moredian.skynet.org.domain.Group;
 import com.moredian.skynet.org.domain.Org;
 import com.moredian.skynet.org.domain.OrgBiz;
 import com.moredian.skynet.org.domain.OrgQueryCondition;
@@ -37,9 +38,9 @@ import com.moredian.skynet.org.enums.OrgBizStatus;
 import com.moredian.skynet.org.enums.OrgErrorCode;
 import com.moredian.skynet.org.enums.OrgStatus;
 import com.moredian.skynet.org.enums.TpType;
+import com.moredian.skynet.org.enums.YesNoFlag;
 import com.moredian.skynet.org.manager.DeptManager;
 import com.moredian.skynet.org.manager.OrgManager;
-import com.moredian.skynet.org.manager.PositionCodeManager;
 import com.moredian.skynet.org.manager.PositionManager;
 import com.moredian.skynet.org.mapper.GroupMapper;
 import com.moredian.skynet.org.mapper.OrgBizMapper;
@@ -56,8 +57,6 @@ public class OrgManagerImpl implements OrgManager {
 	
 	@Autowired
 	private OrgMapper orgMapper;
-	@Autowired
-	private PositionCodeManager positionCodeManager;
 	@Autowired
 	private PositionManager positionManager;
 	@Autowired
@@ -104,10 +103,6 @@ public class OrgManagerImpl implements OrgManager {
 		return org;
 	}
 	
-	private Long genGroupId() {
-		return idgeneratorService.getNextIdByTypeName("com.moredian.skynet.org.Group").getData();
-	}
-	
 	@Override
 	@Transactional
 	public Long addOrg(OrgAddRequest request) {
@@ -125,40 +120,38 @@ public class OrgManagerImpl implements OrgManager {
 		
 		// 创建根部门
 		deptManager.addDept(org.getOrgId(), org.getOrgName(), 0L);
-		/*
+		
 		// 初始化全员组和访客组
 		Group group = new Group();
-		group.setGroupId(genGroupId());
-		group.setGroupCode(String.valueOf(group.getGroupId()));
+		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
 		group.setOrgId(org.getOrgId());
-		group.setGroupName(GroupType.ALLMEMBER.getDesc());
-		group.setGroupType(GroupType.ALLMEMBER.getValue());
+		group.setGroupName("全员组");
 		group.setSystemDefault(YesNoFlag.YES.getValue());
 		group.setAllMemberFlag(YesNoFlag.YES.getValue());
-		group.setMemberSize(0);
+		group.setBlackFlag(YesNoFlag.NO.getValue());
+		group.setPersonSize(0);
 		groupMapper.insert(group);
 		
-		ConfigGroupAtcDataMsg msg = null;
+		/*ConfigGroupAtcDataMsg msg = null;
 		msg = new ConfigGroupAtcDataMsg();
 		msg.setOrgId(group.getOrgId());
 		msg.setGroupId(group.getGroupId());
 		msg.setGroupType(group.getGroupType());
 		msg.setGroupCode(group.getGroupCode());
 		msg.setGroupName(group.getGroupName());
-		EventBus.publish(msg);
+		EventBus.publish(msg);*/
 		
 		group = new Group();
-		group.setGroupId(genGroupId());
-		group.setGroupCode(String.valueOf(group.getGroupId()));
+		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
 		group.setOrgId(org.getOrgId());
-		group.setGroupName(GroupType.VISITOR.getDesc());
-		group.setGroupType(GroupType.VISITOR.getValue());
+		group.setGroupName("访客组");
 		group.setSystemDefault(YesNoFlag.YES.getValue());
 		group.setAllMemberFlag(YesNoFlag.NO.getValue());
-		group.setMemberSize(0);
+		group.setBlackFlag(YesNoFlag.NO.getValue());
+		group.setPersonSize(0);
 		groupMapper.insert(group);
 		
-		msg = new ConfigGroupAtcDataMsg();
+		/*msg = new ConfigGroupAtcDataMsg();
 		msg.setOrgId(group.getOrgId());
 		msg.setGroupId(group.getGroupId());
 		msg.setGroupType(group.getGroupType());

@@ -118,18 +118,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public GroupInfo getQYGroup(Long orgId) {
-		Group group = groupManager.getQYGroup(orgId);
-		return this.groupToGroupInfo(group);
-	}
-
-	@Override
-	public GroupInfo getVisitorGroup(Long orgId) {
-		Group group = groupManager.getVisitorGroup(orgId);
-		return this.groupToGroupInfo(group);
-	}
-
-	@Override
 	public ServiceResponse<Boolean> updateMemberSize(Long orgId, Long groupId, boolean inc, int incOrDecSize) {
 		boolean result = groupManager.updateMemberSize(orgId, groupId, inc, incOrDecSize);
 		return new ServiceResponse<Boolean>(true, null, result);
@@ -156,11 +144,6 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public List<String> findGroupNameByIds(Long orgId, List<Long> groupIdList) {
 		return groupManager.findGroupNameByIds(orgId, groupIdList);
-	}
-
-	@Override
-	public List<Long> findGroupIdByTypes(Long orgId, List<Integer> groupTypeList) {
-		return groupManager.findGroupIdByTypes(orgId, groupTypeList);
 	}
 
 

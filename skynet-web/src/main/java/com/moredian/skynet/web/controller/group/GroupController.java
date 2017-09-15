@@ -60,9 +60,8 @@ public class GroupController extends BaseController {
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
 	public BaseResponse create(@RequestBody CreateGroupModel model) {
-		BaseResponse br = new BaseResponse();
 		groupService.addSimpleGroup(model.getOrgId(), model.getGroupName(), model.getAllMemberFlag()).pickDataThrowException();
-		return br;
+		return new BaseResponse();
     }
 	
 	@SuppressWarnings("rawtypes")

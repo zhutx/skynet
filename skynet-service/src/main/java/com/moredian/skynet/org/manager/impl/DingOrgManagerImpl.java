@@ -126,8 +126,6 @@ public class DingOrgManagerImpl implements DingOrgManager {
 	public void initGroup(Long orgId) {
 		Group group = new Group();
 		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
-		group.setGroupCode(String.valueOf(group.getGroupId()));
-		group.setGroupType(GroupType.ALLMEMBER.getValue());
 		group.setGroupName(GroupType.ALLMEMBER.getDesc());
 		group.setAllMemberFlag(YesNoFlag.YES.getValue());
 		group.setOrgId(orgId);
@@ -145,8 +143,6 @@ public class DingOrgManagerImpl implements DingOrgManager {
 		
 		group = new Group();
 		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
-		group.setGroupCode(String.valueOf(group.getGroupId()));
-		group.setGroupType(GroupType.VISITOR.getValue());
 		group.setGroupName(GroupType.VISITOR.getDesc());
 		group.setAllMemberFlag(YesNoFlag.NO.getValue());
 		group.setOrgId(orgId);

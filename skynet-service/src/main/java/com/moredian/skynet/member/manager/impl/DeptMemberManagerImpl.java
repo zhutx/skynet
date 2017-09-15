@@ -120,7 +120,7 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 		BizAssert.notNull(request.getStatus());
 		
 		DeptMember deptRelation = BeanUtils.copyProperties(DeptMember.class, request);
-		deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
+		deptRelation.setDeptMemberId(this.genPrimaryKey(DeptMember.class.getName()));
 		
 		deptMemberMapper.insertOrUpdate(deptRelation);
 		

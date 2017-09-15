@@ -78,7 +78,7 @@ public class GroupRangeServiceTest {
 	 * ----------------------------Private Helper Method-----------------------------------
 	 */
 	private GroupInfo fetchQYGroup() {
-		return groupService.getQYGroup(orgId);
+		return groupService.getGroupByName(orgId, "全员组");
 	}
 	
 	private GroupInfo fetchOneCustomGroup() {

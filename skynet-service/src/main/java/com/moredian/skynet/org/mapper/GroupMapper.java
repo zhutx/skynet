@@ -39,8 +39,6 @@ public interface GroupMapper {
 	
 	int justUpdateAllMemberFlag(@Param("orgId")Long orgId, @Param("groupId")Long groupId, @Param("allMemberFlag")Integer allMemberFlag);
 	
-	Group loadByGroupType(@Param("orgId")Long orgId, @Param("groupType")Integer groupType);
-	
 	List<Group> findByIds(@Param("orgId")Long orgId, @Param("groupIdList")List<Long> groupIdList);
 	
 	List<String> findNameByIds(@Param("orgId")Long orgId, @Param("groupIdList")List<Long> groupIdList);
@@ -49,6 +47,4 @@ public interface GroupMapper {
 	
 	List<Object> findPaginationByCondition(GroupQueryCondition condition);
 	
-	List<Long> findGroupIdByTypes(@Param("orgId")Long orgId, @Param("groupTypeList")List<Integer> groupTypeList);
-
 }

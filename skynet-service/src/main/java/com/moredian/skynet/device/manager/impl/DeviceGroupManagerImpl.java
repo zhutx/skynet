@@ -54,7 +54,7 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 	}
 	
 	private void bindQYGroup(Long orgId, Long deviceId) {
-		GroupInfo groupInfo = groupService.getQYGroup(orgId);
+		GroupInfo groupInfo = groupService.getGroupByName(orgId, "全员组");
 		DeviceGroup deviceGroup = new DeviceGroup();
 		deviceGroup.setDeviceGroupId(this.genDeviceGroupId());
 		deviceGroup.setOrgId(orgId);
@@ -64,7 +64,7 @@ public class DeviceGroupManagerImpl implements DeviceGroupManager {
 	}
 	
 	private void bindVisitorGroup(Long orgId, Long deviceId) {
-		GroupInfo groupInfo = groupService.getVisitorGroup(orgId);
+		GroupInfo groupInfo = groupService.getGroupByName(orgId, "访客组");
 		DeviceGroup deviceGroup = new DeviceGroup();
 		deviceGroup.setDeviceGroupId(this.genDeviceGroupId());
 		deviceGroup.setOrgId(orgId);

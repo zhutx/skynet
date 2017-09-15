@@ -244,7 +244,7 @@ public class MemberManagerImpl implements MemberManager {
 		}
 		for(Long deptId : relationDepts) {
 			DeptMember deptMember = new DeptMember();
-			deptMember.setDeptRelationId(this.genPrimaryId(DeptMember.class.getName()));
+			deptMember.setDeptMemberId(this.genPrimaryId(DeptMember.class.getName()));
 			deptMember.setOrgId(request.getOrgId());
 			deptMember.setDeptId(deptId);
 			deptMember.setTpDeptId(String.valueOf(deptId));
@@ -676,7 +676,7 @@ public class MemberManagerImpl implements MemberManager {
 		finalDeptIds.removeAll(existDeptIds_clone); // 定位新增的关系
 		for(Long deptId : finalDeptIds) {
 			DeptMember deptRelation = new DeptMember();
-        	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
+        	deptRelation.setDeptMemberId(this.genPrimaryKey(DeptMember.class.getName()));
         	
         	Dept dept = deptManager.getDept(orgId, deptId);
         	

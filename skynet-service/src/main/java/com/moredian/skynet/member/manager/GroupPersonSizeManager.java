@@ -8,6 +8,4 @@ public interface GroupPersonSizeManager {
 	
 	boolean batchResetPersonSize(Long orgId, List<Long> groupIdList, Integer personType);
 	
-	boolean resetPersonSizeForAllMemberGroup(Long orgId);
-
 }

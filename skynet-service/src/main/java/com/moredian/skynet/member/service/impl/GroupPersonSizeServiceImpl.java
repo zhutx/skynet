@@ -27,10 +27,4 @@ public class GroupPersonSizeServiceImpl implements GroupPersonSizeService {
 		return new ServiceResponse<Boolean>(true ,null, result);
 	}
 
-	@Override
-	public ServiceResponse<Boolean> resetPersonSizeForAllMemberGroup(Long orgId) {
-		boolean result = groupPersonSizeManager.resetPersonSizeForAllMemberGroup(orgId);
-		return new ServiceResponse<Boolean>(true ,null, result);
-	}
-
 }

@@ -8,8 +8,6 @@ public class Group implements Serializable {
 	private static final long serialVersionUID = -2243959459891382237L;
 	
 	private Long groupId;
-	private Integer groupType;
-	private String groupCode;
 	private Long orgId;
 	private String groupName;
 	private Integer systemDefault;
@@ -24,18 +22,6 @@ public class Group implements Serializable {
 	}
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
-	}
-	public Integer getGroupType() {
-		return groupType;
-	}
-	public void setGroupType(Integer groupType) {
-		this.groupType = groupType;
-	}
-	public String getGroupCode() {
-		return groupCode;
-	}
-	public void setGroupCode(String groupCode) {
-		this.groupCode = groupCode;
 	}
 	public Long getOrgId() {
 		return orgId;

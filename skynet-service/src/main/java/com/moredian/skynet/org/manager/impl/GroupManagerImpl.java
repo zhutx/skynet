@@ -22,7 +22,6 @@ import com.moredian.bee.rmq.EventBus;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ConfigGroupRelationDataMsg;
-import com.moredian.skynet.common.model.msg.ResetGroupRelationDataMsg;
 import com.moredian.skynet.device.manager.DeviceGroupManager;
 import com.moredian.skynet.member.enums.PersonType;
 import com.moredian.skynet.member.manager.GroupPersonManager;
@@ -30,7 +29,6 @@ import com.moredian.skynet.member.manager.GroupRangeManager;
 import com.moredian.skynet.member.manager.MemberManager;
 import com.moredian.skynet.org.domain.Group;
 import com.moredian.skynet.org.domain.GroupQueryCondition;
-import com.moredian.skynet.org.enums.GroupType;
 import com.moredian.skynet.org.enums.OrgErrorCode;
 import com.moredian.skynet.org.enums.YesNoFlag;
 import com.moredian.skynet.org.manager.GroupManager;
@@ -76,9 +74,7 @@ public class GroupManagerImpl implements GroupManager {
 		group = new Group();
 		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
 		group.setOrgId(orgId);
-		group.setGroupCode(String.valueOf(group.getGroupId()));
 		group.setGroupName(groupName);
-		group.setGroupType(GroupType.CUSTOM.getValue());
 		group.setSystemDefault(YesNoFlag.NO.getValue());
 		group.setAllMemberFlag(allMemberFlag);
 		group.setBlackFlag(YesNoFlag.NO.getValue());
@@ -104,9 +100,7 @@ public class GroupManagerImpl implements GroupManager {
 		group = new Group();
 		group.setGroupId(this.genPrimaryKey(Group.class.getName()));
 		group.setOrgId(request.getOrgId());
-		group.setGroupCode(String.valueOf(group.getGroupId()));
 		group.setGroupName(request.getGroupName());
-		group.setGroupType(GroupType.CUSTOM.getValue());
 		group.setSystemDefault(YesNoFlag.NO.getValue());
 		group.setAllMemberFlag(request.isAllMember()?YesNoFlag.YES.getValue():YesNoFlag.NO.getValue());
 		group.setPersonSize(0);
@@ -246,18 +240,6 @@ public class GroupManagerImpl implements GroupManager {
 	}
 
 	@Override
-	public Group getQYGroup(Long orgId) {
-		BizAssert.notNull(orgId);
-		return groupMapper.loadByGroupType(orgId, GroupType.ALLMEMBER.getValue());
-	}
-
-	@Override
-	public Group getVisitorGroup(Long orgId) {
-		BizAssert.notNull(orgId);
-		return groupMapper.loadByGroupType(orgId, GroupType.VISITOR.getValue());
-	}
-
-	@Override
 	public boolean updateMemberSize(Long orgId, Long groupId, boolean inc, int incOrDecSize) {
 		BizAssert.notNull(orgId);
 		BizAssert.notNull(groupId);
@@ -339,11 +321,5 @@ public class GroupManagerImpl implements GroupManager {
         }
         return pagination;
     }
-
-	@Override
-	public List<Long> findGroupIdByTypes(Long orgId, List<Integer> groupTypeList) {
-		if(CollectionUtils.isEmpty(groupTypeList)) return new ArrayList<>();
-		return groupMapper.findGroupIdByTypes(orgId, groupTypeList);
-	}
 
 }

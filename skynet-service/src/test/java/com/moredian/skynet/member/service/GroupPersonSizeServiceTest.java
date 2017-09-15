@@ -47,17 +47,11 @@ public class GroupPersonSizeServiceTest {
 		Assert.isTrue(sr.isSuccess());
 	}
 	
-	@Test
-	public void testResetPersonSizeForAllMemberGroup() {
-		ServiceResponse<Boolean> sr = groupPersonSizeService.resetPersonSizeForAllMemberGroup(orgId);
-		Assert.isTrue(sr.isSuccess());
-	}
-	
 	/**
 	 * ----------------------------Private Helper Method-----------------------------------
 	 */
 	private GroupInfo fetchQYGroup() {
-		return groupService.getQYGroup(orgId);
+		return groupService.getGroupByName(orgId, "全员组");
 	}
 
 }

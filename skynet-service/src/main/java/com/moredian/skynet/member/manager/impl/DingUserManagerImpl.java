@@ -326,7 +326,7 @@ public class DingUserManagerImpl implements DingUserManager {
                 	Dept dept = deptManager.getDeptByTpId(member.getOrgId(), dingDept);
                 	if(dept != null) {
                 		DeptMember deptRelation = new DeptMember();
-                    	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
+                    	deptRelation.setDeptMemberId(this.genPrimaryKey(DeptMember.class.getName()));
                     	deptRelation.setOrgId(member.getOrgId());
                     	deptRelation.setDeptId(dept.getDeptId());
                     	deptRelation.setTpDeptId(String.valueOf(dingDept));
@@ -369,7 +369,7 @@ public class DingUserManagerImpl implements DingUserManager {
         	Dept dept = deptManager.getDeptByTpId(member.getOrgId(), tpDeptId);
         	
         	DeptMember deptRelation = new DeptMember();
-        	deptRelation.setDeptRelationId(this.genPrimaryKey(DeptMember.class.getName()));
+        	deptRelation.setDeptMemberId(this.genPrimaryKey(DeptMember.class.getName()));
         	deptRelation.setOrgId(member.getOrgId());
         	deptRelation.setDeptId(dept.getDeptId());
         	deptRelation.setTpDeptId(String.valueOf(tpDeptId));

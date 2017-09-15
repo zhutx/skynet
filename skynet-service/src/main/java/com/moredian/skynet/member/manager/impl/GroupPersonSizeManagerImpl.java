@@ -46,17 +46,4 @@ public class GroupPersonSizeManagerImpl implements GroupPersonSizeManager {
 		return true;
 	}
 
-	@Override
-	public boolean resetPersonSizeForAllMemberGroup(Long orgId) {
-		
-		List<Integer> groupTypeList = new ArrayList<>();
-		groupTypeList.add(GroupType.ALLMEMBER.getValue()); // 全员组
-		groupTypeList.add(GroupType.CUSTOM.getValue()); // 自定义组
-		List<Long> groupIdList = groupManager.findGroupIdByTypes(orgId, groupTypeList);
-		
-		this.batchResetPersonSize(orgId, groupIdList, PersonType.MEMBER.getValue());
-		
-		return true;
-	}
-
 }

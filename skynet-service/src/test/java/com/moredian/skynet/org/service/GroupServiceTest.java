@@ -18,7 +18,6 @@ import com.moredian.bee.common.exception.BizException;
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.skynet.SkynetApplication;
-import com.moredian.skynet.org.enums.GroupType;
 import com.moredian.skynet.org.enums.OrgErrorCode;
 import com.moredian.skynet.org.enums.YesNoFlag;
 import com.moredian.skynet.org.model.GroupInfo;
@@ -131,19 +130,6 @@ public class GroupServiceTest {
 		List<String> groupNameList = groupService.findGroupNameByIds(orgId, groupIdList);
 		Assert.notEmpty(groupNameList);
 		logger.info(JsonUtils.toJson(groupNameList));
-
-	}
-	
-	@Test
-	public void testFindGroupIdByTypes() {	
-		
-		List<Integer> groupTypeList = new ArrayList<>();
-		groupTypeList.add(GroupType.ALLMEMBER.getValue());
-		groupTypeList.add(GroupType.VISITOR.getValue());
-		groupTypeList.add(GroupType.CUSTOM.getValue());
-		List<Long> groupIdList = groupService.findGroupIdByTypes(orgId, groupTypeList);
-		Assert.notNull(groupIdList);
-		logger.info(JsonUtils.toJson(groupIdList));
 
 	}
 	

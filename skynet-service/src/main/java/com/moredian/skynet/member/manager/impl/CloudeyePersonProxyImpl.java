@@ -178,7 +178,7 @@ public class CloudeyePersonProxyImpl implements CloudeyePersonProxy {
 		List<PersonGroup> groups = new ArrayList<>();
 		for(Long groupId : groupIdList) {
 			Group group = groupManager.getGroupById(orgId, groupId);
-			PersonGroup personGroup = new PersonGroup(PersonGroup.GROUP_TYPE_COMMON, group.getGroupCode(), group.getGroupName());
+			PersonGroup personGroup = new PersonGroup(PersonGroup.GROUP_TYPE_COMMON, group.getGroupId().toString(), group.getGroupName());
 			groups.add(personGroup);
 		}
 		return groups;

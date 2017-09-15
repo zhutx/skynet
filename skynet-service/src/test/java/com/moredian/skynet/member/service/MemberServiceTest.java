@@ -240,7 +240,7 @@ public class MemberServiceTest {
 	 * ----------------------------Private Helper Method-----------------------------------
 	 */
 	private GroupInfo fetchQYGroup() {
-		return groupService.getQYGroup(orgId);
+		return groupService.getGroupByName(orgId, "全员组");
 	}
 	
 	private List<Long> fetchMemberIds() {

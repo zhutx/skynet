@@ -22,11 +22,4 @@ public interface GroupPersonSizeService {
 	 */
 	ServiceResponse<Boolean> batchResetPersonSize(Long orgId, List<Long> groupIdList, Integer personType);
 	
-	/**
-	 * 批量重置机构所有成员群组的成员数
-	 * @param orgId
-	 * @return
-	 */
-	ServiceResponse<Boolean> resetPersonSizeForAllMemberGroup(Long orgId);
-
 }

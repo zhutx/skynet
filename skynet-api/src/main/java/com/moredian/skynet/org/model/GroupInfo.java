@@ -9,7 +9,6 @@ public class GroupInfo implements Serializable {
 	private static final long serialVersionUID = 1226602237195498970L;
 	
 	private Long groupId;
-	private Integer groupType;
 	private String groupCode;
 	private String groupName;
 	private Long orgId;
@@ -25,12 +24,6 @@ public class GroupInfo implements Serializable {
 	}
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
-	}
-	public Integer getGroupType() {
-		return groupType;
-	}
-	public void setGroupType(Integer groupType) {
-		this.groupType = groupType;
 	}
 	public String getGroupCode() {
 		return groupCode;

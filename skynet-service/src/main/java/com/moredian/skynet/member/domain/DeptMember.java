@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class DeptMember {
 	
-	private Long deptRelationId;
+	private Long deptMemberId;
 	private Long orgId;
 	private Long deptId;
 	private String tpDeptId;
@@ -14,11 +14,11 @@ public class DeptMember {
 	private Date gmtCreate;
 	private Date gmtModify;
 	
-	public Long getDeptRelationId() {
-		return deptRelationId;
+	public Long getDeptMemberId() {
+		return deptMemberId;
 	}
-	public void setDeptRelationId(Long deptRelationId) {
-		this.deptRelationId = deptRelationId;
+	public void setDeptMemberId(Long deptMemberId) {
+		this.deptMemberId = deptMemberId;
 	}
 	public Long getOrgId() {
 		return orgId;
