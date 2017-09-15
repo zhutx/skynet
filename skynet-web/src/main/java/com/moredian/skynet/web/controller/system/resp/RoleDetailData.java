@@ -10,7 +10,7 @@ public class RoleDetailData {
 	private String orgName;
 	private String roleName;
 	private String roleDesc;
-	private List<Long> permIdList;
+	private List<Long> permIds;
 	
 	public Long getRoleId() {
 		return roleId;
@@ -48,11 +48,11 @@ public class RoleDetailData {
 	public void setRoleDesc(String roleDesc) {
 		this.roleDesc = roleDesc;
 	}
-	public List<Long> getPermIdList() {
-		return permIdList;
+	public List<Long> getPermIds() {
+		return permIds;
 	}
-	public void setPermIdList(List<Long> permIdList) {
-		this.permIdList = permIdList;
+	public void setPermIds(List<Long> permIds) {
+		this.permIds = permIds;
 	}
 
 }

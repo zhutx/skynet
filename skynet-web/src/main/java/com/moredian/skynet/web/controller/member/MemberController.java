@@ -343,13 +343,12 @@ public class MemberController extends BaseController {
 			String mobile = StringUtils.isBlank(str[1]) ? null : str[1].trim();
 			String nickName = StringUtils.isBlank(str[2]) ? null : str[2].trim();
 			String sexText = StringUtils.isBlank(str[3]) ? null : str[3].trim();
-			String birthdayText = StringUtils.isBlank(str[4]) ? null : str[4].trim();
+			String birthday = StringUtils.isBlank(str[4]) ? null : str[4].trim();
 			String email = StringUtils.isBlank(str[5]) ? null : str[5].trim();
 			String deptName = StringUtils.isBlank(str[6]) ? null : str[6].trim();
 			String post = StringUtils.isBlank(str[7]) ? null : str[7].trim();
 			
 			Integer sex = Sex.getValue(sexText);
-			Date birthday = null;
 			Long deptId = null;
 			
 			if(memberName == null) {
@@ -372,7 +371,7 @@ public class MemberController extends BaseController {
 				continue;
 			}
 			
-			if(birthdayText != null) {
+			if(birthday != null) {
 				boolean transOk = false; // TODO 生日转换为Date
 				if(transOk) {
 					wrongRowSet.add(i);

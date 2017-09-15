@@ -11,12 +11,12 @@ public class ImportMemberModel implements Serializable {
 	private String mobile;
 	private String nickName;
 	private Integer sex;
-	private Date birthday;
+	private String birthday;
 	private String email;
 	private Long deptId;
 	private String post;
 	
-	public ImportMemberModel(String memberName, String mobile, String nickName, Integer sex, Date birthday, String email, Long deptId, String post) {
+	public ImportMemberModel(String memberName, String mobile, String nickName, Integer sex, String birthday, String email, Long deptId, String post) {
 		this.memberName = memberName;
 		this.mobile = mobile;
 		this.nickName = nickName;
@@ -52,13 +52,14 @@ public class ImportMemberModel implements Serializable {
 	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
-
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
+
 	public String getEmail() {
 		return email;
 	}

@@ -62,7 +62,7 @@ public class RoleController extends BaseController {
 	
 	@ApiOperation(value="修改角色", notes="修改角色")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/update", method=RequestMethod.POST)
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse update(@RequestBody UpdateRoleModel model) {
 		
@@ -74,7 +74,7 @@ public class RoleController extends BaseController {
 	private RoleDetailData buildRoleDetailData(RoleInfo role) {
 		RoleDetailData data = BeanUtils.copyProperties(RoleDetailData.class, role);
 		List<Long> permIdList = permService.findPermByRole(role.getRoleId());
-		data.setPermIdList(permIdList);
+		data.setPermIds(permIdList);
 		return data;
 	}
 	

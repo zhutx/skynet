@@ -46,7 +46,7 @@ public class OperController extends BaseController {
 		return BeanUtils.copyProperties(OperAddRequest.class, model);
 	}
 	
-	@ApiOperation(value="添加账号", notes="添加账号")
+	@ApiOperation(value="创建账号", notes="创建账号")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
@@ -166,7 +166,7 @@ public class OperController extends BaseController {
 	
 	private OperDetailData buildOperDetailData(OperInfo oper) {
 		OperDetailData data = BeanUtils.copyProperties(OperDetailData.class, oper);
-		data.setRoleIdList(roleService.findRoleIdByOper(oper.getOperId()));
+		data.setRoleIds(roleService.findRoleIdByOper(oper.getOperId()));
 		return data;
 	}
 	

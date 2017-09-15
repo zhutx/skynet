@@ -14,7 +14,7 @@ public class OperDetailData {
 	private String mobile;
 	private Integer defaultFlag;
 	private Integer status;
-	private List<Long> roleIdList;
+	private List<Long> roleIds;
 	
 	public Long getOperId() {
 		return operId;
@@ -76,11 +76,11 @@ public class OperDetailData {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public List<Long> getRoleIdList() {
-		return roleIdList;
+	public List<Long> getRoleIds() {
+		return roleIds;
 	}
-	public void setRoleIdList(List<Long> roleIdList) {
-		this.roleIdList = roleIdList;
+	public void setRoleIds(List<Long> roleIds) {
+		this.roleIds = roleIds;
 	}
 
 }

@@ -30,9 +30,9 @@ public class MemberAddRequest implements Serializable {
 	//性别 
 	private Integer sex;
 	//生日
-	private Date birthday;
+	private String birthday;
 	//入职时间
-	private Date enterTime;
+	private String enterTime;
 	//邮箱
 	private String email;
 	//职务
@@ -106,16 +106,16 @@ public class MemberAddRequest implements Serializable {
 	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
-	public Date getEnterTime() {
+	public String getEnterTime() {
 		return enterTime;
 	}
-	public void setEnterTime(Date enterTime) {
+	public void setEnterTime(String enterTime) {
 		this.enterTime = enterTime;
 	}
 	public String getEmail() {

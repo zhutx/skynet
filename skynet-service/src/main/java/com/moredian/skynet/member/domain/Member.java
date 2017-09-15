@@ -46,7 +46,7 @@ private static final long serialVersionUID = -0L;
 	//企业邮箱
 	private String orgEmail;
 	//生日
-	private Date birthday;
+	private String birthday;
 	//证件类型
 	private Integer certType;
 	//证件号 
@@ -54,7 +54,7 @@ private static final long serialVersionUID = -0L;
 	//工号
 	private String jobNum;
 	//入职时间
-	private Date enterTime;
+	private String enterTime;
 	//职务
 	private String post;
 	//是否隐藏
@@ -184,12 +184,6 @@ private static final long serialVersionUID = -0L;
 	public void setOrgEmail(String orgEmail) {
 		this.orgEmail = orgEmail;
 	}
-	public Date getBirthday() {
-		return birthday;
-	}
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
-	}
 	public Integer getCertType() {
 		return certType;
 	}
@@ -208,10 +202,16 @@ private static final long serialVersionUID = -0L;
 	public void setJobNum(String jobNum) {
 		this.jobNum = jobNum;
 	}
-	public Date getEnterTime() {
+	public String getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+	public String getEnterTime() {
 		return enterTime;
 	}
-	public void setEnterTime(Date enterTime) {
+	public void setEnterTime(String enterTime) {
 		this.enterTime = enterTime;
 	}
 	public String getPost() {

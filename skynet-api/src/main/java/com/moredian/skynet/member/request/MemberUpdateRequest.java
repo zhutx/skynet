@@ -22,7 +22,7 @@ public class MemberUpdateRequest implements Serializable {
 	//昵称
 	private String nickName;
 	//生日
-	private Date birthday;
+	private String birthday;
 	//性别 
 	private Integer sex;
 	//年龄
@@ -40,7 +40,7 @@ public class MemberUpdateRequest implements Serializable {
 	//工号
 	private String jobNum;
 	//入职时间
-	private Date enterTime;
+	private String enterTime;
 	//职务
 	private String post;
 	//个性签名
@@ -86,10 +86,10 @@ public class MemberUpdateRequest implements Serializable {
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 	public Integer getSex() {
@@ -140,10 +140,10 @@ public class MemberUpdateRequest implements Serializable {
 	public void setJobNum(String jobNum) {
 		this.jobNum = jobNum;
 	}
-	public Date getEnterTime() {
+	public String getEnterTime() {
 		return enterTime;
 	}
-	public void setEnterTime(Date enterTime) {
+	public void setEnterTime(String enterTime) {
 		this.enterTime = enterTime;
 	}
 	public String getPost() {
