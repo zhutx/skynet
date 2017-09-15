@@ -540,7 +540,7 @@ public class CommonController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/isFacePic", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse isFacePic(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "verifyFaceUrl") String verifyFaceUrl) {
+    public BaseResponse isFacePic(@RequestParam(value = "verifyFaceUrl") String verifyFaceUrl) {
 		
 		BaseResponse<Boolean> br = new BaseResponse<>();
 		
