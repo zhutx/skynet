@@ -22,6 +22,7 @@ import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.rmq.EventBus;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ClearMemberRelationDataMsg;
 import com.moredian.skynet.common.model.msg.ConfigMemberGroupDataMsg;
 import com.moredian.skynet.common.model.msg.ResetMemberGroupDataMsg;
@@ -47,7 +48,6 @@ import com.moredian.skynet.org.enums.TpType;
 import com.moredian.skynet.org.enums.YesNoFlag;
 import com.moredian.skynet.org.manager.DeptManager;
 import com.moredian.skynet.org.manager.PositionManager;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class DingUserManagerImpl implements DingUserManager {
@@ -180,7 +180,6 @@ public class DingUserManagerImpl implements DingUserManager {
 		member.setAdminFlag(booleanToInt(request.getDingIsAdmin()));
 		member.setMemberName(request.getDingName());
 		member.setNickName(request.getDingName());
-		member.setShowVerifyFlag(YesNoFlag.YES.getValue());
 		member.setSex(Sex.UNKNOWN.intValue());
 		member.setEmail(request.getDingEmail());
 		member.setOrgEmail(request.getDingOrgEmail());
@@ -224,7 +223,6 @@ public class DingUserManagerImpl implements DingUserManager {
 		member.setChargeFlag(booleanToInt(request.getDingIsBoss()));
 		member.setAdminFlag(booleanToInt(request.getDingIsAdmin()));
 		member.setMemberName(request.getDingName());
-		member.setShowVerifyFlag(YesNoFlag.YES.getValue());
 		member.setEmail(request.getDingEmail());
 		member.setOrgEmail(request.getDingOrgEmail());
 		member.setJobNum(request.getDingJobNum());

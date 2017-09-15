@@ -2,7 +2,6 @@ package com.moredian.skynet.member.request;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MemberAddRequest implements Serializable {
@@ -27,8 +26,14 @@ public class MemberAddRequest implements Serializable {
 	private String nickName;
 	//工号
 	private String jobNum;
+	//证件类型
+	private Integer certType;
+	//证件号
+	private String certNo;
 	//性别 
 	private Integer sex;
+	//年龄
+	private Integer age;
 	//生日
 	private String birthday;
 	//入职时间
@@ -88,6 +93,18 @@ public class MemberAddRequest implements Serializable {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+	public Integer getCertType() {
+		return certType;
+	}
+	public void setCertType(Integer certType) {
+		this.certType = certType;
+	}
+	public String getCertNo() {
+		return certNo;
+	}
+	public void setCertNo(String certNo) {
+		this.certNo = certNo;
+	}
 	public String getNickName() {
 		return nickName;
 	}
@@ -105,6 +122,12 @@ public class MemberAddRequest implements Serializable {
 	}
 	public void setSex(Integer sex) {
 		this.sex = sex;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 	public String getBirthday() {
 		return birthday;

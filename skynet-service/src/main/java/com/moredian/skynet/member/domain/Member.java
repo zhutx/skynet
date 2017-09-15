@@ -33,8 +33,6 @@ private static final long serialVersionUID = -0L;
 	private String nickName;
 	//个性签名
 	private String signature;
-	//默认显示识别头像
-	private Integer showVerifyFlag;
 	//性别 
 	private Integer sex;
 	//年龄
@@ -147,12 +145,6 @@ private static final long serialVersionUID = -0L;
 	}
 	public void setSignature(String signature) {
 		this.signature = signature;
-	}
-	public Integer getShowVerifyFlag() {
-		return showVerifyFlag;
-	}
-	public void setShowVerifyFlag(Integer showVerifyFlag) {
-		this.showVerifyFlag = showVerifyFlag;
 	}
 	public Integer getSex() {
 		return sex;

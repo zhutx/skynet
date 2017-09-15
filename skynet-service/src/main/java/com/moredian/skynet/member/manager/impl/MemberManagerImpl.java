@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.moredian.bee.common.consts.Sex;
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.bee.common.rpc.ServiceResponse;
+import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.common.utils.NetworkFacePicture;
@@ -194,8 +195,8 @@ public class MemberManagerImpl implements MemberManager {
 	}
 	
 	private Member memberAddRequestToMember(MemberAddRequest request){
-		Member member = new Member();
-		member.setOrgId(request.getOrgId());
+		Member member = BeanUtils.copyProperties(Member.class, request);
+		
 		member.setMemberId(this.genPrimaryId(Member.class.getName()));
 		member.setTpType(TpType.SELF.getValue());
 		member.setTpId(String.valueOf(member.getMemberId()));
@@ -207,26 +208,16 @@ public class MemberManagerImpl implements MemberManager {
 		if(StringUtils.isNotBlank(request.getShowFaceUrl())) {
 			member.setShowFaceUrl(imageFileManager.getRelativePath(request.getShowFaceUrl()));
 		} 
-		member.setShowVerifyFlag(YesNoFlag.YES.getValue());
 		member.setChargeFlag(YesNoFlag.NO.getValue());
 		member.setAdminFlag(YesNoFlag.NO.getValue());
-		member.setMemberName(request.getMemberName());
-		member.setNickName(request.getNickName());
-		member.setSignature(request.getSignature());
 		if(request.getSex() != null){
 			member.setSex(request.getSex());
 		} else {
 			member.setSex(Sex.UNKNOWN.intValue());
 		}
-		member.setMobile(request.getMobile());
-		member.setEmail(request.getEmail());
-		member.setBirthday(request.getBirthday());
-		member.setJobNum(request.getJobNum());
-		member.setEnterTime(request.getEnterTime());
-		member.setPost(request.getPost());
-		member.setMemo(request.getMemo());
 		member.setHideFlag(YesNoFlag.NO.getValue());
 		member.setStatus(MemberStatus.USABLE.getValue());
+		
 		return member;
 	}
 	
