@@ -1,5 +1,8 @@
 package com.moredian.skynet.web.controller.system.req;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpdateOperModel {
 	
 	private Integer moduleType;
@@ -9,7 +12,7 @@ public class UpdateOperModel {
 	private String email;
 	private String mobile;
 	private String operDesc;
-	private String roleIds;
+	private List<Long> roleIds = new ArrayList<>();
 	
 	public Integer getModuleType() {
 		return moduleType;
@@ -53,10 +56,10 @@ public class UpdateOperModel {
 	public void setOperDesc(String operDesc) {
 		this.operDesc = operDesc;
 	}
-	public String getRoleIds() {
+	public List<Long> getRoleIds() {
 		return roleIds;
 	}
-	public void setRoleIds(String roleIds) {
+	public void setRoleIds(List<Long> roleIds) {
 		this.roleIds = roleIds;
 	}
 

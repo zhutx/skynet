@@ -1,5 +1,8 @@
 package com.moredian.skynet.web.controller.system.req;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CreateOperModel {
 	
 	private Long orgId;
@@ -10,7 +13,7 @@ public class CreateOperModel {
 	private String password = "88888888";
 	private String mobile;
 	private String email;
-	private String roleIds;
+	private List<Long> roleIds = new ArrayList<>();
 	
 	public Long getOrgId() {
 		return orgId;
@@ -54,10 +57,10 @@ public class CreateOperModel {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getRoleIds() {
+	public List<Long> getRoleIds() {
 		return roleIds;
 	}
-	public void setRoleIds(String roleIds) {
+	public void setRoleIds(List<Long> roleIds) {
 		this.roleIds = roleIds;
 	}
 	public String getMobile() {

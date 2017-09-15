@@ -10,7 +10,7 @@ import com.moredian.skynet.auth.domain.Oper;
 @Mapper
 public interface OperMapper {
 	
-	List<Oper> findByCondition(@Param("orgId")Long orgId, @Param("accountName")String accountName, @Param("operName")String operName, @Param("keywords")String keywords, @Param("moduleType")Integer moduleType);
+	List<Oper> findByCondition(@Param("orgId")Long orgId, @Param("keywords")String keywords, @Param("moduleType")Integer moduleType);
 	
 	List<Oper> findEnable(@Param("accountId")Long accountId, @Param("moduleType")Integer moduleType, @Param("status")Integer status);
 	

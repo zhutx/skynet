@@ -3,8 +3,6 @@ package com.moredian.skynet.web.controller.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,18 +42,7 @@ public class RoleController extends BaseController {
 	private PermService permService;
 	
 	private RoleAddRequest buildRoleAddRequest(CreateRoleModel model) {
-		RoleAddRequest request = new RoleAddRequest();
-		request.setOrgId(model.getOrgId());
-		request.setRoleName(model.getRoleName());
-		request.setRoleDesc(model.getRoleDesc());
-		List<Long> permIds = new ArrayList<>();
-		if(StringUtils.isNotBlank(model.getPermIds())) {
-			for(String str : model.getPermIds().split(",")) {
-				permIds.add(Long.parseLong(str));
-			}
-		}
-		request.setPermIds(permIds);
-		return request;
+		return BeanUtils.copyProperties(RoleAddRequest.class, model);
 	}
 	
 	@ApiOperation(value="创建角色", notes="创建角色")
@@ -70,19 +57,7 @@ public class RoleController extends BaseController {
     }
 	
 	private RoleUpdateRequest buildRoleUpdateRequest(UpdateRoleModel model) {
-		RoleUpdateRequest request = new RoleUpdateRequest();
-		request.setRoleId(model.getRoleId());
-		request.setOrgId(model.getOrgId());
-		request.setRoleName(model.getRoleName());
-		request.setRoleDesc(model.getRoleDesc());
-		List<Long> permIds = new ArrayList<>();
-		if(StringUtils.isNotBlank(model.getPermIds())) {
-			for(String str : model.getPermIds().split(",")) {
-				permIds.add(Long.parseLong(str));
-			}
-		}
-		request.setPermIds(permIds);
-		return request;
+		return BeanUtils.copyProperties(RoleUpdateRequest.class, model);
 	}
 	
 	@ApiOperation(value="修改角色", notes="修改角色")
@@ -128,28 +103,8 @@ public class RoleController extends BaseController {
 		return new BaseResponse();
     }
 	
-	private String listToString(List<Long> permIdList){ 
-		if(CollectionUtils.isEmpty(permIdList)) return null;
-		StringBuffer sb = new StringBuffer();
-		for(Long permId : permIdList) {
-			if(sb.length() == 0) {
-				sb.append(String.valueOf(permId));
-			} else {
-				sb.append(","+String.valueOf(permId));
-			}
-		}
-		return sb.toString();
-	}
-	
 	private RoleData roleInfoToRoleData(RoleInfo roleInfo) {
-		RoleData roleData = new RoleData();
-		roleData.setRoleId(roleInfo.getRoleId());
-		roleData.setOrgId(roleInfo.getOrgId());
-		roleData.setRoleName(roleInfo.getRoleName());
-		roleData.setRoleDesc(roleInfo.getRoleDesc());
-		roleData.setGmtCreate(roleInfo.getGmtCreate());
-		roleData.setPermIds(this.listToString(roleInfo.getPermIds()));
-		return roleData;
+		return BeanUtils.copyProperties(RoleData.class, roleInfo);
 	}
 	
 	private List<RoleData> buildRoleDataList(List<RoleInfo> roleInfoList) {
@@ -172,7 +127,7 @@ public class RoleController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse list(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "roleName") String roleName) {
+    public BaseResponse list(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "roleName", required = false) String roleName) {
 		
 		BaseResponse<List<RoleData>> bdr = new BaseResponse<>();
 		
@@ -186,8 +141,8 @@ public class RoleController extends BaseController {
 	private SimplePermQueryRequest buildSimplePermQueryRequest(Integer moduleType, Long roleId, Long parentPermId) {
 		SimplePermQueryRequest request = new SimplePermQueryRequest();
 		request.setModuleType(moduleType);
-		request.setParentPermId(roleId);
-		request.setRoleId(parentPermId);
+		request.setParentPermId(parentPermId);
+		request.setRoleId(roleId);
 		return request;
 	}
 	

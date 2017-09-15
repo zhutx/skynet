@@ -55,6 +55,7 @@ public class PermManagerImpl implements PermManager {
 		}
 		perm.setModuleType(request.getModuleType());
 		perm.setStatus(PermStatus.USABLE.getValue());
+		perm.setChildrenSize(0);
 		return perm;
 	}
 

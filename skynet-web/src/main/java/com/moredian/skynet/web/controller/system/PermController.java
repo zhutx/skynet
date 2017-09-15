@@ -74,7 +74,7 @@ public class PermController extends BaseController {
 	@ResponseBody
     public BaseResponse update(@RequestBody UpdatePermModel model) {
 		
-		permService.updatePerm(this.buildPermUpdateRequest(model));
+		permService.updatePerm(this.buildPermUpdateRequest(model)).pickDataThrowException();
 		
 		return new BaseResponse();
     }
@@ -96,7 +96,7 @@ public class PermController extends BaseController {
 	@ResponseBody
     public BaseResponse disable(@RequestBody DisablePermModel model) {
 		
-		permService.disablePerm(model.getPermId());
+		permService.disablePerm(model.getPermId()).pickDataThrowException();
 		
 		return new BaseResponse();
     }
@@ -107,7 +107,7 @@ public class PermController extends BaseController {
 	@ResponseBody
     public BaseResponse enable(@RequestBody ActivePermModel model) {
 		
-		permService.activePerm(model.getPermId());
+		permService.activePerm(model.getPermId()).pickDataThrowException();
 		
 		return new BaseResponse();
     }
@@ -136,7 +136,7 @@ public class PermController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse list(@RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "permName")String permName, @RequestParam(value = "parentId")Long parentId) {
+    public BaseResponse list(@RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "permName", required = false)String permName, @RequestParam(value = "parentId")Long parentId) {
 		
 		BaseResponse<List<PermData>> bdr = new BaseResponse<>();
 		

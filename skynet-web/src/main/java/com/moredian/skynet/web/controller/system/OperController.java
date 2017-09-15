@@ -3,7 +3,6 @@ package com.moredian.skynet.web.controller.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,24 +43,7 @@ public class OperController extends BaseController {
 	private RoleService roleService;
 	
 	private OperAddRequest buildOperAddRequest(CreateOperModel model) {
-		OperAddRequest request = new OperAddRequest();
-		request.setModuleType(model.getModuleType());
-		request.setAccountName(model.getAccountName());
-		request.setPassword(model.getPassword());
-		request.setOperName(model.getOperName());
-		request.setOperDesc(model.getOperDesc());
-		request.setOrgId(model.getOrgId());
-		request.setEmail(model.getEmail());
-		request.setMobile(model.getMobile());
-		
-		List<Long> roleIds = new ArrayList<>();
-		if(StringUtils.isNotBlank(model.getRoleIds())) {
-			for(String str : model.getRoleIds().split(",")) {
-				roleIds.add(Long.parseLong(str));
-			}
-		}
-		request.setRoleIds(roleIds);
-		return request;
+		return BeanUtils.copyProperties(OperAddRequest.class, model);
 	}
 	
 	@ApiOperation(value="添加账号", notes="添加账号")
@@ -76,30 +58,14 @@ public class OperController extends BaseController {
     }
 	
 	private OperUpdateRequest buildOperUpdateRequest(UpdateOperModel model) {
-		OperUpdateRequest request = new OperUpdateRequest();
-		request.setModuleType(model.getModuleType());
-		request.setOperId(model.getOperId());
-		request.setOperName(model.getOperName());
-		request.setEmail(model.getEmail());
-		request.setMobile(model.getMobile());
-		request.setOperDesc(model.getOperDesc());
-		request.setOrgId(model.getOrgId());
-		
-		List<Long> roleIds = new ArrayList<>();
-		if(StringUtils.isNotBlank(model.getRoleIds())) {
-			for(String str : model.getRoleIds().split(",")) {
-				roleIds.add(Long.parseLong(str));
-			}
-		}
-		request.setRoleIds(roleIds);
-		return request;
+		return BeanUtils.copyProperties(OperUpdateRequest.class, model);
 	}
 	
 	@ApiOperation(value="修改账号", notes="修改账号")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/update", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse edit(@RequestBody UpdateOperModel model) {
+    public BaseResponse update(@RequestBody UpdateOperModel model) {
 		
 		operService.updateOper(this.buildOperUpdateRequest(model)).pickDataThrowException();
 		
@@ -175,11 +141,10 @@ public class OperController extends BaseController {
 		return operDataList;
 	}
 	
-	private OperQueryRequest buildOperQueryRequest(Long orgId, Integer moduleType, String accountName, String keywords) {
+	private OperQueryRequest buildOperQueryRequest(Long orgId, Integer moduleType, String keywords) {
 		OperQueryRequest request = new OperQueryRequest();
 		request.setOrgId(orgId);
 		request.setModuleType(moduleType);
-		request.setAccountName(accountName);
 		request.setKeywords(keywords);
 		return request;
 	}
@@ -188,11 +153,11 @@ public class OperController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse list(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "accountName")String accountName, @RequestParam(value = "keywords")String keywords) {
+    public BaseResponse list(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "keywords", required = false)String keywords) {
 		
 		BaseResponse<List<OperData>> bdr = new BaseResponse<>();
 		
-		List<OperInfo> operInfoList = operService.findOper(this.buildOperQueryRequest(orgId, moduleType, accountName, keywords));
+		List<OperInfo> operInfoList = operService.findOper(this.buildOperQueryRequest(orgId, moduleType, keywords));
 		
 		bdr.setData(this.buildOperDataList(operInfoList));
 		

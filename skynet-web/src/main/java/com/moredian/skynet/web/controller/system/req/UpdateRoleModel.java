@@ -1,12 +1,15 @@
 package com.moredian.skynet.web.controller.system.req;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpdateRoleModel {
 	
 	private Long roleId;
 	private Long orgId;
 	private String roleName;
 	private String roleDesc;
-	private String permIds;
+	private List<Long> permIds = new ArrayList<>();
 	
 	public Long getRoleId() {
 		return roleId;
@@ -32,10 +35,10 @@ public class UpdateRoleModel {
 	public void setRoleDesc(String roleDesc) {
 		this.roleDesc = roleDesc;
 	}
-	public String getPermIds() {
+	public List<Long> getPermIds() {
 		return permIds;
 	}
-	public void setPermIds(String permIds) {
+	public void setPermIds(List<Long> permIds) {
 		this.permIds = permIds;
 	}
 

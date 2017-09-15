@@ -8,8 +8,6 @@ public class OperQueryRequest implements Serializable {
 	
 	private Long orgId;
 	private Integer moduleType;
-	private String accountName;
-	private String operName;
 	private String keywords;
 	
 	public Long getOrgId() {
@@ -23,18 +21,6 @@ public class OperQueryRequest implements Serializable {
 	}
 	public void setModuleType(Integer moduleType) {
 		this.moduleType = moduleType;
-	}
-	public String getAccountName() {
-		return accountName;
-	}
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
-	}
-	public String getOperName() {
-		return operName;
-	}
-	public void setOperName(String operName) {
-		this.operName = operName;
 	}
 	public String getKeywords() {
 		return keywords;

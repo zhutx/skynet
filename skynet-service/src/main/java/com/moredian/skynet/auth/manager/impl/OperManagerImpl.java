@@ -21,6 +21,7 @@ import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.common.utils.Validator;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.auth.domain.Oper;
 import com.moredian.skynet.auth.domain.OperRole;
 import com.moredian.skynet.auth.enums.AuthErrorCode;
@@ -31,7 +32,6 @@ import com.moredian.skynet.auth.mapper.OperRoleMapper;
 import com.moredian.skynet.auth.request.OperAddRequest;
 import com.moredian.skynet.auth.request.OperQueryRequest;
 import com.moredian.skynet.auth.request.OperUpdateRequest;
-import com.moredian.idgenerator.service.IdgeneratorService;
 import com.xier.sesame.pigeon.enums.SMSType;
 import com.xier.sesame.pigeon.mm.service.MMService;
 import com.xier.sesame.pigeon.mm.smsParam.UserAutoRegisterParams;
@@ -322,7 +322,7 @@ public class OperManagerImpl implements OperManager {
 		BizAssert.notNull(request.getOrgId(), "orgId must not be null");
 		BizAssert.notNull(request.getModuleType(), "moduleType must not be null");
 		
-		return operMapper.findByCondition(request.getOrgId(), request.getAccountName(), request.getOperName(), request.getKeywords(), request.getModuleType());
+		return operMapper.findByCondition(request.getOrgId(), request.getKeywords(), request.getModuleType());
 	}
 
 	@Override

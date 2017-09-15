@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.system.resp;
 
-import java.util.Date;
+import java.util.List;
 
 public class RoleData {
 	
@@ -8,8 +8,7 @@ public class RoleData {
 	private Long orgId;
 	private String roleName;
 	private String roleDesc;
-	private Date gmtCreate;
-	private String permIds;
+	private List<Long> permIds;
 	
 	public Long getRoleId() {
 		return roleId;
@@ -35,16 +34,10 @@ public class RoleData {
 	public void setRoleDesc(String roleDesc) {
 		this.roleDesc = roleDesc;
 	}
-	public Date getGmtCreate() {
-		return gmtCreate;
-	}
-	public void setGmtCreate(Date gmtCreate) {
-		this.gmtCreate = gmtCreate;
-	}
-	public String getPermIds() {
+	public List<Long> getPermIds() {
 		return permIds;
 	}
-	public void setPermIds(String permIds) {
+	public void setPermIds(List<Long> permIds) {
 		this.permIds = permIds;
 	}
 

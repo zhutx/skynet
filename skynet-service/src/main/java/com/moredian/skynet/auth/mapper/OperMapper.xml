@@ -81,14 +81,8 @@
 	<select id="findByCondition" parameterType="map" resultMap="operResultMap">
 	    <include refid="sql_select"/>
 	    from sky_oper where org_id = #{orgId}
-	    <if test="operName != null">
-	    and oper_name = #{operName}
-	    </if>
 	    <if test="moduleType != null">
 	    and module_type = #{moduleType}
-	    </if>
-	    <if test="accountName != null">
-	    and account_name = #{accountName}
 	    </if>
 	    <if test="keywords != null">
 	    and (oper_name like CONCAT('%',#{keywords},'%') or account_name like CONCAT('%',#{keywords},'%') or mobile like CONCAT('%',#{keywords},'%'))
