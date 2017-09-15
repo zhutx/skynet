@@ -24,11 +24,8 @@ import com.moredian.skynet.auth.request.SimplePermQueryRequest;
 import com.moredian.skynet.auth.service.PermService;
 import com.moredian.skynet.auth.service.RoleService;
 import com.moredian.skynet.web.controller.BaseController;
-import com.moredian.skynet.web.controller.system.req.AddRoleModel;
-import com.moredian.skynet.web.controller.system.req.DeleteRoleModel;
-import com.moredian.skynet.web.controller.system.req.EditRoleModel;
-import com.moredian.skynet.web.controller.system.req.ListPermForRoleModel;
-import com.moredian.skynet.web.controller.system.req.ListRoleModel;
+import com.moredian.skynet.web.controller.system.req.CreateRoleModel;
+import com.moredian.skynet.web.controller.system.req.UpdateRoleModel;
 import com.moredian.skynet.web.controller.system.resp.RoleData;
 import com.moredian.skynet.web.controller.system.resp.RoleDetailData;
 import com.moredian.skynet.web.controller.system.resp.SimplePermData;
@@ -46,7 +43,7 @@ public class RoleController extends BaseController {
 	@SI
 	private PermService permService;
 	
-	private RoleAddRequest buildRoleAddRequest(AddRoleModel model) {
+	private RoleAddRequest buildRoleAddRequest(CreateRoleModel model) {
 		RoleAddRequest request = new RoleAddRequest();
 		request.setOrgId(model.getOrgId());
 		request.setRoleName(model.getRoleName());
@@ -61,18 +58,18 @@ public class RoleController extends BaseController {
 		return request;
 	}
 	
-	@ApiOperation(value="添加角色", notes="添加角色")
+	@ApiOperation(value="创建角色", notes="创建角色")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse add(@RequestBody AddRoleModel model) {
+    public BaseResponse create(@RequestBody CreateRoleModel model) {
 		
 		roleService.addRole(this.buildRoleAddRequest(model)).pickDataThrowException();
 		
 		return new BaseResponse();
     }
 	
-	private RoleUpdateRequest buildRoleUpdateRequest(EditRoleModel model) {
+	private RoleUpdateRequest buildRoleUpdateRequest(UpdateRoleModel model) {
 		RoleUpdateRequest request = new RoleUpdateRequest();
 		request.setRoleId(model.getRoleId());
 		request.setOrgId(model.getOrgId());
@@ -88,11 +85,11 @@ public class RoleController extends BaseController {
 		return request;
 	}
 	
-	@ApiOperation(value="编辑角色", notes="编辑角色")
+	@ApiOperation(value="修改角色", notes="修改角色")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	@RequestMapping(value="/update", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse edit(@RequestBody EditRoleModel model) {
+    public BaseResponse update(@RequestBody UpdateRoleModel model) {
 		
 		roleService.updateRole(this.buildRoleUpdateRequest(model)).pickDataThrowException();
 		
@@ -124,9 +121,9 @@ public class RoleController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse delete(@RequestBody DeleteRoleModel model) {
+    public BaseResponse delete(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "roleId") Long roleId) {
 		
-		roleService.deleteRole(model.getRoleId(), model.getOrgId()).pickDataThrowException();
+		roleService.deleteRole(roleId, orgId).pickDataThrowException();
 		
 		return new BaseResponse();
     }
@@ -164,30 +161,33 @@ public class RoleController extends BaseController {
 		return list;
 	}
 	
-	private RoleQueryRequest buildRoleQueryRequest(ListRoleModel model) {
-		return BeanUtils.copyProperties(RoleQueryRequest.class, model);
+	private RoleQueryRequest buildRoleQueryRequest(Long orgId, String roleName) {
+		RoleQueryRequest request = new RoleQueryRequest();
+		request.setOrgId(orgId);
+		request.setRoleName(roleName);
+		return request;
 	}
 	
 	@ApiOperation(value="查询角色", notes="查询角色")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/list", method=RequestMethod.POST)
+	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse list(@RequestBody ListRoleModel model) {
+    public BaseResponse list(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "roleName") String roleName) {
 		
 		BaseResponse<List<RoleData>> bdr = new BaseResponse<>();
 		
-		List<RoleInfo> roleList = roleService.findRole(this.buildRoleQueryRequest(model));
+		List<RoleInfo> roleList = roleService.findRole(this.buildRoleQueryRequest(orgId, roleName));
 		
 		bdr.setData(this.buildRoleDataList(roleList));
 		
 		return bdr;
     }
 	
-	private SimplePermQueryRequest buildSimplePermQueryRequest(ListPermForRoleModel model) {
+	private SimplePermQueryRequest buildSimplePermQueryRequest(Integer moduleType, Long roleId, Long parentPermId) {
 		SimplePermQueryRequest request = new SimplePermQueryRequest();
-		request.setModuleType(model.getModuleType());
-		request.setParentPermId(model.getParentPermId());
-		request.setRoleId(model.getRoleId());
+		request.setModuleType(moduleType);
+		request.setParentPermId(roleId);
+		request.setRoleId(parentPermId);
 		return request;
 	}
 	
@@ -213,13 +213,13 @@ public class RoleController extends BaseController {
 	
 	@ApiOperation(value="查询角色权限", notes="查询角色权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/perms", method=RequestMethod.POST)
+	@RequestMapping(value="/perms", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse perms(@RequestBody ListPermForRoleModel model) {
+    public BaseResponse perms(@RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "roleId")Long roleId, @RequestParam(value = "parentPermId")Long parentPermId) {
 		
 		BaseResponse<List<SimplePermData>> bdr = new BaseResponse<>();
 		
-		List<SimplePermInfo> permInfoList = roleService.querySimplePerm(this.buildSimplePermQueryRequest(model));
+		List<SimplePermInfo> permInfoList = roleService.querySimplePerm(this.buildSimplePermQueryRequest(moduleType, roleId, parentPermId));
 		List<SimplePermData> data = buildSimplePermDataList(permInfoList);
 		bdr.setData(data);
 		

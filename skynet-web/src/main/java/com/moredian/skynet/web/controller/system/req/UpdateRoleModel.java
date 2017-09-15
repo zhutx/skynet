@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.system.req;
 
-public class EditRoleModel {
+public class UpdateRoleModel {
 	
 	private Long roleId;
 	private Long orgId;

@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.system.req;
 
-public class EditOperModel {
+public class UpdateOperModel {
 	
 	private Integer moduleType;
 	private Long operId;

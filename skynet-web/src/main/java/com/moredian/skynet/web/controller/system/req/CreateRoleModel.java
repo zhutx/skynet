@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.system.req;
 
-public class AddRoleModel {
+public class CreateRoleModel {
 	
 	private Long orgId;
 	private String roleName;

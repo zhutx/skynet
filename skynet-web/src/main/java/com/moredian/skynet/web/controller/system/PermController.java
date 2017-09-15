@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,11 +20,9 @@ import com.moredian.skynet.auth.request.PermUpdateRequest;
 import com.moredian.skynet.auth.service.PermService;
 import com.moredian.skynet.web.controller.BaseController;
 import com.moredian.skynet.web.controller.system.req.ActivePermModel;
-import com.moredian.skynet.web.controller.system.req.AddPermModel;
-import com.moredian.skynet.web.controller.system.req.DeletePermModel;
+import com.moredian.skynet.web.controller.system.req.CreatePermModel;
 import com.moredian.skynet.web.controller.system.req.DisablePermModel;
-import com.moredian.skynet.web.controller.system.req.EditPermModel;
-import com.moredian.skynet.web.controller.system.req.ListPermModel;
+import com.moredian.skynet.web.controller.system.req.UpdatePermModel;
 import com.moredian.skynet.web.controller.system.resp.PermData;
 
 import io.swagger.annotations.Api;
@@ -37,7 +36,7 @@ public class PermController extends BaseController {
 	@SI
 	private PermService permService;
 	
-	private PermAddRequest buildPermAddRequest(AddPermModel model) {
+	private PermAddRequest buildPermAddRequest(CreatePermModel model) {
 		PermAddRequest request = new PermAddRequest();
 		request.setPermType(model.getPermType());
 		request.setPermName(model.getPermName());
@@ -49,18 +48,18 @@ public class PermController extends BaseController {
 		return request;
 	}
 	
-	@ApiOperation(value="添加权限", notes="添加权限")
+	@ApiOperation(value="创建权限", notes="创建权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse add(@RequestBody AddPermModel model) {
+    public BaseResponse create(@RequestBody CreatePermModel model) {
 		
 		permService.addPerm(this.buildPermAddRequest(model)).pickDataThrowException();
 		
 		return new BaseResponse();
     }
 	
-	private PermUpdateRequest buildPermUpdateRequest(EditPermModel model){
+	private PermUpdateRequest buildPermUpdateRequest(UpdatePermModel model){
 		PermUpdateRequest request = new PermUpdateRequest();
 		request.setPermId(model.getPermId());
 		request.setPermName(model.getPermName());
@@ -69,11 +68,11 @@ public class PermController extends BaseController {
 		return request;
 	}
 	
-	@ApiOperation(value="编辑权限", notes="编辑权限")
+	@ApiOperation(value="修改权限", notes="修改权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse edit(@RequestBody EditPermModel model) {
+    public BaseResponse update(@RequestBody UpdatePermModel model) {
 		
 		permService.updatePerm(this.buildPermUpdateRequest(model));
 		
@@ -82,18 +81,18 @@ public class PermController extends BaseController {
 	
 	@ApiOperation(value="删除权限", notes="删除权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/delete", method=RequestMethod.POST)
+	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
 	@ResponseBody
-    public BaseResponse delete(@RequestBody DeletePermModel model) {
+    public BaseResponse delete(@RequestParam(value = "permId")Long permId) {
 		
-		permService.deletePerm(model.getPermId()).pickDataThrowException();
+		permService.deletePerm(permId).pickDataThrowException();
 		
 		return new BaseResponse();
     }
 	
 	@ApiOperation(value="禁用权限", notes="禁用权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/disable", method=RequestMethod.POST)
+	@RequestMapping(value="/disable", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse disable(@RequestBody DisablePermModel model) {
 		
@@ -104,7 +103,7 @@ public class PermController extends BaseController {
 	
 	@ApiOperation(value="启用权限", notes="启用权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/enable", method=RequestMethod.POST)
+	@RequestMapping(value="/enable", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse enable(@RequestBody ActivePermModel model) {
 		
@@ -113,11 +112,11 @@ public class PermController extends BaseController {
 		return new BaseResponse();
     }
 	
-	private PermQueryRequest buildPermQueryRequest(ListPermModel model) {
+	private PermQueryRequest buildPermQueryRequest(Integer moduleType, String permName, Long parentId) {
 		PermQueryRequest request = new PermQueryRequest();
-		request.setModuleType(model.getModuleType());
-		request.setParentId(model.getParentId());
-		request.setPermName(model.getPermName());
+		request.setModuleType(moduleType);
+		request.setParentId(parentId);
+		request.setPermName(permName);
 		return request;
 	}
 	
@@ -135,13 +134,13 @@ public class PermController extends BaseController {
 	
 	@ApiOperation(value="查询权限", notes="查询权限")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/list", method=RequestMethod.POST)
+	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse list(@RequestBody ListPermModel model) {
+    public BaseResponse list(@RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "permName")String permName, @RequestParam(value = "parentId")Long parentId) {
 		
 		BaseResponse<List<PermData>> bdr = new BaseResponse<>();
 		
-		List<PermInfo> permList = permService.findPerm(this.buildPermQueryRequest(model));
+		List<PermInfo> permList = permService.findPerm(this.buildPermQueryRequest(moduleType, permName, parentId));
 		
 		bdr.setData(this.buildPermDataList(permList));
 		

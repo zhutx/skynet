@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.system.req;
 
-public class AddPermModel {
+public class CreatePermModel {
 	
 	private Integer moduleType;
 	private Integer permType;

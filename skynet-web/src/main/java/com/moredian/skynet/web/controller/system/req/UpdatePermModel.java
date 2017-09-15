@@ -2,7 +2,7 @@ package com.moredian.skynet.web.controller.system.req;
 
 import com.moredian.bee.common.utils.StringUtil;
 
-public class EditPermModel {
+public class UpdatePermModel {
 	
 	private Long permId;
 	private String permName;

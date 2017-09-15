@@ -23,11 +23,9 @@ import com.moredian.skynet.auth.service.OperService;
 import com.moredian.skynet.auth.service.RoleService;
 import com.moredian.skynet.web.controller.BaseController;
 import com.moredian.skynet.web.controller.system.req.ActiveOperModel;
-import com.moredian.skynet.web.controller.system.req.AddOperModel;
-import com.moredian.skynet.web.controller.system.req.DeleteOperModel;
+import com.moredian.skynet.web.controller.system.req.CreateOperModel;
 import com.moredian.skynet.web.controller.system.req.DisableOperModel;
-import com.moredian.skynet.web.controller.system.req.EditOperModel;
-import com.moredian.skynet.web.controller.system.req.ListOperModel;
+import com.moredian.skynet.web.controller.system.req.UpdateOperModel;
 import com.moredian.skynet.web.controller.system.resp.OperData;
 import com.moredian.skynet.web.controller.system.resp.OperDetailData;
 import com.moredian.skynet.web.controller.system.resp.SimpleRoleData;
@@ -45,7 +43,7 @@ public class OperController extends BaseController {
 	@SI
 	private RoleService roleService;
 	
-	private OperAddRequest buildOperAddRequest(AddOperModel model) {
+	private OperAddRequest buildOperAddRequest(CreateOperModel model) {
 		OperAddRequest request = new OperAddRequest();
 		request.setModuleType(model.getModuleType());
 		request.setAccountName(model.getAccountName());
@@ -68,16 +66,16 @@ public class OperController extends BaseController {
 	
 	@ApiOperation(value="添加账号", notes="添加账号")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-    public BaseResponse add(@RequestBody AddOperModel model) {
+    public BaseResponse create(@RequestBody CreateOperModel model) {
 		
 		operService.addOper(this.buildOperAddRequest(model)).pickDataThrowException();
 		
 		return new BaseResponse();
     }
 	
-	private OperUpdateRequest buildOperUpdateRequest(EditOperModel model) {
+	private OperUpdateRequest buildOperUpdateRequest(UpdateOperModel model) {
 		OperUpdateRequest request = new OperUpdateRequest();
 		request.setModuleType(model.getModuleType());
 		request.setOperId(model.getOperId());
@@ -97,11 +95,11 @@ public class OperController extends BaseController {
 		return request;
 	}
 	
-	@ApiOperation(value="编辑账号", notes="编辑账号")
+	@ApiOperation(value="修改账号", notes="修改账号")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	@RequestMapping(value="/update", method=RequestMethod.PUT)
 	@ResponseBody
-    public BaseResponse edit(@RequestBody EditOperModel model) {
+    public BaseResponse edit(@RequestBody UpdateOperModel model) {
 		
 		operService.updateOper(this.buildOperUpdateRequest(model)).pickDataThrowException();
 		
@@ -110,33 +108,33 @@ public class OperController extends BaseController {
 	
 	@ApiOperation(value="禁用账号", notes="禁用账号")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/disable", method=RequestMethod.POST)
+	@RequestMapping(value="/disable", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse disable(@RequestBody DisableOperModel model) {
 		
-		operService.disableOper(model.getOperId(), model.getOrgId());
+		operService.disableOper(model.getOperId(), model.getOrgId()).pickDataThrowException();
 		
 		return new BaseResponse();
     }
 	
 	@ApiOperation(value="启用账号", notes="启用账号")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/enable", method=RequestMethod.POST)
+	@RequestMapping(value="/enable", method=RequestMethod.PUT)
 	@ResponseBody
     public BaseResponse enable(@RequestBody ActiveOperModel model) {
 		
-		operService.activeOper(model.getOperId(), model.getOrgId());
+		operService.activeOper(model.getOperId(), model.getOrgId()).pickDataThrowException();
 		
 		return new BaseResponse();
     }
 	
-	@ApiOperation(value="禁用账号", notes="禁用账号")
+	@ApiOperation(value="删除账号", notes="删除账号")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
 	@ResponseBody
-    public BaseResponse delete(@RequestBody DeleteOperModel model) {
+    public BaseResponse delete(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "operId")Long operId) {
 		
-		operService.deleteOper(model.getOperId(), model.getOrgId());
+		operService.deleteOper(operId, orgId).pickDataThrowException();
 		
 		return new BaseResponse();
     }
@@ -177,25 +175,24 @@ public class OperController extends BaseController {
 		return operDataList;
 	}
 	
-	private OperQueryRequest buildOperQueryRequest(ListOperModel model) {
+	private OperQueryRequest buildOperQueryRequest(Long orgId, Integer moduleType, String accountName, String keywords) {
 		OperQueryRequest request = new OperQueryRequest();
-		request.setOrgId(model.getOrgId());
-		request.setModuleType(model.getModuleType());
-		request.setAccountName(model.getAccountName());
-		request.setOperName(model.getOperName());
-		request.setKeywords(model.getKeywords());
+		request.setOrgId(orgId);
+		request.setModuleType(moduleType);
+		request.setAccountName(accountName);
+		request.setKeywords(keywords);
 		return request;
 	}
 	
 	@ApiOperation(value="查询账号", notes="查询账号")
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value="/list", method=RequestMethod.POST)
+	@RequestMapping(value="/list", method=RequestMethod.GET)
 	@ResponseBody
-    public BaseResponse list(@RequestBody ListOperModel model) {
+    public BaseResponse list(@RequestParam(value = "orgId")Long orgId, @RequestParam(value = "moduleType")Integer moduleType, @RequestParam(value = "accountName")String accountName, @RequestParam(value = "keywords")String keywords) {
 		
 		BaseResponse<List<OperData>> bdr = new BaseResponse<>();
 		
-		List<OperInfo> operInfoList = operService.findOper(this.buildOperQueryRequest(model));
+		List<OperInfo> operInfoList = operService.findOper(this.buildOperQueryRequest(orgId, moduleType, accountName, keywords));
 		
 		bdr.setData(this.buildOperDataList(operInfoList));
 		
@@ -208,7 +205,7 @@ public class OperController extends BaseController {
 		return data;
 	}
 	
-	@ApiOperation(value="操作员详情", notes="操作员详情")
+	@ApiOperation(value="账号详情", notes="账号详情")
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/detail", method=RequestMethod.GET)
 	@ResponseBody

@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.system.req;
 
-public class AddOperModel {
+public class CreateOperModel {
 	
 	private Long orgId;
 	private Integer moduleType;
