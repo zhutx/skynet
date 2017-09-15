@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.member.request;
 
-public class AddMemberModel {
+public class CreateMemberModel {
 	
 	//机构id
 	private Long orgId;

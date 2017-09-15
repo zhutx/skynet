@@ -1,4 +1,4 @@
-package com.moredian.skynet.web.controller.index.request;
+package com.moredian.skynet.web.controller.common.request;
 
 public class MyPermModel {
 	

@@ -1,4 +1,4 @@
-package com.moredian.skynet.web.controller.index.response;
+package com.moredian.skynet.web.controller.common.response;
 
 public class SimpleRoleData {
 	

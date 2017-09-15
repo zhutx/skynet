@@ -48,6 +48,9 @@ import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.auth.enums.AuthErrorCode;
 import com.moredian.skynet.auth.enums.OperStatus;
 import com.moredian.skynet.auth.model.OperInfo;
+import com.moredian.skynet.auth.model.PermNode;
+import com.moredian.skynet.auth.model.SimpleRoleInfo;
+import com.moredian.skynet.auth.request.SimpleRoleQueryRequest;
 import com.moredian.skynet.auth.service.AccountService;
 import com.moredian.skynet.auth.service.OperService;
 import com.moredian.skynet.auth.service.PermService;
@@ -71,6 +74,9 @@ import com.moredian.skynet.web.controller.common.request.SubjectLogoImageRule;
 import com.moredian.skynet.web.controller.common.request.UpdatePasswdModel;
 import com.moredian.skynet.web.controller.common.response.Constant;
 import com.moredian.skynet.web.controller.common.response.LoginOperInfo;
+import com.moredian.skynet.web.controller.common.response.MyOrgData;
+import com.moredian.skynet.web.controller.common.response.RcTreeNode;
+import com.moredian.skynet.web.controller.common.response.SimpleRoleData;
 import com.moredian.skynet.web.controller.model.ParentPoliceOrg;
 import com.moredian.skynet.web.controller.model.SessionUser;
 import com.moredian.skynet.web.controller.org.response.AreaData;
@@ -558,5 +564,116 @@ public class CommonController extends BaseController {
 		
 		return br;
     }
+	
+	
+	private RcTreeNode permNodeToRcTreeNode(PermNode permNode) {
+		if(permNode == null) return null;
+		RcTreeNode rcTreeNode = new RcTreeNode();
+		rcTreeNode.setKey(String.valueOf(permNode.getPermId()));
+		rcTreeNode.setLabel(permNode.getPermName());
+		rcTreeNode.setValue(String.valueOf(permNode.getPermId()));
+		rcTreeNode.setPId(String.valueOf(permNode.getParentId()));
+		return rcTreeNode;
+	}
+	
+	private List<RcTreeNode> permNodeListToRcTreeNodeList(List<PermNode> permNodeList) {
+		List<RcTreeNode> list = new ArrayList<>();
+		if(CollectionUtils.isEmpty(permNodeList)) return list;
+		for(PermNode permNode : permNodeList) {
+			
+			RcTreeNode rcTreeNode = this.permNodeToRcTreeNode(permNode);
+			List<RcTreeNode> children = new ArrayList<>();
+			
+			if(CollectionUtils.isNotEmpty(permNode.getChildren())) {
+				for(PermNode childPermNode : permNode.getChildren()) {
+					children.add(this.permNodeToRcTreeNode(childPermNode));
+				}
+			}
+			
+			rcTreeNode.setChildren(children);
+			list.add(rcTreeNode);
+			
+		}
+		return list;
+	}
+	
+	@ApiOperation(value="查询全部业务权限", notes="查询全部业务权限")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/allPerms", method=RequestMethod.GET)
+	@ResponseBody
+    public BaseResponse allPerms(@RequestParam(value = "moduleType") Integer moduleType) {
+		
+		BaseResponse<List<RcTreeNode>> br = new BaseResponse<>();
+		List<PermNode> permNodeList = permService.findPermNode(moduleType);
+		br.setData(permNodeListToRcTreeNodeList(permNodeList));
+		
+		return br;
+	}
+	
+	private SimpleRoleQueryRequest buildSimpleRoleQueryRequest(Long orgId) {
+		SimpleRoleQueryRequest request = new SimpleRoleQueryRequest();
+		request.setOrgId(orgId);
+		return request;
+	}
+	
+	private List<SimpleRoleData> buildSimpleRoleDataList(List<SimpleRoleInfo> simpleRoleInfoList) {
+		List<SimpleRoleData> list = new ArrayList<>();
+		if(CollectionUtils.isEmpty(simpleRoleInfoList)) return list;
+		return BeanUtils.copyListProperties(SimpleRoleData.class, simpleRoleInfoList);
+	}
+	
+	@ApiOperation(value="查询机构所有角色", notes="查询机构所有角色")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/allRoles", method=RequestMethod.GET)
+	@ResponseBody
+    public BaseResponse allRoles(@RequestParam(value = "orgId") Long orgId) {
+		
+		//BaseResponse<List<RcTreeNode>> bdr = new BaseResponse<>();
+		BaseResponse<List<SimpleRoleData>> bdr = new BaseResponse<>();
+		
+		List<SimpleRoleInfo> simpleRoleInfoList = operService.querySimpleRole(this.buildSimpleRoleQueryRequest(orgId));
+		//bdr.setData(this.buildRcTreeNodeList(simpleRoleInfoList));
+		bdr.setData(this.buildSimpleRoleDataList(simpleRoleInfoList));
+		
+		return bdr;
+    }
+	
+	private List<MyOrgData> operInfoListToMyOrgDataList(List<OperInfo> operInfoList) {
+		List<MyOrgData> list = new ArrayList<>();
+		for(OperInfo operInfo : operInfoList) {
+			OrgInfo orgInfo = orgService.getOrgInfo(operInfo.getOrgId());
+			MyOrgData item = new MyOrgData(orgInfo.getOrgId(), orgInfo.getOrgName(), operInfo.getOperId());
+			list.add(item);
+		}
+		return list;
+	}
+	
+	@ApiOperation(value="查询账号关联机构", notes="查询账号关联机构")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/myOrgs", method=RequestMethod.GET)
+	@ResponseBody
+    public BaseResponse orgs(@RequestParam(value = "accountId") Long accountId, @RequestParam(value = "moduleType") Integer moduleType, HttpServletRequest request) {
+		
+		BaseResponse<List<MyOrgData>> br = new BaseResponse<>();
+		
+		List<OperInfo> operInfoList = operService.findEnableOper(accountId, moduleType);
+		
+		br.setData(operInfoListToMyOrgDataList(operInfoList));
+		
+		return br;
+	}
+	
+	@ApiOperation(value="查询操作员的权限", notes="查询操作员的权限")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/myPerms", method=RequestMethod.GET)
+	@ResponseBody
+    public BaseResponse perms(@RequestParam(value = "operId") Long operId, @RequestParam(value = "moduleType") Integer moduleType) {
+		
+		BaseResponse<List<PermNode>> br = new BaseResponse<>();
+		List<PermNode> permNodeList = permService.findPermNodeByOper(operId, moduleType);
+		br.setData(permNodeList);
+		
+		return br;
+	}
 	
 }

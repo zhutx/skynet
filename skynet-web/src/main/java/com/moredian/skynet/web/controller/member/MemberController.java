@@ -52,7 +52,7 @@ import com.moredian.skynet.org.model.GroupInfo;
 import com.moredian.skynet.org.service.DeptService;
 import com.moredian.skynet.org.service.GroupService;
 import com.moredian.skynet.web.controller.BaseController;
-import com.moredian.skynet.web.controller.member.request.AddMemberModel;
+import com.moredian.skynet.web.controller.member.request.CreateMemberModel;
 import com.moredian.skynet.web.controller.member.request.AdminFlagModel;
 import com.moredian.skynet.web.controller.member.request.ChargeFlagModel;
 import com.moredian.skynet.web.controller.member.request.ConfigDeptModel;
@@ -293,7 +293,7 @@ public class MemberController extends BaseController {
 		return BeanUtils.copyProperties(MemberUpdateRequest.class, model);
 	}
 	
-	private MemberAddRequest buildRequest(AddMemberModel model) {
+	private MemberAddRequest buildRequest(CreateMemberModel model) {
 		if(!StringUtils.isBlank(model.getShowFaceUrl())) {
 			model.setShowFaceUrl(this.changeStoreImg(model.getShowFaceUrl(), FilePathType.TYPE_MEMBERHEADIMAGE));
 		}
@@ -309,7 +309,7 @@ public class MemberController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/create", method=RequestMethod.POST)
     @ResponseBody
-    public BaseResponse create(@RequestBody AddMemberModel model) {
+    public BaseResponse create(@RequestBody CreateMemberModel model) {
     	
 		memberService.addMember(this.buildRequest(model)).pickDataThrowException();
 		
