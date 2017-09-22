@@ -2,7 +2,7 @@ package com.moredian.skynet.web.controller.device.response;
 
 import java.util.List;
 
-import com.moredian.skynet.web.controller.model.PageData;
+import com.moredian.skynet.model.PageData;
 
 public class PaginationDeviceData extends PageData {
 	

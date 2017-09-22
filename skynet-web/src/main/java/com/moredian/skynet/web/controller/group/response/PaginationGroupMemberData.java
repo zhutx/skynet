@@ -2,7 +2,7 @@ package com.moredian.skynet.web.controller.group.response;
 
 import java.util.List;
 
-import com.moredian.skynet.web.controller.model.PageData;
+import com.moredian.skynet.model.PageData;
 
 public class PaginationGroupMemberData extends PageData {
 	

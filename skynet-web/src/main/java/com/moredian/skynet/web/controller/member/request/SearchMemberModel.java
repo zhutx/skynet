@@ -2,7 +2,7 @@ package com.moredian.skynet.web.controller.member.request;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.moredian.skynet.web.controller.model.PageModel;
+import com.moredian.skynet.model.PageModel;
 
 public class SearchMemberModel extends PageModel {
 	

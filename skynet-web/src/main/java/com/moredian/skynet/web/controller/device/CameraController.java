@@ -26,7 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value="Camera API", description = "摄像头设备接口")
+@Api(value="Camera API", description = "摄像机接口")
 @RequestMapping("/camera")
 public class CameraController extends BaseController {
 

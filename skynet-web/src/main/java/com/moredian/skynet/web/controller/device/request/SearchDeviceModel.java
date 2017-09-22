@@ -1,6 +1,6 @@
 package com.moredian.skynet.web.controller.device.request;
 
-import com.moredian.skynet.web.controller.model.PageModel;
+import com.moredian.skynet.model.PageModel;
 
 public class SearchDeviceModel extends PageModel {
 	

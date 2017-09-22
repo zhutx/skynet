@@ -1,4 +1,4 @@
-package com.moredian.skynet.web.controller.utils;
+package com.moredian.skynet.utils;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

@@ -1,4 +1,4 @@
-package com.moredian.skynet.web.controller.model;
+package com.moredian.skynet.model;
 
 import java.util.UUID;
 
