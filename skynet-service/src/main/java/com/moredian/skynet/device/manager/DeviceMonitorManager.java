@@ -9,6 +9,7 @@ import com.moredian.skynet.device.request.StatusRequest;
 import com.moredian.skynet.device.request.TransferRequest;
 import com.moredian.skynet.device.request.UpgradeRequest;
 
+@SuppressWarnings("deprecation")
 public interface DeviceMonitorManager{
 	
 	DeviceStateInfo getStatus(String serialNumber) ;

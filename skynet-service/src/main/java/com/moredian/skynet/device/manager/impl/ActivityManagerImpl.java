@@ -71,6 +71,7 @@ import com.moredian.idgenerator.service.IdgeneratorService;
 import com.xier.guard.accessKey.dto.AccessKeyDto;
 import com.xier.guard.accessKey.service.UserAccessKeyService;
 
+@SuppressWarnings("deprecation")
 @Service
 public class ActivityManagerImpl implements ActivityManager {
 	
@@ -108,7 +109,7 @@ public class ActivityManagerImpl implements ActivityManager {
     @Value("${spider.web.address}")
     private String spiderWebAddress;
 
-    @Override
+	@Override
     @Transactional
     public ServiceResponse<GenerateQrCodeResponse> generateQrCode(GenerateQrCodeRequest request) {
         log.debug("receive generate QrCode,sn:{},checkCode:{}.", request.getSn(), request.getCheckCode());
@@ -470,7 +471,7 @@ public class ActivityManagerImpl implements ActivityManager {
         InventoryDevice condition = new InventoryDevice();
         condition.setSerialNumber(serialNumber);
         boolean updateResult=inventoryDeviceManager.updateByCondition(inventoryDevice,condition);
-        return new ServiceResponse(updateResult);
+        return new ServiceResponse<Boolean>(updateResult);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.rmq.EventBus;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ConfigGroupAtcDataMsg;
 import com.moredian.skynet.org.domain.Area;
 import com.moredian.skynet.org.domain.Group;
@@ -31,8 +32,6 @@ import com.moredian.skynet.org.mapper.GroupMapper;
 import com.moredian.skynet.org.mapper.OrgMapper;
 import com.moredian.skynet.org.request.OrgEnterpriseBind;
 import com.moredian.skynet.org.request.OrgEnterpriseNotBindRequest;
-import com.moredian.skynet.org.utils.PinyinUtil;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class DingOrgManagerImpl implements DingOrgManager {

@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class ActivityEquipmentRequest implements Serializable {
 
-    // 激活码
+	private static final long serialVersionUID = 2601694766081336791L;
+	// 激活码
     private String activeCode;
     // cpu
     private String cpuId;

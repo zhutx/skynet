@@ -16,8 +16,6 @@ public interface MemberService {
 	
 	ServiceResponse<Long> addMember(MemberAddRequest request);
 	
-	ServiceResponse<Boolean> batchAddMember(List<MemberAddRequest> memberList);
-	
 	ServiceResponse<Boolean> modifyShowImage(Long orgId, Long memberId, String headUrl);
 	
 	ServiceResponse<Boolean> modifyVerifyImage(Long orgId, Long memberId, String verifyFaceUrl);

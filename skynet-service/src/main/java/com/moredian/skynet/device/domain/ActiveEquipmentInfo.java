@@ -6,7 +6,8 @@ import java.io.Serializable;
  * Created by wuyb on 2016/12/7.
  */
 public class ActiveEquipmentInfo implements Serializable{
-    //sn码
+	private static final long serialVersionUID = 584888223722051481L;
+	//sn码
     private String sn;
     //mac地址
     private String macAddress;

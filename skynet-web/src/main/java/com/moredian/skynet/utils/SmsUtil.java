@@ -6,7 +6,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moredian.bee.common.rpc.ServiceResponse;
 import com.xier.sesame.pigeon.enums.SMSType;
 import com.xier.sesame.pigeon.mm.service.MMService;
 import com.xier.sesame.pigeon.mm.smsParam.CommonParams;

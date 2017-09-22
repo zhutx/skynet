@@ -6,7 +6,8 @@ import java.io.Serializable;
  * Created by wuyb on 2016/12/7.
  */
 public class GetActivityStatusResponse implements Serializable{
-    private String serialNumber;
+	private static final long serialVersionUID = -2347208770132829643L;
+	private String serialNumber;
     private int statusCode;
     private String message;
     private Long deviceId;

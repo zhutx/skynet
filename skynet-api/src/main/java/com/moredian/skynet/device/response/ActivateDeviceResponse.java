@@ -8,7 +8,8 @@ import java.io.Serializable;
  * Created by wuyb on 2016/11/18.
  */
 public class ActivateDeviceResponse implements Serializable {
-    //设备ID
+	private static final long serialVersionUID = 5497696825345278566L;
+	//设备ID
     private Long equipmentId;
     //主机构ID
     private Long orgId;

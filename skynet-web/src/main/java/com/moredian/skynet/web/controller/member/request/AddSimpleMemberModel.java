@@ -1,8 +1,6 @@
 package com.moredian.skynet.web.controller.member.request;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class AddSimpleMemberModel {
 	

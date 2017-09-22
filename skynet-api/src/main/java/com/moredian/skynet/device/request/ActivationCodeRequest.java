@@ -7,7 +7,9 @@ import java.io.Serializable;
  */
 public class ActivationCodeRequest implements Serializable {
 
-    //激活码
+	private static final long serialVersionUID = -6996650580261274630L;
+
+	//激活码
     private String activationCode;
 
     //设备序列号

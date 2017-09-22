@@ -157,6 +157,7 @@ public class DeviceMonitorManagerImpl implements DeviceMonitorManager {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private DeviceStateInfo commandScheduler(String serialNumber, String task) {
 		DeviceStateInfo stateInfo = getStatus(serialNumber);
 		log.debug("sn:{},online:{},progress:{}.",serialNumber,stateInfo.getOnline(),stateInfo.getProgress());
@@ -184,6 +185,7 @@ public class DeviceMonitorManagerImpl implements DeviceMonitorManager {
 		return stateInfo;
 	}
 
+	@SuppressWarnings("unused")
 	private String upgradeCommand(UpgradeRequest request) {
 		String json = "\"jsonJobParams\": \"{  \\\"serialNumber\\\" : \\\"" + request.getSerialNumber()
 				+ "\\\", \\\"uri\\\" : \\\"" + request.getUri() + "\\\", \\\"deviceVersion\\\" : \\\""
@@ -193,12 +195,14 @@ public class DeviceMonitorManagerImpl implements DeviceMonitorManager {
 		return getSchedulerBody(json, "UpgradeDeviceTask");
 	}
 
+	@SuppressWarnings("unused")
 	private String rebootCommand(RebootRequest request) {
 		String json = "\"jsonJobParams\": \"{  \\\"serialNumber\\\" : \\\"" + request.getSerialNumber()
 				+ "\\\",  \\\"delaySeconds\\\" :  " + request.getDelaySeconds() + "}\",";
 		return getSchedulerBody(json, "RebootDeviceTask");
 	}
 
+	@SuppressWarnings("unused")
 	private String transferCommand(TransferRequest request) {
 		String json = "\"jsonJobParams\": \"{  \\\"serialNumber\\\" : \\\"" + request.getSerialNumber()
 				+ "\\\", \\\"exclusive\\\" : \\\"" + request.getExclusive() + "\\\",  \\\"body\\\" : \\\""

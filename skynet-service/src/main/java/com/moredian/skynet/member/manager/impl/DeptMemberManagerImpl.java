@@ -11,6 +11,7 @@ import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.convertor.PaginationConvertor;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.member.domain.DeptMember;
 import com.moredian.skynet.member.domain.DeptMemberQueryCondition;
 import com.moredian.skynet.member.enums.DeptPersonStatus;
@@ -18,10 +19,8 @@ import com.moredian.skynet.member.manager.DeptMemberManager;
 import com.moredian.skynet.member.mapper.DeptMemberMapper;
 import com.moredian.skynet.member.request.BindDeptRelationRequest;
 import com.moredian.skynet.member.request.DeptRelationQueryRequest;
-import com.moredian.skynet.member.service.adapter.request.JudgeDepartmentLeaderRequest;
 import com.moredian.skynet.org.enums.YesNoFlag;
 import com.moredian.skynet.org.manager.DeptManager;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class DeptMemberManagerImpl implements DeptMemberManager {
@@ -154,27 +153,6 @@ public class DeptMemberManagerImpl implements DeptMemberManager {
 		deptMemberMapper.deleteOne(orgId, deptId, memberId);
 		
 		return true;
-	}
-
-	@Override
-	public boolean judgeIsUserLeader(JudgeDepartmentLeaderRequest request) {
-		
-		List<Long> deptIdList = deptManager.findAllChildrenId(request.getOrgId(), 0L);
-		List<Long> tpDeptIdList = deptManager.findTpIdByIds(request.getOrgId(), deptIdList); // 机构所有第三方部门id
-		
-		List<Long> user_deptIdList = deptMemberMapper.findDeptIdByMemberId(request.getOrgId(), request.getVisitorUserId(), YesNoFlag.YES.getValue());
-		List<Long> user_tpDeptIdList = deptManager.findTpIdByIds(request.getOrgId(), user_deptIdList); // 用户的所有第三方部门id
-		
-		for(Long tpDeptId : tpDeptIdList) {
-			
-			if(!request.getDepartment().contains(tpDeptId)) continue;
-			
-			if(!user_tpDeptIdList.contains(tpDeptId)) continue;
-			
-			return true;
-		}
-		
-		return false;
 	}
 
 	@Override

@@ -10,16 +10,10 @@ import com.moredian.skynet.member.request.ImportMemberModel;
 import com.moredian.skynet.member.request.MemberAddRequest;
 import com.moredian.skynet.member.request.MemberQueryRequest;
 import com.moredian.skynet.member.request.MemberUpdateRequest;
-import com.moredian.skynet.member.service.adapter.request.ModifyUserRelationRequest;
-import com.moredian.skynet.member.service.adapter.request.SelectUserRelationRequest;
-import com.moredian.skynet.member.service.adapter.response.MemberIdMapping;
-import com.moredian.skynet.member.service.adapter.response.ProsceniumUserResponse;
 
 public interface MemberManager {
 	
 	Member addMember(MemberAddRequest request);
-	
-	void batchAddMember(List<MemberAddRequest> memberList);
 	
 	boolean modifyShowImage(Long orgId, Long memberId, String headUrl);
 	
@@ -75,19 +69,7 @@ public interface MemberManager {
 	
 	boolean updateStatus(Long orgId, Long memberId, Integer status);
 	
-	boolean judgeProscenium(SelectUserRelationRequest request);
-	
-	List<ProsceniumUserResponse> selectProscenium(SelectUserRelationRequest request);
-	
-	boolean addProscenium(ModifyUserRelationRequest request);
-	
-	boolean deleteProscenium(ModifyUserRelationRequest request);
-	
 	int updateTpExtend(Long orgId, Long memberId, String tpExtend);
-	
-	List<MemberIdMapping> findIdMappingByIds(Long orgId, List<Long> memberIdList);
-	
-	List<MemberIdMapping> findIdMappingByTpIds(Long orgId, List<String> tpIdList);
 	
 	List<Long> findReceptionist(Long orgId);
 	

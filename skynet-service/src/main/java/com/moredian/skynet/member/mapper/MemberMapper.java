@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.moredian.skynet.member.domain.Member;
 import com.moredian.skynet.member.domain.MemberQueryCondition;
-import com.moredian.skynet.member.service.adapter.response.MemberIdMapping;
 
 @Mapper
 public interface MemberMapper {
@@ -65,10 +64,6 @@ public interface MemberMapper {
 	List<String> findAllTpId(@Param("orgId")Long orgId, @Param("status")Integer status);
 	
 	int updateTpExtend(@Param("orgId")Long orgId, @Param("memberId")Long memberId, @Param("tpExtend")String tpExtend);
-	
-	List<MemberIdMapping> findIdMappingByIds(@Param("orgId")Long orgId, @Param("memberIdList")List<Long> memberIdList);
-	
-	List<MemberIdMapping> findIdMappingByTpIds(@Param("orgId")Long orgId, @Param("tpIdList")List<String> tpIdList);
 	
 	List<String> findAdminTpIds(@Param("orgId")Long orgId, @Param("adminFlag")Integer adminFlag, @Param("status")Integer status);
 	

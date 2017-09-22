@@ -6,7 +6,8 @@ import java.io.Serializable;
  * Created by wuyb on 2016/12/7.
  */
 public class UpdateQrCodeStatusRequest implements Serializable{
-    private String qrCode;
+	private static final long serialVersionUID = -7119637530999583577L;
+	private String qrCode;
     private Long orgId;
    // private Long subOrgId;
     // 自动布控

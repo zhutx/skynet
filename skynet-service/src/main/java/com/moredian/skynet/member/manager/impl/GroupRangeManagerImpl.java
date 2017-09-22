@@ -17,13 +17,13 @@ import com.moredian.bee.common.utils.ExceptionUtils;
 import com.moredian.bee.common.utils.JsonUtils;
 import com.moredian.bee.rmq.annotation.Subscribe;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.ConfigGroupRelationDataMsg;
 import com.moredian.skynet.common.model.msg.DeleteGroupRelationDataMsg;
 import com.moredian.skynet.common.model.msg.ResetGroupRelationDataMsg;
 import com.moredian.skynet.member.domain.GroupRange;
 import com.moredian.skynet.member.manager.DeptMemberManager;
 import com.moredian.skynet.member.manager.GroupPersonManager;
-import com.moredian.skynet.member.manager.GroupPersonSizeManager;
 import com.moredian.skynet.member.manager.GroupRangeManager;
 import com.moredian.skynet.member.manager.MemberManager;
 import com.moredian.skynet.member.mapper.GroupRangeMapper;
@@ -36,7 +36,6 @@ import com.moredian.skynet.org.manager.DeptManager;
 import com.moredian.skynet.org.manager.GroupManager;
 import com.moredian.skynet.org.request.GroupMemberBatchAddRequest;
 import com.moredian.skynet.org.request.GroupMemberBatchRemoveRequest;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class GroupRangeManagerImpl implements GroupRangeManager {
@@ -58,8 +57,6 @@ public class GroupRangeManagerImpl implements GroupRangeManager {
 	private IdgeneratorService idgeneratorService;
 	@Autowired
 	private MemberManager memberManager;
-	@Autowired
-	private GroupPersonSizeManager groupPersonSizeManager;
 	
 	private Long genGroupRangeId() {
 		return idgeneratorService.getNextIdByTypeName("com.moredian.skynet.member.GroupRange").getData();

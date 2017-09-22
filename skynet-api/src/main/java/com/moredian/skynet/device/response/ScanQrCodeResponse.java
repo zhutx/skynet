@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public class ScanQrCodeResponse implements Serializable {
 
-    private int statusCode;
+	private static final long serialVersionUID = -3991857472098906219L;
+	private int statusCode;
     private String message;
 
     public int getStatusCode() {

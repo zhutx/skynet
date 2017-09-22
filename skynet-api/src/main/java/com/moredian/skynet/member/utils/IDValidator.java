@@ -86,7 +86,7 @@ public class IDValidator {
 	 */
 	public IDCodeInfo getInfo(String id) {
 		// 号码必须有效
-		if (this.isValid(id) == false) {
+		if (isValid(id) == false) {
 			return null;
 		}
 		// TODO 复用此部分

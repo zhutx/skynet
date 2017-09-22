@@ -4,7 +4,8 @@ import java.io.Serializable;
  
 public class BindDeviceResponse implements Serializable{
 
-    private String serialNumber;
+	private static final long serialVersionUID = -5267360200445137012L;
+	private String serialNumber;
     private Boolean result;
 	public String getSerialNumber() {
 		return serialNumber;

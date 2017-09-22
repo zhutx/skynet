@@ -1,7 +1,6 @@
 package com.moredian.skynet.member.request;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class ImportMemberModel implements Serializable {
 	

@@ -2,12 +2,11 @@ package com.moredian.skynet.device.model;
 
 import java.io.Serializable;
 
-/**
- * Created by xxu on 2017/6/20.
- */
 public class CameraDeviceBindInfo implements Serializable {
 
-    private Long deviceMatchId;
+	private static final long serialVersionUID = 2377357000134581432L;
+
+	private Long deviceMatchId;
 
     private Long orgId;
 

@@ -47,12 +47,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public ServiceResponse<Boolean> batchAddMember(List<MemberAddRequest> memberList) {
-		memberManager.batchAddMember(memberList);
-		return new ServiceResponse<Boolean>(true, null, true);
-	}
-
-	@Override
 	public MemberInfo getMemberInfo(Long orgId, Long memberId) {
 		Member member = memberManager.getMember(orgId, memberId);
 		return this.memberToMemberInfo(member);

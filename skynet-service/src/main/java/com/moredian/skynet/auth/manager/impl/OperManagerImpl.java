@@ -1,11 +1,7 @@
 package com.moredian.skynet.auth.manager.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,9 +28,7 @@ import com.moredian.skynet.auth.mapper.OperRoleMapper;
 import com.moredian.skynet.auth.request.OperAddRequest;
 import com.moredian.skynet.auth.request.OperQueryRequest;
 import com.moredian.skynet.auth.request.OperUpdateRequest;
-import com.xier.sesame.pigeon.enums.SMSType;
 import com.xier.sesame.pigeon.mm.service.MMService;
-import com.xier.sesame.pigeon.mm.smsParam.UserAutoRegisterParams;
 import com.xier.uif.account.enums.AccountBindType;
 import com.xier.uif.account.service.AccountPassportService;
 import com.xier.uif.account.service.AccountProfileService;
@@ -104,26 +98,6 @@ public class OperManagerImpl implements OperManager {
 		}
 	}
 	
-	private AccountBindType getAccountBindType(String accountName) {
-		Pattern p = Pattern.compile("\\d{11}");
-		Matcher m = p.matcher(accountName);
-		if(m.matches()) {
-			return AccountBindType.MOBILE;
-		} else {
-			return AccountBindType.USER_NAME;
-		}
-	}
-	
-	private boolean isMobile(String accountName) {
-		Pattern p = Pattern.compile("\\d{11}");
-		Matcher m = p.matcher(accountName);
-		if(m.matches()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 	private com.xier.sesame.common.rpc.ServiceResponse<SimpleAccountInfo> registerAccount(String name, String password, String accountName, AccountBindType accountBindType) {
 		AccountRegisterRequest request = new AccountRegisterRequest();
 		request.setName(name);
@@ -135,14 +109,6 @@ public class OperManagerImpl implements OperManager {
     	logger.info(JsonUtils.toJson(request));
     	com.xier.sesame.common.rpc.ServiceResponse<SimpleAccountInfo> sr = accountPassportService.register(request);
     	return sr;
-	}
-	
-	private void sendSmsNotify(String userName, String mobile, String password) {
-        Map<String,String> param = new HashMap<>();
-        param.put(UserAutoRegisterParams.NAME.getValue(), userName);
-        param.put(UserAutoRegisterParams.MOBILE.getValue(), mobile);
-        param.put(UserAutoRegisterParams.PASSWORD.getValue(), password);
-        mmService.sendSms(SMSType.USERAUTOREGISTER, mobile, param);
 	}
 	
 	/*@Override

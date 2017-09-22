@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class PerfectInfoRequest implements Serializable {
 
-    //设备条码
+	private static final long serialVersionUID = -366211752984997227L;
+	//设备条码
     private String serialNumber;
     // 机构Id
     private Long orgId ;

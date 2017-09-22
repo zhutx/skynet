@@ -1,6 +1,5 @@
 package com.moredian.skynet.member.manager.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.skynet.member.manager.GroupPersonManager;
 import com.moredian.skynet.member.manager.GroupPersonSizeManager;
-import com.moredian.skynet.org.enums.GroupType;
-import com.moredian.skynet.org.enums.PersonType;
 import com.moredian.skynet.org.manager.GroupManager;
 
 @Service

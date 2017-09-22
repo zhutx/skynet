@@ -3,7 +3,9 @@ package com.moredian.skynet.device.request;
 import java.io.Serializable;
  
 public class BindDeviceRequest implements Serializable{
-	 //sn码
+	
+	private static final long serialVersionUID = -3371018628007124182L;
+	//sn码
     private String sn;
     //mac地址
     private String macAddress;

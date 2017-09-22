@@ -18,6 +18,7 @@ import com.moredian.skynet.device.request.TransferRequest;
 import com.moredian.skynet.device.request.UpgradeRequest;
 import com.moredian.skynet.device.response.DeviceActiveResponse;
 
+@SuppressWarnings("deprecation")
 public interface DeviceService {
 	
 	ServiceResponse<Boolean> addDeviceWhite(DeviceWhiteAddRequest request);

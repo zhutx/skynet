@@ -7,7 +7,6 @@ import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.skynet.member.domain.DeptMember;
 import com.moredian.skynet.member.request.BindDeptRelationRequest;
 import com.moredian.skynet.member.request.DeptRelationQueryRequest;
-import com.moredian.skynet.member.service.adapter.request.JudgeDepartmentLeaderRequest;
 
 public interface DeptMemberManager {
 	
@@ -34,8 +33,6 @@ public interface DeptMemberManager {
 	boolean disableRelation(Long orgId, Long memberId);
 	
 	boolean disableRelation(Long orgId, Long memberId, Long deptId);
-	
-	boolean judgeIsUserLeader(JudgeDepartmentLeaderRequest request);
 	
 	boolean fillDeptIdByTpDeptId(Long orgId, Long tpDeptId, Long deptId);
 	

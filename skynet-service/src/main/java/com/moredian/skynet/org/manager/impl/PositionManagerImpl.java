@@ -128,7 +128,7 @@ public class PositionManagerImpl implements PositionManager {
 		Position position = positionMapper.load(orgId, positionId);
 		if(position == null) ExceptionUtils.throwException(OrgErrorCode.POSITION_NOT_EXIST, OrgErrorCode.POSITION_NOT_EXIST.getMessage());
 		
-		String oldFullName = position.getFullName(); // 修改前的位置全名
+		//String oldFullName = position.getFullName(); // 修改前的位置全名
 		
 		String prefixName = "";
 		String newFullName = "";

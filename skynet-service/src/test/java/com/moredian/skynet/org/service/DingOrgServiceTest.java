@@ -26,7 +26,6 @@ public class DingOrgServiceTest {
 	@Autowired
 	private DingOrgService dingOrgService;
 	
-	private Long orgId = 1569091801116049408L;
 	
 	@Test
 	@Rollback(false)

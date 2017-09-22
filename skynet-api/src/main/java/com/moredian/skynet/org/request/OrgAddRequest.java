@@ -1,7 +1,7 @@
 package com.moredian.skynet.org.request;
 
 import java.io.Serializable;
-import com.moredian.skynet.org.enums.OrgStatus;
+
 import com.moredian.skynet.org.enums.OrgType;
 
 public class OrgAddRequest implements Serializable {

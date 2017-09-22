@@ -16,7 +16,6 @@ import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.device.domain.Device;
 import com.moredian.skynet.device.manager.ActivityManager;
 import com.moredian.skynet.device.manager.DeviceManager;
-import com.moredian.skynet.device.manager.DeviceMatchManager;
 import com.moredian.skynet.device.manager.DeviceMonitorManager;
 import com.moredian.skynet.device.model.DeviceImageVersion;
 import com.moredian.skynet.device.model.DeviceInfo;
@@ -33,6 +32,7 @@ import com.moredian.skynet.device.request.UpgradeRequest;
 import com.moredian.skynet.device.response.DeviceActiveResponse;
 import com.moredian.skynet.device.service.DeviceService;
 
+@SuppressWarnings("deprecation")
 @SI
 public class DeviceServiceImpl implements DeviceService {
 	
@@ -44,9 +44,6 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	private ActivityManager activityManager;
-
-	@Autowired
-	private DeviceMatchManager deviceMatchManager;
 
 	@Value("${spider.web.address}")
 	private String spiderWebAddress;

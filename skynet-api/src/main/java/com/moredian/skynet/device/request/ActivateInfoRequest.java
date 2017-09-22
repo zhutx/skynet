@@ -7,7 +7,9 @@ import java.io.Serializable;
  */
 public class ActivateInfoRequest implements Serializable {
 
-    private String sn;
+	private static final long serialVersionUID = 8060804874664700868L;
+
+	private String sn;
 
     private String checkCode;
 

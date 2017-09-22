@@ -71,16 +71,11 @@ import com.moredian.skynet.member.mapper.GroupPersonMapper;
 import com.moredian.skynet.member.mapper.LoginLogMapper;
 import com.moredian.skynet.member.mapper.MemberMapper;
 import com.moredian.skynet.member.mapper.UserRelationMapper;
-import com.moredian.skynet.member.model.DingUserExtend;
 import com.moredian.skynet.member.model.MemberInfo;
 import com.moredian.skynet.member.request.ImportMemberModel;
 import com.moredian.skynet.member.request.MemberAddRequest;
 import com.moredian.skynet.member.request.MemberQueryRequest;
 import com.moredian.skynet.member.request.MemberUpdateRequest;
-import com.moredian.skynet.member.service.adapter.request.ModifyUserRelationRequest;
-import com.moredian.skynet.member.service.adapter.request.SelectUserRelationRequest;
-import com.moredian.skynet.member.service.adapter.response.MemberIdMapping;
-import com.moredian.skynet.member.service.adapter.response.ProsceniumUserResponse;
 import com.moredian.skynet.member.utils.IDValidator;
 import com.moredian.skynet.org.domain.Dept;
 import com.moredian.skynet.org.domain.Position;
@@ -272,20 +267,6 @@ public class MemberManagerImpl implements MemberManager {
 		return this.doAddMember(request);
 	}
 	
-	@Override
-	@Transactional
-	public void batchAddMember(List<MemberAddRequest> memberList) {
-		
-		for(MemberAddRequest request : memberList) {
-			// TODO 过滤重复的，过滤数据库已存在的
-		}
-		
-		for(MemberAddRequest request : memberList) {
-			this.doAddMember(request);
-		}
-		
-	}
-
 	private void buildGroupRelation(Long orgId, Long memberId, List<Long> relationDepts, List<Long> relationGroups) {
 		Set<Long> groupIdSet = new HashSet<>();
 		
@@ -1022,94 +1003,6 @@ public class MemberManagerImpl implements MemberManager {
 	}
 
 	@Override
-	public boolean judgeProscenium(SelectUserRelationRequest request) {
-		Member member = memberMapper.load(request.getOrgId(), request.getUserId());
-		if(member == null || MemberStatus.USABLE.getValue() != member.getStatus()) ExceptionUtils.throwException(MemberErrorCode.MEMBER_NOT_EXIST, MemberErrorCode.MEMBER_NOT_EXIST.getMessage());
-		Position position = positionManager.getRootPosition(request.getOrgId());
-		UserRelation userRelation = userRelationMapper.loadOne(request.getOrgId(), request.getUserId(), position.getPositionId());
-		if(userRelation == null || userRelation.getRelationStatus() == 1) return false;
-		return (UserRelationType.FRONT.getValue() == userRelation.getRelation())?true:false;
-	}
-	
-	private List<ProsceniumUserResponse> buildResponse(List<Member> memberList) {
-		List<ProsceniumUserResponse> list = new ArrayList<>();
-		if(CollectionUtils.isEmpty(memberList)) return list;
-		for(Member member : memberList) {
-			
-			DingUserExtend extend = JsonUtils.fromJson(DingUserExtend.class, member.getTpExtend());
-			
-			ProsceniumUserResponse item = new ProsceniumUserResponse();
-			item.setDingUserId(extend.getDing_userid());
-			item.setOrgId(member.getOrgId());
-			item.setDingAvatar(extend.getDing_avatar());
-			item.setDingName(extend.getDing_name());
-			item.setUserId(member.getMemberId());
-			list.add(item);
-		}
-		return list;
-	}
-
-	@Override
-	public List<ProsceniumUserResponse> selectProscenium(SelectUserRelationRequest request) {
-		BizAssert.notNull(request.getOrgId());
-		
-		Position position = positionManager.getRootPosition(request.getOrgId());
-		List<Long> userIdList = userRelationMapper.findUserId(request.getOrgId(), position.getPositionId(), UserRelationType.FRONT.getValue());
-		
-		if(CollectionUtils.isEmpty(userIdList)) return new ArrayList<>();
-		
-		List<Member> memberList = memberMapper.findByIds(request.getOrgId(), userIdList, null, MemberStatus.USABLE.getValue());
-		
-		return this.buildResponse(memberList);
-	}
-
-	@Override
-	public boolean addProscenium(ModifyUserRelationRequest request) {
-		BizAssert.notNull(request.getOrgId());
-		BizAssert.notBlank(request.getDingUserId());
-		
-		Member member = memberMapper.loadByTpId(request.getOrgId(), request.getDingUserId());
-		if(member == null) ExceptionUtils.throwException(MemberErrorCode.MEMBER_NOT_EXIST, MemberErrorCode.MEMBER_NOT_EXIST.getMessage());
-		
-		Position position = positionManager.getRootPosition(request.getOrgId());
-		
-		/*UserRelation userRelation = userRelationMapper.loadOne(request.getOrgId(), member.getMemberId(), position.getPositionId());
-		if(userRelation == null) ExceptionUtils.throwException(MemberErrorCode.USER_RELATION_NOT_EXIST, MemberErrorCode.USER_RELATION_NOT_EXIST.getMessage());
-		
-		userRelationMapper.updateRelation(userRelation.getOrgId(), userRelation.getUserRelationId(), UserRelationType.FRONT.getValue());*/
-		
-		UserRelation userRelation = new UserRelation();
-		userRelation.setUserRelationId(this.genPrimaryId(UserRelation.class.getName()));
-		userRelation.setOrgId(request.getOrgId());
-		userRelation.setUserId(member.getMemberId());
-		userRelation.setRelation(UserRelationType.FRONT.getValue());
-		userRelation.setRelationStatus(0); // 这个遗留下来的状态跟其他地方正好相反，无法使用YesNoFlag枚举，纠结，先写死
-		userRelation.setSubOrgId(position.getPositionId());
-		userRelationMapper.insertOrUpdate(userRelation);
-		
-		return true;
-	}
-
-	@Override
-	public boolean deleteProscenium(ModifyUserRelationRequest request) {
-		
-		BizAssert.notNull(request.getOrgId());
-		BizAssert.notBlank(request.getDingUserId());
-		
-		Member member = memberMapper.loadByTpId(request.getOrgId(), request.getDingUserId());
-		if(member == null) ExceptionUtils.throwException(MemberErrorCode.MEMBER_NOT_EXIST, MemberErrorCode.MEMBER_NOT_EXIST.getMessage());
-		
-		Position position = positionManager.getRootPosition(request.getOrgId());
-		
-		UserRelation userRelation = userRelationMapper.loadOne(request.getOrgId(), member.getMemberId(), position.getPositionId());
-		if(userRelation == null) ExceptionUtils.throwException(MemberErrorCode.USER_RELATION_NOT_EXIST, MemberErrorCode.USER_RELATION_NOT_EXIST.getMessage());
-		
-		userRelationMapper.disableStatus(userRelation.getOrgId(), userRelation.getUserRelationId());
-		
-		return true;
-	}
-
-	@Override
 	public int updateTpExtend(Long orgId, Long memberId, String tpExtend) {
 		
 		BizAssert.notNull(orgId);
@@ -1117,20 +1010,6 @@ public class MemberManagerImpl implements MemberManager {
 		BizAssert.notBlank(tpExtend);
 		
 		return memberMapper.updateTpExtend(orgId, memberId, tpExtend);
-	}
-
-	@Override
-	public List<MemberIdMapping> findIdMappingByIds(Long orgId, List<Long> memberIdList) {
-		BizAssert.notNull(orgId);
-		BizAssert.notEmpty(memberIdList);
-		return memberMapper.findIdMappingByIds(orgId, memberIdList);
-	}
-
-	@Override
-	public List<MemberIdMapping> findIdMappingByTpIds(Long orgId, List<String> tpIdList) {
-		BizAssert.notNull(orgId);
-		BizAssert.notEmpty(tpIdList);
-		return memberMapper.findIdMappingByTpIds(orgId, tpIdList);
 	}
 
 	@Override

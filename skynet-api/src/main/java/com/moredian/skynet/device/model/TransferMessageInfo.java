@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 public class TransferMessageInfo<T> implements Serializable {
 
+	private static final long serialVersionUID = 3861054836467710001L;
+
 	private String seqId;
 	
     //Event Type

@@ -65,17 +65,11 @@ import com.moredian.skynet.org.model.AreaInfo;
 import com.moredian.skynet.org.model.OrgInfo;
 import com.moredian.skynet.org.service.AreaService;
 import com.moredian.skynet.org.service.OrgService;
-import com.moredian.skynet.utils.ImageRule;
 import com.moredian.skynet.utils.RotateImage;
 import com.moredian.skynet.utils.SmsUtil;
 import com.moredian.skynet.web.controller.BaseController;
-import com.moredian.skynet.web.controller.common.request.ImageFileType;
 import com.moredian.skynet.web.controller.common.request.LoginModel;
-import com.moredian.skynet.web.controller.common.request.PersonFaceImageRule;
-import com.moredian.skynet.web.controller.common.request.PersonHeadImageRule;
 import com.moredian.skynet.web.controller.common.request.ResetPasswdModel;
-import com.moredian.skynet.web.controller.common.request.SubjectBgImageRule;
-import com.moredian.skynet.web.controller.common.request.SubjectLogoImageRule;
 import com.moredian.skynet.web.controller.common.request.UpdatePasswdModel;
 import com.moredian.skynet.web.controller.common.response.Constant;
 import com.moredian.skynet.web.controller.common.response.LoginOperInfo;
@@ -515,26 +509,6 @@ public class CommonController extends BaseController {
 		return bdr;
     	
     }
-	
-	private ImageRule fetchImageRule(int imageType) {
-		if(ImageFileType.PERSON_HEAD.getValue() == imageType) {
-			return BeanUtils.copyProperties(ImageRule.class, new PersonHeadImageRule());
-		}
-		
-		if(ImageFileType.PERSON_FACE.getValue() == imageType) {
-			return BeanUtils.copyProperties(ImageRule.class, new PersonFaceImageRule());
-		}
-		
-		if(ImageFileType.SUBJECT_LOGO.getValue() == imageType) {
-			return BeanUtils.copyProperties(ImageRule.class, new SubjectLogoImageRule());
-		}
-		
-		if(ImageFileType.SUBJECT_BG.getValue() == imageType) {
-			return BeanUtils.copyProperties(ImageRule.class, new SubjectBgImageRule());
-		}
-		
-		return null;
-	}
 	
 	@ApiOperation(value="是否人脸照片", notes="是否人脸照片")
 	@SuppressWarnings("rawtypes")

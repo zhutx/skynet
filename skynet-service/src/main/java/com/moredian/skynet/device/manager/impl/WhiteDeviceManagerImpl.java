@@ -1,35 +1,31 @@
 package com.moredian.skynet.device.manager.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.moredian.bee.common.exception.BizAssert;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.convertor.PaginationConvertor;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.device.domain.InventoryDevice;
-import com.moredian.skynet.device.domain.WhiteDevice;
 import com.moredian.skynet.device.domain.WhiteDeviceQueryCondition;
 import com.moredian.skynet.device.enums.YesNoFlag;
-import com.moredian.skynet.device.manager.InventoryDeviceManager;
 import com.moredian.skynet.device.manager.WhiteDeviceManager;
 import com.moredian.skynet.device.mapper.WhiteDeviceMapper;
 import com.moredian.skynet.device.model.WhiteDeviceInfo;
 import com.moredian.skynet.device.request.WhiteDeviceAddRequest;
 import com.moredian.skynet.device.request.WhiteDeviceQueryRequest;
-import com.moredian.idgenerator.service.IdgeneratorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class WhiteDeviceManagerImpl implements WhiteDeviceManager {
 	
 	@Autowired
 	private WhiteDeviceMapper whiteDeviceMapper;
-
-	@Autowired
-	private InventoryDeviceManager inventoryDeviceMapper;
 
 	@SI
 	private IdgeneratorService idgeneratorService;
@@ -74,10 +70,6 @@ public class WhiteDeviceManagerImpl implements WhiteDeviceManager {
 		return this.getPagination(devicePagination, condition);
 	}
 	
-	private Long genWhiteDeviceId() {
-		return idgeneratorService.getNextIdByTypeName("com.xier.skynet.device.WhiteDevice").getData();
-	}
-
 	@Override
 	public boolean addWhiteDevice(WhiteDeviceAddRequest request) {
 		

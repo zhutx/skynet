@@ -1,7 +1,5 @@
 package com.moredian.skynet.device.manager.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +25,6 @@ import com.moredian.skynet.org.service.PositionService;
 
 @Service
 public class CloudeyeDeviceSyncProxyImpl implements CloudeyeDeviceSyncProxy {
-	
-	private static Logger logger = LoggerFactory.getLogger(CloudeyeDeviceSyncProxyImpl.class);
 	
 	@SI
 	private DeviceConfigProvider deviceConfigProvider;

@@ -544,7 +544,6 @@ public class DeviceManagerImpl implements DeviceManager {
 	}
 
 	public static void main(String [] args){
-		String invokerUrl = "http://192.168.4.73:8087/services/inventory/devices/create";
 
 		String u2="http://192.168.4.73:8087/services/inventory/devices/create?sn=yrhftest12388&mac=000011112222&orgId=123456789&deviceType=610&softwareVersion=18.0.0&simulated=true";
 

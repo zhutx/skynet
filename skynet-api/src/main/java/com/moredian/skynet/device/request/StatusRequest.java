@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class StatusRequest implements Serializable {
 
-    private String snArray;
+	private static final long serialVersionUID = 4354352289630368049L;
+	private String snArray;
     private Long orgId;
 
 	public String getSnArray() {

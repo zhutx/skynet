@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class GetActivityStatusRequest implements Serializable {
 
-    private String qrCode;
+	private static final long serialVersionUID = -4167857541872318022L;
+	private String qrCode;
 
     public String getQrCode() {
         return qrCode;

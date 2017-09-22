@@ -41,7 +41,7 @@ public class DeviceGroupRelationServiceImpl implements DeviceGroupRelationServic
 
 	@Override
 	public List<String> findGroupNameByDeviceId(Long orgId, Long deviceId) {
-		List<Long> groupIdList = deviceGroupManager.findGroupIdByDeviceId(orgId, deviceId);
+		//List<Long> groupIdList = deviceGroupManager.findGroupIdByDeviceId(orgId, deviceId);
 		return null;//groupService.findGroupNameByIds(orgId, groupIdList);
 	}
 

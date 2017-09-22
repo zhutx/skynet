@@ -219,52 +219,6 @@ public class CloudeyeHuberConfigProxyImpl implements CloudeyeHuberConfigProxy {
 	}
 	
 	/**
-	 * 将盒子挂到火蚁服务器上，如果已存在盒子，则返回盒子配置
-	 * @return
-	 */
-	private OHuberConfigNode mountBoxToServer(String boxSn, Deploy deploy) {
-		
-		List<DeployDetail> deployDetailList = deployDetailMapper.findByDeployId(deploy.getDeployId(), deploy.getOrgId());
-		
-		logger.info("=========将盒子["+boxSn+"]挂到火蚁服务器上");
-		
-		OHuberConfig oHuberConfig = oHuberConfigProvider.loadOhuberConfig(deploy.getOrgId());
-		OHuberConfigNode boxNode = oHuberConfig.findNodeByCode(boxSn);
-		if(boxNode != null) {
-			logger.info("=========盒子接节点配置已存在，操作被忽略");
-			return boxNode; // 盒子已存在，则返回盒子配置
-		}
-		
-		// 盒子不存在，则配置盒子节点
-		boxNode = new OHuberConfigNode();
-		boxNode.setCode(boxSn);
-		boxNode.setNodeType(OHCNodeType.TURNIP_VERIFY.name());
-		boxNode.setSimilarNum(SIMILAR_NUM);
-		boxNode.setChainItems(this.buildChainItemList(deployDetailList)); // 从布控信息里获取识别链（底库）
-		boxNode.setThresholdItem(this.buildThresholdItem(deploy)); // 从布控信息里获取阈值
-		//boxNode.setBusinessType(BusinessType.EAGLE_MONITOR.getValue());
-		//boxNode.setChildren(children);
-		//boxNode.setExtend(extend);
-		//boxNode.setSubscriberItems(subscriberItems);
-		
-		/*// 获取火蚁服务器
-		OHuberConfigNode serverNode = this.getOHuberServer(orgId);
-		
-		// 将盒子挂到火蚁服务器上
-		logger.info("=========配置悉尔盒子节点至火蚁服务器");
-		logger.info("=========parentCode参数："+serverNode.getCode());
-		logger.info("=========node参数：\n"+JsonUtils.toJson(boxNode));
-		oHuberConfigProvider.configNode(orgId, serverNode.getCode(), boxNode);*/
-		
-		// 将盒子挂到火蚁服务器上
-		logger.info("配置盒子节点至火蚁服务器");
-		logger.info("node参数：\n"+JsonUtils.toJson(boxNode));
-		oHuberConfigProvider.configNode(deploy.getOrgId(), null, boxNode);
-		
-		return boxNode;
-	}
-	
-	/**
 	 * 获取黑白名单
 	 * @param deployLabel
 	 * @return
@@ -393,40 +347,6 @@ public class CloudeyeHuberConfigProxyImpl implements CloudeyeHuberConfigProxy {
 		this.printConfLog(orgId);
 		
 		logger.info("=========结束: 将节点挂到火蚁服务器上");
-		
-	}
-
-	private void addMatchDevicesToServer(Deploy deploy) {
-		
-		Long orgId = deploy.getOrgId();
-		
-		logger.info("=========开始: 将匹配的“盒子-摄像机”节点链路挂到火蚁服务器上");
-		
-		logger.info("=========布控id"+ deploy.getDeployId());
-		
-		// 获取摄像头设备
-		Device camera = deviceManager.getDeviceById(deploy.getDeviceId(), orgId);
-		// 获取摄像头的匹配关系
-		DeviceMatch deviceMatch = deviceMatchManager.getByCameraId(camera.getDeviceId(), orgId);
-		// 获取盒子设备
-		Device box = deviceManager.getDeviceById(deviceMatch.getBoxId(), orgId);
-		
-		// 将盒子挂载到火蚁服务器上
-		OHuberConfigNode boxNode = this.mountBoxToServer(box.getDeviceSn(), deploy);
-		
-		// 创建摄像机节点配置
-		OHuberConfigNode cameraNode = this.buildCameraConfigNode(camera.getDeviceSn(), deploy);
-		
-		// 将摄像头挂到盒子上
-		logger.info("=========将摄像头挂到盒子上");
-		logger.info("=========parentCode参数："+boxNode.getCode());
-		logger.info("=========node参数：\n"+JsonUtils.toJson(cameraNode));
-		
-		oHuberConfigProvider.configNode(orgId, boxNode.getCode(), cameraNode);
-		
-		this.printConfLog(orgId);
-		
-		logger.info("=========结束: 将匹配的“盒子-摄像机”节点链路挂到火蚁服务器上");
 		
 	}
 

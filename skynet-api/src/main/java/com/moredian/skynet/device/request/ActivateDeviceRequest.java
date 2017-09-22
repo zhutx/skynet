@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class ActivateDeviceRequest implements Serializable {
 
-    // 二维码
+	private static final long serialVersionUID = -4783993654544350156L;
+	// 二维码
     private String qrCode;
     // cpu
     private String cpuId;
