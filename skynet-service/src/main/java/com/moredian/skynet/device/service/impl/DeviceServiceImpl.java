@@ -25,6 +25,7 @@ import com.moredian.skynet.device.request.DeviceActiveRequest;
 import com.moredian.skynet.device.request.DeviceAddRequest;
 import com.moredian.skynet.device.request.DeviceQueryRequest;
 import com.moredian.skynet.device.request.DeviceUpdateRequest;
+import com.moredian.skynet.device.request.DeviceWhiteAddRequest;
 import com.moredian.skynet.device.request.RebootRequest;
 import com.moredian.skynet.device.request.StatusRequest;
 import com.moredian.skynet.device.request.TransferRequest;
@@ -50,6 +51,12 @@ public class DeviceServiceImpl implements DeviceService {
 	@Value("${spider.web.address}")
 	private String spiderWebAddress;
 	
+	@Override
+	public ServiceResponse<Boolean> addDeviceWhite(DeviceWhiteAddRequest request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public DeviceStateInfo getStatus(String serialNumber) {
 		return deviceMonitorManager.getStatus(serialNumber);

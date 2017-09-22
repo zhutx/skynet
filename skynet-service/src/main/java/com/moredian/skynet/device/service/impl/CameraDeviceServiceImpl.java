@@ -11,16 +11,16 @@ import com.moredian.skynet.device.domain.DeviceMatch;
 import com.moredian.skynet.device.manager.CameraDeviceManager;
 import com.moredian.skynet.device.manager.DeviceMatchManager;
 import com.moredian.skynet.device.model.CameraDeviceExtendsInfo;
-import com.moredian.skynet.device.model.CameraDeviceInfo;
+import com.moredian.skynet.device.model.CameraInfo;
 import com.moredian.skynet.device.request.*;
-import com.moredian.skynet.device.service.CameraDeviceService;
+import com.moredian.skynet.device.service.CameraService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SI
-public class CameraDeviceServiceImpl implements CameraDeviceService {
+public class CameraDeviceServiceImpl implements CameraService {
 	
 	@Autowired
 	private CameraDeviceManager cameraDeviceManager;
@@ -29,55 +29,52 @@ public class CameraDeviceServiceImpl implements CameraDeviceService {
 	private DeviceMatchManager deviceMatchManager;
 	
 	@Override
-	public ServiceResponse<Long> addDevice(CameraDeviceAddRequest request) {
+	public ServiceResponse<Long> addDevice(CameraAddRequest request) {
 		Device device = cameraDeviceManager.addDevice(request);
 		return new ServiceResponse<Long>(true, null, device.getDeviceId());
 	}
 
 	@Override
-	public ServiceResponse<Boolean> updateDevice(CameraDeviceUpdateRequest request) {
+	public ServiceResponse<Boolean> updateDevice(CameraUpdateRequest request) {
 		boolean result = cameraDeviceManager.updateDevice(request);
 		return new ServiceResponse<Boolean>(true, null, result);
 	}
 
 	@Override
-	public ServiceResponse<Boolean> deleteDeviceById(Long orgId, Long deviceId) {
+	public ServiceResponse<Boolean> deleteDevice(Long orgId, Long deviceId) {
 		boolean result = cameraDeviceManager.deleteDeviceById(orgId, deviceId);
 		return new ServiceResponse<Boolean>(true, null, result);
 	}
 
 	@Override
-	public CameraDeviceInfo getDeviceById(Long orgId, Long deviceId) {
+	public CameraInfo getDeviceById(Long orgId, Long deviceId) {
 		Device device = cameraDeviceManager.getDeviceById(orgId, deviceId);
 		return deviceToCameraDeviceInfo(device);
 	}
 	
-	private CameraDeviceInfo deviceToCameraDeviceInfo(Device device) {
+	private CameraInfo deviceToCameraDeviceInfo(Device device) {
 		if(device == null) return null;
-		CameraDeviceInfo cameraDeviceInfo = new CameraDeviceInfo();
+		CameraInfo cameraDeviceInfo = new CameraInfo();
 		cameraDeviceInfo.setDeviceId(device.getDeviceId());
-		cameraDeviceInfo.setOrgId(device.getOrgId());
-		cameraDeviceInfo.setPositionId(device.getPositionId());
+		cameraDeviceInfo.setPosition(device.getPosition());
 		cameraDeviceInfo.setDeviceName(device.getDeviceName());
 		
 		CameraDeviceExtendsInfo deviceExtendsInfo = JsonUtils.fromJson(CameraDeviceExtendsInfo.class, device.getExtendsInfo());
 		cameraDeviceInfo.setProviderType(deviceExtendsInfo.getProvider_type());
-		cameraDeviceInfo.setCameraNvr(deviceExtendsInfo.getCamera_nvr());
-		cameraDeviceInfo.setCameraIp(deviceExtendsInfo.getCamera_ip());
-		cameraDeviceInfo.setCameraUsername(deviceExtendsInfo.getCamera_username());
-		cameraDeviceInfo.setCameraPassword(deviceExtendsInfo.getCamera_password());
-		cameraDeviceInfo.setCameraStream(deviceExtendsInfo.getCamera_stream());
-		cameraDeviceInfo.setCameraResolution(deviceExtendsInfo.getCamera_resolution());
+		cameraDeviceInfo.setNvr(deviceExtendsInfo.getCamera_nvr());
+		cameraDeviceInfo.setIp(deviceExtendsInfo.getCamera_ip());
+		cameraDeviceInfo.setUsername(deviceExtendsInfo.getCamera_username());
+		cameraDeviceInfo.setPassword(deviceExtendsInfo.getCamera_password());
+		cameraDeviceInfo.setVideoStream(deviceExtendsInfo.getCamera_stream());
+		cameraDeviceInfo.setResolution(deviceExtendsInfo.getCamera_resolution());
 		
-		cameraDeviceInfo.setStatus(device.getStatus());
-		cameraDeviceInfo.setGmtCreate(device.getGmtCreate());
 		return cameraDeviceInfo;
 	}
 	
-	private List<CameraDeviceInfo> deviceListToCameraDeviceInfoList(List<Device> deviceList) {
+	private List<CameraInfo> deviceListToCameraDeviceInfoList(List<Device> deviceList) {
 		if (deviceList == null) return null;
 		
-		List<CameraDeviceInfo> response = new ArrayList<>();
+		List<CameraInfo> response = new ArrayList<>();
 		for(Device device : deviceList) {
 			response.add(deviceToCameraDeviceInfo(device));
 		}
@@ -85,8 +82,8 @@ public class CameraDeviceServiceImpl implements CameraDeviceService {
 		return response;
 	}
 	
-	private Pagination<CameraDeviceInfo> paginationDeviceToPaginationCameraDeviceInfo(PaginationDomain<Device> fromPagination) {
-		Pagination<CameraDeviceInfo> toPagination = PaginationConvertor.paginationDomainToPagination(fromPagination, new Pagination<CameraDeviceInfo>());
+	private Pagination<CameraInfo> paginationDeviceToPaginationCameraDeviceInfo(PaginationDomain<Device> fromPagination) {
+		Pagination<CameraInfo> toPagination = PaginationConvertor.paginationDomainToPagination(fromPagination, new Pagination<CameraInfo>());
 		if (toPagination == null)
 			return null;
 		toPagination.setData(deviceListToCameraDeviceInfoList(fromPagination.getData()));
@@ -94,8 +91,8 @@ public class CameraDeviceServiceImpl implements CameraDeviceService {
 	}
 
 	@Override
-	public Pagination<CameraDeviceInfo> findPaginationDevice(CameraDeviceQueryRequest request,
-			Pagination<CameraDeviceInfo> pagination) {
+	public Pagination<CameraInfo> findPaginationDevice(CameraQueryRequest request,
+			Pagination<CameraInfo> pagination) {
 		PaginationDomain<Device> paginationDevice = cameraDeviceManager.findPaginationDevice(request, pagination);
 		return this.paginationDeviceToPaginationCameraDeviceInfo(paginationDevice);
 	}
@@ -127,7 +124,7 @@ public class CameraDeviceServiceImpl implements CameraDeviceService {
 	}
 
 	@Override
-	public CameraDeviceInfo getCameraDeviceByBoxId(Long boxId, Long orgId) {
+	public CameraInfo getCameraDeviceByBoxId(Long boxId, Long orgId) {
 		DeviceMatch deviceMatch=deviceMatchManager.getByBoxId(boxId,orgId);
 		if(deviceMatch!=null && deviceMatch.getCameraId()!=null){
 			Device device = cameraDeviceManager.getDeviceById(orgId, deviceMatch.getCameraId());

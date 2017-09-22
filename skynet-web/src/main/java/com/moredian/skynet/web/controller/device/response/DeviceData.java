@@ -1,5 +1,6 @@
 package com.moredian.skynet.web.controller.device.response;
 
+import java.util.Date;
 import java.util.List;
 
 public class DeviceData {
@@ -7,10 +8,12 @@ public class DeviceData {
 	private Long deviceId;
 	private Integer deviceType;
 	private String deviceName;
-	private String deviceSn;
-	private String activeCode;
-	private Integer status;
 	private String position;
+	private String deviceSn;
+	private String deviceMac;
+	private Date activeTime;
+	private Integer onlineFlag;
+	private Integer status;
 	private List<String> groupNames;
 	
 	public Long getDeviceId() {
@@ -37,12 +40,6 @@ public class DeviceData {
 	public void setDeviceSn(String deviceSn) {
 		this.deviceSn = deviceSn;
 	}
-	public String getActiveCode() {
-		return activeCode;
-	}
-	public void setActiveCode(String activeCode) {
-		this.activeCode = activeCode;
-	}
 	public Integer getStatus() {
 		return status;
 	}
@@ -60,6 +57,24 @@ public class DeviceData {
 	}
 	public void setGroupNames(List<String> groupNames) {
 		this.groupNames = groupNames;
+	}
+	public String getDeviceMac() {
+		return deviceMac;
+	}
+	public void setDeviceMac(String deviceMac) {
+		this.deviceMac = deviceMac;
+	}
+	public Date getActiveTime() {
+		return activeTime;
+	}
+	public void setActiveTime(Date activeTime) {
+		this.activeTime = activeTime;
+	}
+	public Integer getOnlineFlag() {
+		return onlineFlag;
+	}
+	public void setOnlineFlag(Integer onlineFlag) {
+		this.onlineFlag = onlineFlag;
 	}
 	
 }

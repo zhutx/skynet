@@ -2,18 +2,18 @@ package com.moredian.skynet.device.service;
 
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.Pagination;
-import com.moredian.skynet.device.model.CameraDeviceInfo;
+import com.moredian.skynet.device.model.CameraInfo;
 import com.moredian.skynet.device.request.BoxUpdateRequest;
-import com.moredian.skynet.device.request.CameraDeviceAddRequest;
-import com.moredian.skynet.device.request.CameraDeviceQueryRequest;
-import com.moredian.skynet.device.request.CameraDeviceUpdateRequest;
+import com.moredian.skynet.device.request.CameraAddRequest;
+import com.moredian.skynet.device.request.CameraQueryRequest;
+import com.moredian.skynet.device.request.CameraUpdateRequest;
 
 /**
  * 摄像机服务
  * @author zhutx
  *
  */
-public interface CameraDeviceService {
+public interface CameraService {
 
 		/**
          * 添加摄像机
@@ -21,7 +21,7 @@ public interface CameraDeviceService {
          * @return
          * <li>CE_DEVICE_ADD_FAIL</li>
          */
-	ServiceResponse<Long> addDevice(CameraDeviceAddRequest request);
+	ServiceResponse<Long> addDevice(CameraAddRequest request);
 	
 	/**
 	 * 修改摄像机
@@ -29,7 +29,7 @@ public interface CameraDeviceService {
 	 * @return
 	 * <li>DEVICE_NOT_EXIST</li>
 	 */
-	ServiceResponse<Boolean> updateDevice(CameraDeviceUpdateRequest request);
+	ServiceResponse<Boolean> updateDevice(CameraUpdateRequest request);
 	
 	/**
 	 * 删除摄像机
@@ -39,7 +39,7 @@ public interface CameraDeviceService {
 	 * <li>DEVICE_NOT_EXIST</li>
 	 * <li>CE_DEVICE_DELETE_FAIL</li>
 	 */
-	ServiceResponse<Boolean> deleteDeviceById(Long orgId, Long deviceId);
+	ServiceResponse<Boolean> deleteDevice(Long orgId, Long deviceId);
 	
 	/**
 	 * 获取摄像机信息
@@ -47,7 +47,7 @@ public interface CameraDeviceService {
 	 * @param deviceId
 	 * @return
 	 */
-	CameraDeviceInfo getDeviceById(Long orgId, Long deviceId);
+	CameraInfo getDeviceById(Long orgId, Long deviceId);
 	
 	/**
 	 * 分页查询设备
@@ -55,7 +55,7 @@ public interface CameraDeviceService {
 	 * @param pagination
 	 * @return
 	 */
-	Pagination<CameraDeviceInfo> findPaginationDevice(CameraDeviceQueryRequest request, Pagination<CameraDeviceInfo> pagination);
+	Pagination<CameraInfo> findPaginationDevice(CameraQueryRequest request, Pagination<CameraInfo> pagination);
 
 
 	/**
@@ -86,7 +86,7 @@ public interface CameraDeviceService {
 	 ServiceResponse<Boolean> updateBoxCamera(BoxUpdateRequest boxUpdateRequest);
 
 
-	CameraDeviceInfo getCameraDeviceByBoxId(Long boxId, Long orgId);
+	CameraInfo getCameraDeviceByBoxId(Long boxId, Long orgId);
 
 
 }

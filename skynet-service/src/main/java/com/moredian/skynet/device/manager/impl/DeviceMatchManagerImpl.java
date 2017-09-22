@@ -14,8 +14,8 @@ import com.moredian.skynet.device.manager.DeployManager;
 import com.moredian.skynet.device.manager.DeviceMatchManager;
 import com.moredian.skynet.device.mapper.DeviceMatchMapper;
 import com.moredian.skynet.device.request.BoxUpdateRequest;
-import com.moredian.skynet.device.request.CameraDeviceAddRequest;
-import com.moredian.skynet.device.request.CameraDeviceUpdateRequest;
+import com.moredian.skynet.device.request.CameraAddRequest;
+import com.moredian.skynet.device.request.CameraUpdateRequest;
 import com.moredian.skynet.device.request.DeviceMatchRequest;
 import com.moredian.idgenerator.service.IdgeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,10 +127,10 @@ public class DeviceMatchManagerImpl implements DeviceMatchManager {
 		//need to create camera first then bind it to box
 		if(boxUpdateRequest.getCameraId()==null){
 			//first, create camera
-			CameraDeviceAddRequest addRequest = new CameraDeviceAddRequest();
+			CameraAddRequest addRequest = new CameraAddRequest();
 			addRequest.setOrgId(boxUpdateRequest.getOrgId());
-			addRequest.setCameraStream(boxUpdateRequest.getCameraStream());
-			addRequest.setCameraResolution(boxUpdateRequest.getCameraResolution());
+			addRequest.setVideoStream(boxUpdateRequest.getCameraStream());
+			addRequest.setResolution(boxUpdateRequest.getCameraResolution());
 			addRequest.setProviderType(boxUpdateRequest.getProviderType());
 
 			Device cameraDevice=cameraDeviceManager.addDevice(addRequest);
@@ -167,12 +167,12 @@ public class DeviceMatchManagerImpl implements DeviceMatchManager {
 		}else{
 			//binding relation is existed
 			//only update camera
-			CameraDeviceUpdateRequest updateCameraRequest=new CameraDeviceUpdateRequest();
+			CameraUpdateRequest updateCameraRequest=new CameraUpdateRequest();
 			updateCameraRequest.setOrgId(boxUpdateRequest.getOrgId());
 			updateCameraRequest.setProviderType(boxUpdateRequest.getProviderType());
 			updateCameraRequest.setDeviceId(boxUpdateRequest.getCameraId());
-			updateCameraRequest.setCameraStream(boxUpdateRequest.getCameraStream());
-			updateCameraRequest.setCameraResolution(boxUpdateRequest.getCameraResolution());
+			updateCameraRequest.setVideoStream(boxUpdateRequest.getCameraStream());
+			updateCameraRequest.setResolution(boxUpdateRequest.getCameraResolution());
 			boolean updateResult=cameraDeviceManager.updateDevice(updateCameraRequest);
 			if(!updateResult){
 				ExceptionUtils.throwException(DeviceErrorCode.DEVICE_BOX_UPDATED_FAILED, DeviceErrorCode.DEVICE_CE_DEPLOY_ERROR.getMessage());

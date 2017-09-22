@@ -1,16 +1,26 @@
 package com.moredian.skynet.device.service;
 
+import java.util.List;
+
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.skynet.device.model.DeviceImageVersion;
 import com.moredian.skynet.device.model.DeviceInfo;
 import com.moredian.skynet.device.model.DeviceStateInfo;
-import com.moredian.skynet.device.request.*;
+import com.moredian.skynet.device.request.DeviceActiveRequest;
+import com.moredian.skynet.device.request.DeviceAddRequest;
+import com.moredian.skynet.device.request.DeviceQueryRequest;
+import com.moredian.skynet.device.request.DeviceUpdateRequest;
+import com.moredian.skynet.device.request.DeviceWhiteAddRequest;
+import com.moredian.skynet.device.request.RebootRequest;
+import com.moredian.skynet.device.request.StatusRequest;
+import com.moredian.skynet.device.request.TransferRequest;
+import com.moredian.skynet.device.request.UpgradeRequest;
 import com.moredian.skynet.device.response.DeviceActiveResponse;
 
-import java.util.List;
-
 public interface DeviceService {
+	
+	ServiceResponse<Boolean> addDeviceWhite(DeviceWhiteAddRequest request);
 	
 	/**
 	 * 设备状态情况

@@ -280,7 +280,6 @@ public class DeviceManagerImpl implements DeviceManager {
 		Device device = new Device();
 		device.setDeviceId(request.getDeviceId());
 		device.setOrgId(request.getOrgId());
-		device.setPositionId(request.getPositionId());
 		device.setDeviceName(request.getDeviceName());
 		device.setPosition(request.getPosition());
 		return device;

@@ -12,8 +12,6 @@ public class DeviceUpdateRequest implements Serializable {
 	private Long orgId; //required
 	/** 设备名称 */
 	private String deviceName; //optional
-	/** 位置id */
-	private Long positionId; //optional
 	/** 位置 */
 	private String position; //optional
 	
@@ -34,12 +32,6 @@ public class DeviceUpdateRequest implements Serializable {
 	}
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
-	}
-	public Long getPositionId() {
-		return positionId;
-	}
-	public void setPositionId(Long positionId) {
-		this.positionId = positionId;
 	}
 	public String getPosition() {
 		return position;
