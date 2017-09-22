@@ -3,7 +3,6 @@ package com.moredian.skynet.device.service;
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.Pagination;
 import com.moredian.skynet.device.model.CameraInfo;
-import com.moredian.skynet.device.request.BoxUpdateRequest;
 import com.moredian.skynet.device.request.CameraAddRequest;
 import com.moredian.skynet.device.request.CameraQueryRequest;
 import com.moredian.skynet.device.request.CameraUpdateRequest;
@@ -57,36 +56,11 @@ public interface CameraService {
 	 */
 	Pagination<CameraInfo> findPaginationDevice(CameraQueryRequest request, Pagination<CameraInfo> pagination);
 
-
-	/**
-	 * 将摄像机和魔点盒子绑定
-	 * @param orgId
-	 * @param cameraId
-	 * @param deviceId
-	 * @return
-	 */
-	ServiceResponse<Boolean> bindCameraWithDevice(Long orgId,Long cameraId,Long deviceId);
-
-
-	/**
-	 * 将摄像机和盒子解绑
-	 * @param orgId
-	 * @param cameraId
-	 * @param deviceId
-	 * @return
-	 */
-	 ServiceResponse<Boolean> unBindCameraWithDevice(Long orgId, Long cameraId, Long deviceId);
-
-
-	/**
-	 * 更新摄像头和盒子
-	 * @param boxUpdateRequest
-	 * @return
-	 */
-	 ServiceResponse<Boolean> updateBoxCamera(BoxUpdateRequest boxUpdateRequest);
-
-
 	CameraInfo getCameraDeviceByBoxId(Long boxId, Long orgId);
+	
+	ServiceResponse<Boolean> bindBox(Long orgId, Long cameraId, Long boxId);
+	
+	ServiceResponse<Boolean> unbindBox(Long orgId, Long cameraId);
 
 
 }

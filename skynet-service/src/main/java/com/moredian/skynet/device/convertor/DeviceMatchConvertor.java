@@ -1,16 +1,14 @@
 package com.moredian.skynet.device.convertor;
 
 import com.moredian.skynet.device.domain.DeviceMatch;
-import com.moredian.skynet.device.request.DeviceMatchRequest;
 
 public class DeviceMatchConvertor {
 	
-	public static DeviceMatch deviceMatchRequestToDeviceMatch(DeviceMatchRequest request) {
-		if (request == null) return null;
+	public static DeviceMatch deviceMatchRequestToDeviceMatch(Long orgId, Long cameraId, Long boxId) {
 		DeviceMatch deviceMatch = new DeviceMatch();
-		deviceMatch.setOrgId(request.getOrgId());
-		deviceMatch.setBoxId(request.getBoxId());
-		deviceMatch.setCameraId(request.getCameraId());
+		deviceMatch.setOrgId(orgId);
+		deviceMatch.setBoxId(cameraId);
+		deviceMatch.setCameraId(boxId);
 		return deviceMatch;
 	}
 	

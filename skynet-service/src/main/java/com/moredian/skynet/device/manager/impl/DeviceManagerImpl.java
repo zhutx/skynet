@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +28,15 @@ import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.common.model.msg.BindDefaultSubjectMsg;
 import com.moredian.skynet.common.model.msg.DeleteGroupRelationDataMsg;
 import com.moredian.skynet.common.model.msg.RefreshDeviceConfigMsg;
-import com.moredian.skynet.common.model.msg.RemoveDeviceSubjectMsg;
 import com.moredian.skynet.common.model.msg.SyncLocalDeployMsg;
 import com.moredian.skynet.device.domain.Device;
 import com.moredian.skynet.device.domain.DeviceConfig;
-import com.moredian.skynet.device.domain.DeviceMatch;
 import com.moredian.skynet.device.domain.DeviceQueryCondition;
 import com.moredian.skynet.device.enums.DeviceAction;
 import com.moredian.skynet.device.enums.DeviceErrorCode;
 import com.moredian.skynet.device.enums.DeviceType;
-import com.moredian.skynet.device.manager.CameraDeviceManager;
 import com.moredian.skynet.device.manager.CloudeyeDeviceSyncProxy;
+import com.moredian.skynet.device.manager.DeviceConfigManager;
 import com.moredian.skynet.device.manager.DeviceGroupManager;
 import com.moredian.skynet.device.manager.DeviceManager;
 import com.moredian.skynet.device.manager.DeviceMatchManager;
@@ -47,7 +46,6 @@ import com.moredian.skynet.device.mapper.DeviceMapper;
 import com.moredian.skynet.device.model.DeviceInfo;
 import com.moredian.skynet.device.request.DeviceActiveRequest;
 import com.moredian.skynet.device.request.DeviceAddRequest;
-import com.moredian.skynet.device.request.DeviceMatchRequest;
 import com.moredian.skynet.device.request.DeviceQueryRequest;
 import com.moredian.skynet.device.request.DeviceUpdateRequest;
 import com.moredian.skynet.device.response.DeviceActiveResponse;
@@ -56,7 +54,6 @@ import com.moredian.skynet.device.utils.HttpInvokerResponse;
 import com.moredian.skynet.org.enums.BizType;
 import com.moredian.skynet.org.enums.DeviceStatus;
 import com.moredian.skynet.org.model.OrgInfo;
-import com.moredian.skynet.org.response.PositionInfo;
 import com.moredian.skynet.org.service.OrgService;
 import com.moredian.skynet.org.service.PositionService;
 import com.xier.guard.accessKey.dto.AccessKeyDto;
@@ -78,10 +75,6 @@ public class DeviceManagerImpl implements DeviceManager {
 
 	@Autowired
 	private DeviceMatchManager deviceMatchManager;
-
-	@Autowired
-	private CameraDeviceManager cameraDeviceManager;
-
 	@Autowired
 	private DeviceGroupManager deviceGroupManager;
 	@Autowired
@@ -92,6 +85,8 @@ public class DeviceManagerImpl implements DeviceManager {
 	private OrgService orgService;
 	@Reference
     protected UserAccessKeyService userAccessKeyService;
+	@Autowired
+	private DeviceConfigManager deviceConfigManager;
 	
 	@Override
 	public Device getDeviceById(Long orgId, Long deviceId) {
@@ -136,10 +131,6 @@ public class DeviceManagerImpl implements DeviceManager {
 		deviceGroupMapper.deleteByGroup(msg.getOrgId(), msg.getGroupId());
 	}
 	
-	private PositionInfo getRootPosition(Long orgId) {
-		return positionService.getRootPosition(orgId);
-	}
-	
 	private Device deviceAddRequestToDeviceForOld(DeviceAddRequest request) {
 		
 		Device existDevice = deviceMapper.loadBySnOnly(request.getDeviceSn());
@@ -149,11 +140,6 @@ public class DeviceManagerImpl implements DeviceManager {
 		Long id = idgeneratorService.getNextIdByTypeName("com.moredian.skynet.device.Device").getData();
 		device.setDeviceId(id);
 		device.setOrgId(request.getOrgId());
-		if(request.getPositionId() == null) {
-			device.setPositionId(this.getRootPosition(request.getOrgId()).getPositionId());
-		} else {
-			device.setPositionId(request.getPositionId());
-		}
 		device.setPosition(request.getPosition());
 		device.setDeviceType(request.getDeviceType());
 		if(StringUtils.isBlank(request.getDeviceName())) {
@@ -213,11 +199,6 @@ public class DeviceManagerImpl implements DeviceManager {
 		Long id = idgeneratorService.getNextIdByTypeName("com.moredian.skynet.device.Device").getData();
 		device.setDeviceId(id);
 		device.setOrgId(request.getOrgId());
-		if(request.getPositionId() == null) {
-			device.setPositionId(this.getRootPosition(request.getOrgId()).getPositionId());
-		} else {
-			device.setPositionId(request.getPositionId());
-		}
 		device.setPosition(request.getPosition());
 		device.setDeviceType(request.getDeviceType());
 		if(StringUtils.isBlank(request.getDeviceName())) {
@@ -276,7 +257,7 @@ public class DeviceManagerImpl implements DeviceManager {
 		return device.getDeviceId();
 	}
 	
-	private Device deviceUpdateRequestToDevice(DeviceUpdateRequest request) {
+	private Device requestToDomain(DeviceUpdateRequest request) {
 		Device device = new Device();
 		device.setDeviceId(request.getDeviceId());
 		device.setOrgId(request.getOrgId());
@@ -290,9 +271,9 @@ public class DeviceManagerImpl implements DeviceManager {
 		BizAssert.notNull(request.getDeviceId(), "deviceId must not be null");
 		BizAssert.notNull(request.getOrgId(), "orgId must not be null");
 		
-		int result = deviceMapper.update(this.deviceUpdateRequestToDevice(request));
+		deviceMapper.update(this.requestToDomain(request));
 		
-		return (result > 0) ? true:false;
+		return true;
 	}
 
 	@Override
@@ -303,54 +284,18 @@ public class DeviceManagerImpl implements DeviceManager {
 		BizAssert.notNull(deviceId, "deviceId must not be null");
 		
 		Device device = deviceMapper.load(orgId, deviceId);
-		if(device == null) ExceptionUtils.throwException(DeviceErrorCode.DEVICE_NOT_EXIST, DeviceErrorCode.DEVICE_NOT_EXIST.getMessage());
-
-		//check the binding relation of camera and box. Remove it if existed
-		DeviceMatch deviceMatch=deviceMatchManager.getByBoxId(deviceId,orgId);
-		if(deviceMatch!=null && deviceMatch.getBoxId()!=null){
-			DeviceMatchRequest request=new DeviceMatchRequest();
-			request.setCameraId(deviceMatch.getCameraId());
-			request.setOrgId(deviceMatch.getOrgId());
-			request.setBoxId(deviceMatch.getBoxId());
-			boolean unBindCamera=deviceMatchManager.disMatchDevice(request);
-			if(!unBindCamera){
-				ExceptionUtils.throwException(DeviceErrorCode.DEVICE_CAMERA_BINDING_EXIST, String.format(DeviceErrorCode.DEVICE_CAMERA_BINDING_EXIST.getMessage(), deviceId));
+		if(DeviceType.BOARD_BOX.getValue() == device.getDeviceType()) {
+			List<Long> matchCameraIds = deviceMatchManager.findCameraIdByBoxId(orgId, deviceId);
+			if(CollectionUtils.isNotEmpty(matchCameraIds)) {
+				ExceptionUtils.throwException(DeviceErrorCode.DEVICE_IN_BINDING, DeviceErrorCode.DEVICE_IN_BINDING.getMessage());
 			}
-
-			//delete camera after unbind it
-			boolean removeCameraResult=cameraDeviceManager.deleteDeviceById(deviceMatch.getOrgId(),deviceMatch.getCameraId());
-			if(!removeCameraResult){
-				ExceptionUtils.throwException(DeviceErrorCode.DEVICE_CAMERA_DELETE_FAILED, String.format(DeviceErrorCode.DEVICE_CAMERA_DELETE_FAILED.getMessage(), deviceId));
-			}
+			
 		}
-
+		
 		deviceMapper.deleteById(orgId, deviceId);
-		deviceConfigMapper.deleteBySn(device.getDeviceSn());
-		
-		// 同步删除云眼设备
-		cloudeyeDeviceSyncProxy.deleteCloudeyeDevice(device);
-		
-		if(DeviceType.BOARD_ATTENDANCE.getValue() == device.getDeviceType() ||
-		DeviceType.BOARD_BOX.getValue() == device.getDeviceType()
-				|| DeviceType.BOARD_ATTENDANCE_DUALEYE.getValue() == device.getDeviceType()) {
-			
-			deviceGroupManager.deleteByDevice(orgId, deviceId);
-			
-			RemoveDeviceSubjectMsg msg = new RemoveDeviceSubjectMsg();
-			msg.setOrgId(device.getOrgId());
-			msg.setDeviceId(device.getDeviceId());
-			EventBus.publish(msg);
-			logger.info("发出MQ消息[删除设备]: " + JsonUtils.toJson(msg));
-		}
-		
-		SyncLocalDeployMsg msg = new SyncLocalDeployMsg();
-		msg.setOrgId(device.getOrgId());
-		msg.setDeviceAction(DeviceAction.DELETE.getValue());
-		msg.setDeviceId(device.getDeviceId());
-		msg.setDeviceType(device.getDeviceType());
-		msg.setDeviceSn(device.getDeviceSn());
-		EventBus.publish(msg); // 发出设备操作消息, 消息接受方负责调整布控实例并同步云眼Huber配置
-		logger.info("发出MQ消息[同步删除布控]:" + JsonUtils.toJson(msg));
+		deviceGroupManager.deleteByDevice(orgId, deviceId);
+		deviceConfigManager.delete(device.getDeviceSn());
+		// 5) TODO 设备删除消息广播到业务系统
 		
 		return true;
 	}
@@ -405,7 +350,6 @@ public class DeviceManagerImpl implements DeviceManager {
 		Device device = new Device();
 		device.setDeviceId(deviceInfo.getDeviceId());
 		device.setOrgId(deviceInfo.getOrgId());
-		device.setPositionId(deviceInfo.getPositionId());
 		device.setPosition(deviceInfo.getPosition());
 		device.setDeviceType(deviceInfo.getDeviceType());
 		device.setDeviceName(deviceInfo.getDeviceName());
@@ -573,7 +517,6 @@ public class DeviceManagerImpl implements DeviceManager {
 		DeviceActiveResponse response = new DeviceActiveResponse();
 		response.setDeviceId(device.getDeviceId());
 		response.setOrgId(device.getOrgId());
-		response.setPositionId(device.getPositionId());
 		response.setDeviceName(device.getDeviceName());
 		response.setDeviceType(device.getDeviceType());
 		response.setIp(request.getIp());

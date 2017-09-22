@@ -94,7 +94,7 @@ public class CameraController extends BaseController {
 	@ApiOperation(value="绑定盒子", notes="绑定盒子")
     @RequestMapping(value="/bindBox", method= RequestMethod.POST)
     public BaseResponse bindBox(@RequestBody BindBoxModel model){
-    	
+    	cameraService.bindBox(model.getOrgId(), model.getCameraId(), model.getBoxId()).pickDataThrowException();
         return new BaseResponse();
     }
     
@@ -102,7 +102,7 @@ public class CameraController extends BaseController {
 	@ApiOperation(value="解绑盒子", notes="解绑盒子")
     @RequestMapping(value="/unbindBox", method= RequestMethod.POST)
     public BaseResponse unbindBox(@RequestBody UnbindBoxModel model){
-    	
+    	cameraService.unbindBox(model.getOrgId(), model.getCameraId()).pickDataThrowException();
         return new BaseResponse();
     }
 

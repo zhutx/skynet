@@ -20,8 +20,9 @@ public class CameraUpdateRequest implements Serializable {
 	private String videoStream; // required
 	/** 摄像机NVR地址 */
 	private String nvr; // optional
-	/** 摄像机IP */// 
+	/** 摄像机IP */
 	private String ip; // optional
+	/** 摄像机端口 */
 	private Integer port; // optional
 	/** 摄像机用户名 */// 
 	private String username; // optional

@@ -23,8 +23,7 @@ import com.moredian.skynet.device.domain.DeviceQueryCondition;
 import com.moredian.skynet.device.enums.DeviceErrorCode;
 import com.moredian.skynet.device.enums.DeviceStatus;
 import com.moredian.skynet.device.enums.DeviceType;
-import com.moredian.skynet.device.manager.CameraDeviceManager;
-import com.moredian.skynet.device.manager.CloudeyeDeviceSyncProxy;
+import com.moredian.skynet.device.manager.CameraManager;
 import com.moredian.skynet.device.manager.DeviceMatchManager;
 import com.moredian.skynet.device.mapper.DeviceMapper;
 import com.moredian.skynet.device.model.CameraDeviceExtendsInfo;
@@ -32,17 +31,14 @@ import com.moredian.skynet.device.model.CameraInfo;
 import com.moredian.skynet.device.request.CameraAddRequest;
 import com.moredian.skynet.device.request.CameraQueryRequest;
 import com.moredian.skynet.device.request.CameraUpdateRequest;
-import com.moredian.skynet.device.request.DeviceMatchRequest;
 import com.moredian.skynet.device.utils.RtspUtil;
 import com.moredian.skynet.org.service.PositionService;
 
 @Service
-public class CameraDeviceManagerImpl implements CameraDeviceManager {
+public class CameraManagerImpl implements CameraManager {
 	
 	@Autowired
 	private DeviceMapper deviceMapper;
-	@Autowired
-	private CloudeyeDeviceSyncProxy cloudeyeDeviceSyncFacade;
 	@SI
 	private IdgeneratorService idgeneratorService;
 	@Autowired
@@ -78,6 +74,7 @@ public class CameraDeviceManagerImpl implements CameraDeviceManager {
 		extendsInfo.setProvider_type(request.getProviderType());
 		extendsInfo.setCamera_nvr(request.getNvr());
 		extendsInfo.setCamera_ip(request.getIp());
+		extendsInfo.setCamera_port(request.getPort());
 		extendsInfo.setCamera_username(request.getUsername());
 		extendsInfo.setCamera_password(request.getPassword());
 		extendsInfo.setCamera_stream(request.getVideoStream());
@@ -109,9 +106,6 @@ public class CameraDeviceManagerImpl implements CameraDeviceManager {
 		deviceMapper.insert(device);
 		this.deviceAutoActive(device); //自动激活
 		
-		// 同步添加云眼设备
-		cloudeyeDeviceSyncFacade.addCloudeyeDevice(device);
-		
 		return device;
 	}
 
@@ -123,6 +117,7 @@ public class CameraDeviceManagerImpl implements CameraDeviceManager {
 		CameraDeviceExtendsInfo extendsInfo = JsonUtils.fromJson(CameraDeviceExtendsInfo.class, device.getExtendsInfo());
 		extendsInfo.setProvider_type(request.getProviderType());
 		extendsInfo.setCamera_ip(request.getIp());
+		extendsInfo.setCamera_port(request.getPort());
 		extendsInfo.setCamera_nvr(request.getNvr());
 		extendsInfo.setCamera_username(request.getUsername());
 		extendsInfo.setCamera_password(request.getPassword());
@@ -146,8 +141,6 @@ public class CameraDeviceManagerImpl implements CameraDeviceManager {
 		
 		deviceMapper.update(device);
 		
-		cloudeyeDeviceSyncFacade.updateCloudeyeDevice(device);
-		
 		return true;
 	}
 
@@ -157,27 +150,12 @@ public class CameraDeviceManagerImpl implements CameraDeviceManager {
 		BizAssert.notNull(orgId, "orgId must not be null");
 		BizAssert.notNull(deviceId, "deviceId must not be null");
 
-		// 先查看该摄像头是否和魔点盒子有绑定
-
-		DeviceMatch deviceMatch=deviceMatchManager.getByCameraId(deviceId,orgId);
-		if(deviceMatch!=null && deviceMatch.getBoxId()!=null){
-			DeviceMatchRequest request=new DeviceMatchRequest();
-			request.setCameraId(deviceMatch.getCameraId());
-			request.setOrgId(deviceMatch.getOrgId());
-			request.setBoxId(deviceMatch.getBoxId());
-			boolean unBindCamera=deviceMatchManager.disMatchDevice(request);
-			if(!unBindCamera){
-				ExceptionUtils.throwException(DeviceErrorCode.DEVICE_CAMERA_BINDING_EXIST, String.format(DeviceErrorCode.DEVICE_NOT_EXIST.getMessage(), deviceId));
-			}
+		DeviceMatch deviceMatch = deviceMatchManager.getByCameraId(deviceId,orgId);
+		if(deviceMatch != null){
+			ExceptionUtils.throwException(DeviceErrorCode.DEVICE_IN_BINDING, String.format(DeviceErrorCode.DEVICE_IN_BINDING.getMessage(), deviceId));
 		}
 
-		Device device = deviceMapper.load(orgId, deviceId);
-		if(device == null) ExceptionUtils.throwException(DeviceErrorCode.DEVICE_NOT_EXIST, String.format(DeviceErrorCode.DEVICE_NOT_EXIST.getMessage(), deviceId));
-	
 		deviceMapper.deleteById(orgId, deviceId);
-		
-		// 同步删除云眼摄像机
-		cloudeyeDeviceSyncFacade.deleteCloudeyeDevice(device);
 		
 		return true;
 	}

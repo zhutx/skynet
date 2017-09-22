@@ -9,6 +9,7 @@ public class CameraDeviceExtendsInfo implements Serializable {
 	private Integer provider_type;
 	private String camera_nvr;
 	private String camera_ip;
+	private Integer camera_port;
 	private String camera_username;
 	private String camera_password;
 	private String camera_stream;
@@ -31,6 +32,12 @@ public class CameraDeviceExtendsInfo implements Serializable {
 	}
 	public void setCamera_ip(String camera_ip) {
 		this.camera_ip = camera_ip;
+	}
+	public Integer getCamera_port() {
+		return camera_port;
+	}
+	public void setCamera_port(Integer camera_port) {
+		this.camera_port = camera_port;
 	}
 	public String getCamera_username() {
 		return camera_username;

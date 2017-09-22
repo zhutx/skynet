@@ -1,14 +1,14 @@
 package com.moredian.skynet.device.manager;
 
+import java.util.List;
+
 import com.moredian.skynet.device.domain.DeviceMatch;
-import com.moredian.skynet.device.request.BoxUpdateRequest;
-import com.moredian.skynet.device.request.DeviceMatchRequest;
 
 public interface DeviceMatchManager {
 	
-	boolean matchDevice(DeviceMatchRequest request);
+	boolean matchDevice(Long orgId, Long cameraId, Long boxId);
 	
-	boolean disMatchDevice(DeviceMatchRequest request);
+	boolean unMatchDevice(Long orgId, Long cameraId);
 	
 	DeviceMatch getByCameraId(Long cameraId, Long orgId);
 	
@@ -16,5 +16,5 @@ public interface DeviceMatchManager {
 
 	boolean bindCameraWithDevice(Long orgId,Long cameraId,Long deviceId);
 
-	boolean updateBoxCamera(BoxUpdateRequest boxUpdateRequest);
+	List<Long> findCameraIdByBoxId(Long orgId, Long boxId);
 }

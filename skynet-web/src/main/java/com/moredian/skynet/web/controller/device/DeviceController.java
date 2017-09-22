@@ -88,7 +88,7 @@ public class DeviceController extends BaseController {
 	@RequestMapping(value="/groupConfig", method=RequestMethod.POST)
 	@ResponseBody
 	public BaseResponse groupConfig(@RequestBody ConfigGroupModel model) {
-		// TODO 
+		deviceService.groupConfig(model.getOrgId(), model.getDeviceId(), model.getGroupIds()).pickDataThrowException();
 		return new BaseResponse();
     }
 	
@@ -106,8 +106,8 @@ public class DeviceController extends BaseController {
 	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
 	@ResponseBody
     public BaseResponse delete(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "deviceId") Long deviceId) {
-		
-		return null;
+		deviceService.deleteDeviceById(orgId, deviceId).pickDataThrowException();
+		return new BaseResponse();
     }
 	
 	@SuppressWarnings("rawtypes")

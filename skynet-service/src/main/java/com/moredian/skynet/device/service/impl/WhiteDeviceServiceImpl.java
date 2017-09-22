@@ -1,5 +1,10 @@
 package com.moredian.skynet.device.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.moredian.bee.common.rpc.ServiceResponse;
 import com.moredian.bee.common.utils.BeanUtils;
 import com.moredian.bee.common.utils.Pagination;
@@ -9,13 +14,8 @@ import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.device.domain.InventoryDevice;
 import com.moredian.skynet.device.manager.WhiteDeviceManager;
 import com.moredian.skynet.device.model.WhiteDeviceInfo;
-import com.moredian.skynet.device.request.WhiteDeviceAddRequest;
 import com.moredian.skynet.device.request.WhiteDeviceQueryRequest;
 import com.moredian.skynet.device.service.WhiteDeviceService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SI	
 public class WhiteDeviceServiceImpl implements WhiteDeviceService {
@@ -52,14 +52,6 @@ public class WhiteDeviceServiceImpl implements WhiteDeviceService {
 		
 		PaginationDomain<InventoryDevice> paginationWhiteDevice = whiteDeviceManager.findPaginationWhiteDevice(request, pagination);
 		return paginationWhiteDeviceToPaginationWhiteDeviceInfo(paginationWhiteDevice);
-	}
-
-	@Override
-	public ServiceResponse<Boolean> addWhiteDevice(WhiteDeviceAddRequest request) {
-		
-		boolean result = whiteDeviceManager.addWhiteDevice(request);
-		
-		return new ServiceResponse<Boolean>(true, null, result);
 	}
 
 	@Override

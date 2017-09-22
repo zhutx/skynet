@@ -12,7 +12,7 @@ public interface DeviceGroupManager {
 	
 	List<Long> findDeviceIdByGroupId(Long orgId, Long groupId);
 	
-	boolean resetDeviceGroupRelation(Long orgId, Long deviceId, List<Long> groupIdList);
+	boolean resetDeviceGroupRelation(Long orgId, Long deviceId, List<Long> groupIds);
 	
 	boolean deleteByDevice(Long orgId, Long deviceId);
 	

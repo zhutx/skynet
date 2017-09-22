@@ -4,7 +4,7 @@
 <mapper namespace="com.moredian.skynet.device.mapper.DeviceMapper" >
 
     <resultMap id="deviceResultMap" type="device">
-		<result column="orgi_equipment_id" property="deviceId" />
+		<result column="device_id" property="deviceId" />
 		<result column="org_id" property="orgId" />
 		<result column="sub_org_id" property="positionId" />
 		<result column="memo" property="position" />
@@ -20,16 +20,17 @@
 	</resultMap>	
 	
 	<insert id="insert" parameterType="device">
-		insert into hive_orgi_equipment(
-			orgi_equipment_id,
+		insert into sky_device(
+			device_id,
 			org_id,
-			sub_org_id,
-			memo,
-			equipment_type,
-			equipment_name,
-			unique_number,
+			device_name,
+			device_type,
+			position,
+			device_sn,
+			device_mac,
 			active_code,
-			gmt_active_code,
+			active_time,
+			online_flag,
 			extends_info,
 			status,
 			gmt_create,
@@ -37,13 +38,14 @@
 		) values (
 		 	#{deviceId},
 			#{orgId},
-			#{positionId},
-			#{position},
-			#{deviceType},
 			#{deviceName},
+			#{deviceType},
+			#{position},
 			#{deviceSn},
+			#{deviceMac},
 			#{activeCode},
 			#{activeTime},
+			#{onlineFlag},
 			#{extendsInfo},
 			#{status},
 			now(3),
@@ -52,49 +54,37 @@
 	</insert>
 	
 	<update id="update" parameterType="device">
-		update hive_orgi_equipment
+		update sky_device
 		<set>
-		<if test="positionId != null">
-			sub_org_id=#{positionId},
-		</if>
 		<if test="position != null">
 			memo=#{position},
 		</if>
 		<if test="deviceName != null">
 			equipment_name=#{deviceName},
 		</if>
-		<if test="activeCode != null">
-			active_code=#{activeCode},
-		</if>
-		<if test="activeTime != null">
-			gmt_active_code=#{activeTime},
-		</if>
-		<if test="extendsInfo != null">
+		<if test="extends_info != null">
 			extends_info=#{extendsInfo},
-		</if>
-		<if test="status != null">
-			status=#{status},
 		</if>
 			gmt_modify = now(3)
 		</set>
 		where
 		    org_id=#{orgId}
-			and orgi_equipment_id = #{deviceId}
+			and device_id = #{deviceId}
 	</update>
 	
 	<update id="updateActiveCode" parameterType="map">
-		update hive_orgi_equipment
+		update sky_device
 		<set>
 			active_code=#{activeCode},
 			gmt_modify = now(3)
 		</set>
 		where
 		    org_id=#{orgId}
-			and orgi_equipment_id = #{deviceId}
+			and device_id = #{deviceId}
 	</update>
 
 	<update id="updateStatusBySn" parameterType="map">
-		update hive_orgi_equipment
+		update sky_device
 		set status = #{status}
 		where
 		org_id=#{orgId}
@@ -103,15 +93,15 @@
 	
 	<select id="load" parameterType="map" resultMap="deviceResultMap">
 		<include refid="sql_select"/>
-		from hive_orgi_equipment
+		from sky_device
 		where 
-			orgi_equipment_id = #{deviceId}
+			device_id = #{deviceId}
 			and org_id=#{orgId}
 	</select>
 	
 	<select id="loadBySn" parameterType="map" resultMap="deviceResultMap">
 		<include refid="sql_select"/>
-		from hive_orgi_equipment
+		from sky_device
 		where 
 			unique_number = #{deviceSn}
 			and org_id=#{orgId}
@@ -119,34 +109,34 @@
 	
 	<select id="loadByActiveCode" parameterType="string" resultMap="deviceResultMap">
 		<include refid="sql_select"/>
-		from hive_orgi_equipment
+		from sky_device
 		where 
 			active_code = #{activeCode}
 	</select>
 	
 	<select id="loadBySnOnly" parameterType="string" resultMap="deviceResultMap">
 		<include refid="sql_select"/>
-		from hive_orgi_equipment
+		from sky_device
 		where 
 			unique_number = #{deviceSn}
 	</select>
 	
 	<delete id="deleteById" parameterType="map">
-		delete from hive_orgi_equipment
+		delete from sky_device
 		where
 		org_id = #{orgId}
-		and orgi_equipment_id = #{deviceId}
+		and device_id = #{deviceId}
  	</delete>
  	
  	<delete id="deleteBySn" parameterType="map">
-		delete from hive_orgi_equipment
+		delete from sky_device
 		where
 		org_id = #{orgId}
 		and unique_number = #{deviceSn}
  	</delete>
  	
  	<update id="updateByActive" parameterType="map">
- 	    update hive_orgi_equipment
+ 	    update sky_device
  	    <set>
  	    unique_number = #{deviceSn},
  	    active_code = '0',
@@ -156,7 +146,7 @@
  	    gmt_modify = now(3)
  	    </set>
  	    where org_id = #{orgId}
- 	    and orgi_equipment_id = #{deviceId}
+ 	    and device_id = #{deviceId}
  	</update>
  	
  	<select id="getTotalCountByCondition" resultType="int" parameterType="deviceQueryCondition" >
@@ -173,29 +163,29 @@
 	</select>
 	
 	<select id="findDeviceNameByIds" parameterType="map" resultType="string">
-	    select equipment_name from hive_orgi_equipment where orgi_equipment_id in 
+	    select equipment_name from sky_device where device_id in 
 	    <foreach collection="deviceIdList" index="index" item="deviceId" open="(" separator="," close=")">#{deviceId}</foreach>
 	</select>
 	
 	<select id="findDeviceByType" parameterType="map" resultMap="deviceResultMap">
 	    <include refid="sql_select"/>
-	    from hive_orgi_equipment where org_id = #{orgId} and equipment_type = #{deviceType}
+	    from sky_device where org_id = #{orgId} and equipment_type = #{deviceType}
 	</select>
 	
 	<select id="findDeviceByTypes" parameterType="map" resultMap="deviceResultMap">
 	    <include refid="sql_select"/>
-	    from hive_orgi_equipment where org_id = #{orgId} and equipment_type in 
+	    from sky_device where org_id = #{orgId} and equipment_type in 
 	    <foreach collection="deviceTypeList" index="index" item="deviceType" open="(" separator="," close=")">#{deviceType}</foreach>
 	</select>
 	
 	<select id="findDeviceIdByType" parameterType="map" resultType="long">
 	    <include refid="sql_select"/>
-	    from hive_orgi_equipment where org_id = #{orgId} and equipment_type = #{deviceType}
+	    from sky_device where org_id = #{orgId} and equipment_type = #{deviceType}
 	</select>
 	
 	<sql id="sql_select">
 		select
-			orgi_equipment_id,
+			device_id,
 			org_id,
 			sub_org_id,
 			memo,
@@ -211,7 +201,7 @@
 	</sql>
 
 	<sql id="condition_sql_where">
-	    from hive_orgi_equipment
+	    from sky_device
 	    <where>
 		<if test="orgId != null">
 		      and org_id = #{orgId}

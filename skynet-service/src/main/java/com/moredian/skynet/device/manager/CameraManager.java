@@ -8,7 +8,7 @@ import com.moredian.skynet.device.request.CameraAddRequest;
 import com.moredian.skynet.device.request.CameraQueryRequest;
 import com.moredian.skynet.device.request.CameraUpdateRequest;
 
-public interface CameraDeviceManager {
+public interface CameraManager {
 	
 	Device addDevice(CameraAddRequest request);
 	

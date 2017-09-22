@@ -1,17 +1,25 @@
-package com.moredian.skynet.device.request;
+package com.moredian.skynet.device.domain;
 
-import java.io.Serializable;
+import java.util.Date;
 
-public class DeviceWhiteAddRequest implements Serializable {
-	
-	private static final long serialVersionUID = -1981097298321652435L;
-	
+public class DeviceWhite {
+
+	private Long deviceWhiteId;
 	private Integer deviceType;
 	private String deviceSn;
 	private String deviceMac;
 	private String secretKey;
 	private Long bindOrgId;
+	private Integer status;
+	private Date gmtCreate;
+	private Date gmtModify;
 	
+	public Long getDeviceWhiteId() {
+		return deviceWhiteId;
+	}
+	public void setDeviceWhiteId(Long deviceWhiteId) {
+		this.deviceWhiteId = deviceWhiteId;
+	}
 	public Integer getDeviceType() {
 		return deviceType;
 	}
@@ -42,5 +50,24 @@ public class DeviceWhiteAddRequest implements Serializable {
 	public void setBindOrgId(Long bindOrgId) {
 		this.bindOrgId = bindOrgId;
 	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public Date getGmtCreate() {
+		return gmtCreate;
+	}
+	public void setGmtCreate(Date gmtCreate) {
+		this.gmtCreate = gmtCreate;
+	}
+	public Date getGmtModify() {
+		return gmtModify;
+	}
+	public void setGmtModify(Date gmtModify) {
+		this.gmtModify = gmtModify;
+	}
+	
 
 }

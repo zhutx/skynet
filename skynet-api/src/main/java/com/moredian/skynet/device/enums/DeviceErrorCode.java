@@ -51,6 +51,8 @@ public enum DeviceErrorCode implements ErrorCode {
 
 	/**摄像机和魔点盒子有绑定关系，不能删除摄像机或魔点盒子*/
 	DEVICE_CAMERA_BINDING_EXIST(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0052"), "设备和其他设备有绑定关系"),
+	
+	DEVICE_IN_BINDING(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0052"), "设备和其他设备有绑定关系"),
 
 	DEVICE_CREATE_FAILED(new V1ErrorCode(ErrorType.SERVICE, ErrorLevel.WARN, "014", "0054"), "创建摄像头失败"),
 

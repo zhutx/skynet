@@ -19,7 +19,6 @@ import com.moredian.skynet.device.manager.DeviceManager;
 import com.moredian.skynet.device.model.CameraDeviceExtendsInfo;
 import com.moredian.skynet.device.model.ServerDeviceExtendsInfo;
 import com.moredian.skynet.org.enums.BizType;
-import com.moredian.skynet.org.response.PositionInfo;
 import com.moredian.skynet.org.service.OrgService;
 import com.moredian.skynet.org.service.PositionService;
 
@@ -77,16 +76,13 @@ public class CloudeyeDeviceSyncProxyImpl implements CloudeyeDeviceSyncProxy {
     	
     }
 	
-	private PositionInfo getPositionInfo(Device device) {
-		return positionService.getPositionById(device.getOrgId(), device.getPositionId());
-	}
 	
 	private DeviceInfo buildServerDeviceInfo(Device device) {
     	DeviceInfo deviceInfo = new DeviceInfo();
     	deviceInfo.setOrgId(device.getOrgId());
     	deviceInfo.setDeviceId(device.getDeviceSn());
     	deviceInfo.setDeviceName(device.getDeviceName());
-    	deviceInfo.setPosition(this.getPositionInfo(device).getPositionCode());
+    	deviceInfo.setPosition(device.getPosition());
     	
     	ServerDeviceExtendsInfo extendsInfo = JsonUtils.fromJson(ServerDeviceExtendsInfo.class, device.getExtendsInfo());
     	
@@ -110,7 +106,7 @@ public class CloudeyeDeviceSyncProxyImpl implements CloudeyeDeviceSyncProxy {
     	deviceInfo.setOrgId(device.getOrgId());
     	deviceInfo.setDeviceId(device.getDeviceSn());
     	deviceInfo.setDeviceName(device.getDeviceName());
-    	deviceInfo.setPosition(this.getPositionInfo(device).getPositionCode());
+    	deviceInfo.setPosition(device.getPosition());
     	
     	CameraDeviceExtendsInfo extendsInfo = JsonUtils.fromJson(CameraDeviceExtendsInfo.class, device.getExtendsInfo());
     	
@@ -131,7 +127,7 @@ public class CloudeyeDeviceSyncProxyImpl implements CloudeyeDeviceSyncProxy {
     	deviceInfo.setOrgId(device.getOrgId());
     	deviceInfo.setDeviceId(device.getDeviceSn());
     	deviceInfo.setDeviceName(device.getDeviceName());
-    	deviceInfo.setPosition(this.getPositionInfo(device).getPositionCode());
+    	deviceInfo.setPosition(device.getPosition());
     	deviceInfo.setHost("127.0.0.1");
     	deviceInfo.setPort(0);
     	deviceInfo.setDeviceType(com.moredian.cloudeye.core.api.conf.device.DeviceType.TURNIP.intValue());

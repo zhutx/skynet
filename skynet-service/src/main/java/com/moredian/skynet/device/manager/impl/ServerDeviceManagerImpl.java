@@ -16,6 +16,7 @@ import com.moredian.bee.common.utils.Pagination;
 import com.moredian.bee.mybatis.convertor.PaginationConvertor;
 import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
+import com.moredian.idgenerator.service.IdgeneratorService;
 import com.moredian.skynet.device.domain.Device;
 import com.moredian.skynet.device.domain.DeviceQueryCondition;
 import com.moredian.skynet.device.enums.DeviceErrorCode;
@@ -29,9 +30,7 @@ import com.moredian.skynet.device.model.ServerDeviceInfo;
 import com.moredian.skynet.device.request.ServerDeviceAddRequest;
 import com.moredian.skynet.device.request.ServerDeviceQueryRequest;
 import com.moredian.skynet.device.request.ServerDeviceUpdateRequest;
-import com.moredian.skynet.org.response.PositionInfo;
 import com.moredian.skynet.org.service.PositionService;
-import com.moredian.idgenerator.service.IdgeneratorService;
 
 @Service
 public class ServerDeviceManagerImpl implements ServerDeviceManager {
@@ -45,9 +44,6 @@ public class ServerDeviceManagerImpl implements ServerDeviceManager {
 	@SI
 	private IdgeneratorService idgeneratorService;
 	
-	private PositionInfo getRootPosition(Long orgId) {
-		return positionService.getRootPosition(orgId);
-	}
 	
 	private Device serverDeviceAddRequestToDevice(ServerDeviceAddRequest request) {
 		if (request == null) return null;
@@ -73,7 +69,6 @@ public class ServerDeviceManagerImpl implements ServerDeviceManager {
 		extendsInfo.setC_rd_maxpersonnum(request.getRdMaxpersonnum());
 		
 		device.setExtendsInfo(JsonUtils.toJson(extendsInfo));
-		device.setPositionId(this.getRootPosition(request.getOrgId()).getPositionId());
 		device.setStatus(DeviceStatus.UNACTIVE.getValue());
 		return device;
 	}

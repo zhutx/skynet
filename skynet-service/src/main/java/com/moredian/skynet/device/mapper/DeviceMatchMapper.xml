@@ -13,7 +13,7 @@
 	</resultMap>
 	
 	<insert id="insert" parameterType="deviceMatch">
-		insert into hive_device_match(
+		insert into sky_device_match(
 			device_match_id,
 			org_id,
 			camera_id,
@@ -34,16 +34,24 @@
 
 	<select id="loadByBoxId" parameterType="map" resultMap="deviceMatchResultMap">
 		<include refid="sql_select"/>
-		from hive_device_match where org_id = #{orgId} and box_id = #{boxId}
+		from sky_device_match where org_id = #{orgId} and box_id = #{boxId}
 	</select>
 
 	<select id="loadByCameraId" parameterType="map" resultMap="deviceMatchResultMap">
 	    <include refid="sql_select"/>
-	    from hive_device_match where org_id = #{orgId} and camera_id = #{cameraId}
+	    from sky_device_match where org_id = #{orgId} and camera_id = #{cameraId}
 	</select>
 	
 	<delete id="delete" parameterType="deviceMatch">
-	    delete from hive_device_match where org_id = #{orgId} and box_id = #{boxId} and camera_id = #{cameraId}
+	    delete from sky_device_match where org_id = #{orgId} and box_id = #{boxId} and camera_id = #{cameraId}
+	</delete>
+	
+	<select id="findCameraIdByBoxId" parameterType="map" resultMap="deviceMatchResultMap">
+	    select camera_id from sky_device_match where org_id = #{orgId} and box_id = #{boxId}
+	</select>
+	
+	<delete id="deleteByCameraId" parameterType="map">
+	    delete from sky_device_match where org_id = #{orgId} and camera_id = #{cameraId}
 	</delete>
 	
 	<sql id="sql_select">

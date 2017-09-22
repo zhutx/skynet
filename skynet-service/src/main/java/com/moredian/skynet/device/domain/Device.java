@@ -11,20 +11,22 @@ public class Device implements Serializable {
 	private Long deviceId;
 	// 机构id
 	private Long orgId;
-	// 位置id
-	private Long positionId;
-	// 设备类型
-	private Integer deviceType;
 	// 设备名
 	private String deviceName;
+	// 设备类型
+	private Integer deviceType;
+	// 位置
+	private String position;
 	// 设备SN
 	private String deviceSn;
+	// 设备MAC
+	private String deviceMac;
 	// 激活码
 	private String activeCode;
 	// 激活时间
 	private Date activeTime;
-	// 位置
-	private String position;
+	// 在线标识
+	private Integer onlineFlag;
 	// 设备扩展信息
 	private String extendsInfo;
 	// 状态
@@ -33,6 +35,7 @@ public class Device implements Serializable {
 	private Date gmtCreate;
 	// 修改时间
 	private Date gmtModify;
+	
 	public Long getDeviceId() {
 		return deviceId;
 	}
@@ -45,11 +48,11 @@ public class Device implements Serializable {
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
 	}
-	public Long getPositionId() {
-		return positionId;
+	public String getDeviceName() {
+		return deviceName;
 	}
-	public void setPositionId(Long positionId) {
-		this.positionId = positionId;
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 	public Integer getDeviceType() {
 		return deviceType;
@@ -57,17 +60,23 @@ public class Device implements Serializable {
 	public void setDeviceType(Integer deviceType) {
 		this.deviceType = deviceType;
 	}
-	public String getDeviceName() {
-		return deviceName;
+	public String getPosition() {
+		return position;
 	}
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
+	public void setPosition(String position) {
+		this.position = position;
 	}
 	public String getDeviceSn() {
 		return deviceSn;
 	}
 	public void setDeviceSn(String deviceSn) {
 		this.deviceSn = deviceSn;
+	}
+	public String getDeviceMac() {
+		return deviceMac;
+	}
+	public void setDeviceMac(String deviceMac) {
+		this.deviceMac = deviceMac;
 	}
 	public String getActiveCode() {
 		return activeCode;
@@ -81,11 +90,11 @@ public class Device implements Serializable {
 	public void setActiveTime(Date activeTime) {
 		this.activeTime = activeTime;
 	}
-	public String getPosition() {
-		return position;
+	public Integer getOnlineFlag() {
+		return onlineFlag;
 	}
-	public void setPosition(String position) {
-		this.position = position;
+	public void setOnlineFlag(Integer onlineFlag) {
+		this.onlineFlag = onlineFlag;
 	}
 	public String getExtendsInfo() {
 		return extendsInfo;
@@ -112,5 +121,4 @@ public class Device implements Serializable {
 		this.gmtModify = gmtModify;
 	}
 	
-
 }

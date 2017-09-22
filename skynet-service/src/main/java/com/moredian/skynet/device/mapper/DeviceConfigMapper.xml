@@ -11,7 +11,7 @@
 		<result column="gmt_modify" property="gmtModify" />
 	</resultMap>	
 	<insert id="insertOrUpdate" parameterType="deviceConfig">
-		insert into hive_device_config(
+		insert into sky_device_config(
 			device_config_id,
 			device_sn,
 			xml_config,
@@ -29,11 +29,11 @@
 	
 	<select id="load" parameterType="string" resultMap="deviceConfigResultMap">
 	    <include refid="sql_select"></include>
-	    from hive_device_config where device_sn = #{deviceSn}
+	    from sky_device_config where device_sn = #{deviceSn}
 	</select>
 	
 	<delete id="deleteBySn" parameterType="string">
-	    delete from hive_device_config where device_sn = #{deviceSn}
+	    delete from sky_device_config where device_sn = #{deviceSn}
 	</delete>
 	
 	<sql id="sql_select">

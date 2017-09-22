@@ -133,5 +133,7 @@ public interface DeviceService {
 	List<Long> findDeviceIdByType(Long orgId, Integer deviceType);
 
 	Boolean activeDeviceWithOrgIdAndDeviceSn(Long orgId, String deviceSn);
+	
+	ServiceResponse<Boolean> groupConfig(Long orgId, Long deviceId, List<Long> groupIds);
 
 }

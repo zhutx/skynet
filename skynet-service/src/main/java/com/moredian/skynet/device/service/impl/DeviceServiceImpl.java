@@ -15,8 +15,10 @@ import com.moredian.bee.mybatis.domain.PaginationDomain;
 import com.moredian.bee.tube.annotation.SI;
 import com.moredian.skynet.device.domain.Device;
 import com.moredian.skynet.device.manager.ActivityManager;
+import com.moredian.skynet.device.manager.DeviceGroupManager;
 import com.moredian.skynet.device.manager.DeviceManager;
 import com.moredian.skynet.device.manager.DeviceMonitorManager;
+import com.moredian.skynet.device.manager.WhiteDeviceManager;
 import com.moredian.skynet.device.model.DeviceImageVersion;
 import com.moredian.skynet.device.model.DeviceInfo;
 import com.moredian.skynet.device.model.DeviceStateInfo;
@@ -44,13 +46,17 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	private ActivityManager activityManager;
+	@Autowired
+	private WhiteDeviceManager whiteDeviceManager;
 
 	@Value("${spider.web.address}")
 	private String spiderWebAddress;
+	@Autowired
+	private DeviceGroupManager deviceGroupManager;
 	
 	@Override
 	public ServiceResponse<Boolean> addDeviceWhite(DeviceWhiteAddRequest request) {
-		// TODO Auto-generated method stub
+		whiteDeviceManager.addWhiteDevice(request);
 		return null;
 	}
 
@@ -218,6 +224,12 @@ public class DeviceServiceImpl implements DeviceService {
 	@Override
 	public Boolean activeDeviceWithOrgIdAndDeviceSn(Long orgId, String deviceSn) {
 		return deviceManager.activeDevice(orgId,deviceSn);
+	}
+
+	@Override
+	public ServiceResponse<Boolean> groupConfig(Long orgId, Long deviceId, List<Long> groupIds) {
+		boolean result = deviceGroupManager.resetDeviceGroupRelation(orgId, deviceId, groupIds);
+		return new ServiceResponse<Boolean>(true, null, result);
 	}
 
 }
